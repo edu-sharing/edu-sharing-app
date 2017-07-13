@@ -1,0 +1,1 @@
+This folder contains misc resource files especially for app store publication.

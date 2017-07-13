@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="100px" height="75px" viewBox="0 0 100 75" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 41.2 (35397) - http://www.bohemiancoding.com/sketch -->
+    <title>file-image</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Bild-speichern" transform="translate(-22.000000, -138.000000)">
+            <g id="file-image" transform="translate(22.000000, 138.000000)">
+                <g id="Ebene_1">
+                    <rect id="Rectangle-path" fill="#719CB7" x="0" y="0" width="100" height="75"></rect>
+                    <circle id="Oval" fill="#FFFFFF" cx="50" cy="37.5" r="15.45"></circle>
+                    <path d="M43.6,31.75 L43.6,43.2 L57.7,43.2 L57.7,31.75 L43.6,31.75 Z M56.8,42.3 L44.45,42.3 L44.45,32.6 L56.8,32.6 L56.8,42.3 L56.8,42.3 Z M53.3,34.8 C53.3,34.05 53.9,33.5 54.6,33.5 C55.3,33.5 55.9,34.1 55.9,34.8 C55.9,35.55 55.3,36.1 54.6,36.1 L54.6,36.1 C53.85,36.15 53.3,35.55 53.3,34.8 L53.3,34.8 Z M55.9,41.4 L45.35,41.4 L48,34.35 L51.5,38.75 L53.25,37.45 L55.9,41.4 Z" id="Shape" fill="#719CB7"></path>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

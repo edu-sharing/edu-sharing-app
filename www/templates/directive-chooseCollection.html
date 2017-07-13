@@ -1,0 +1,46 @@
+<div class="choose-collection" >
+
+    <!-- Bread Crumbs -->
+    <div ng-show="collectionShowBreadCrumbs" style="padding: 8px;text-align:center; background-color: #eaeaea;">
+        <span ng-repeat="crumb in collectionParents">
+            <a href="#" style="text-decoration: none;" on-tap="collectionSelectCrumb(crumb.id)">{{crumb.name}}</a>
+            <i class="icon ion-chevron-right"></i>
+        </span>
+        <span>
+            <a href="#" style="text-decoration: none;" on-tap="collectionSelectCrumb(collectionSelectId)">{{collectionSelectName}}</a>
+        </span>
+    </div>
+
+    <ion-scroll delegate-handle="collections" zooming="false" direction="y" style="width: 100%; height: 200px">
+        <div class="list" ng-hide="collectionLoading" id="collectionsScroll" >
+            <a ng-repeat="collection in collectionList" class="item item-icon-left item-icon-right" href="#" on-tap="selectCollection(collection)">
+                <i class="icon ion-images" style="font-size: 150%;"></i>
+                {{collection.title}}
+                <i class="icon ion-chevron-right" style="font-size: 120%;"></i>
+            </a>
+            <div class="collection-select-info" ng-show="
+                (collectionList.length==0) && 
+                (collectionSelectId!='-root-')">
+                Diese Sammlung hat keine weiteren Untersammlungen mehr.<br>
+                Bitte als Speicherort auswählen oder zurück gehen.
+            </div>
+            <div class="collection-select-info" ng-show="
+                (collectionList.length==0) && 
+                (collectionSelectId=='-root-')">
+                Es existieren noch keine Sammlungen welche bearbeitet werden dürfen. 
+            </div>
+        </div>
+    </ion-scroll>
+    <div style="text-align: center;padding:8px;">
+
+        <button class="button button-light" on-tap="backCollection()">
+            <span ng-show="collectionSelectId=='-root-'">Abbrechen</span>
+            <span ng-show="collectionSelectId!='-root-'"><i class="icon ion-chevron-left"></i></span>
+        </button>
+
+        <button ng-show="collectionSelectId!='-root-'" class="button" style="color: white;" on-tap="chooseCollection()">
+            '{{collectionSelectName | limitTo: 25}}' auswählen
+        </button>
+    </div>
+
+</div>

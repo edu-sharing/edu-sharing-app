@@ -1,0 +1,29 @@
+
+<ion-view view-title="Detail" id="detail-ion-view">
+    <ion-content delegate-handle="detailScroll" scroll=true scrollbar-y=true scrollbar-x=false direction="y" style="background-color: #666">
+    <div ng-hide="detailLoading" style="background-color: #666; min-height: 800px;{{loadingDelay ? 'opacity: 0.01;' : ''}}
+" ng-bind-html="dynamicHTML" id="renderDiv" >
+        ...
+    </div>
+    <div ng-show="detailLoading" style="padding-top: 30px;
+    text-align: center;
+    color: lightgrey;">
+        <img src="./img/spinner.gif">
+    </div>
+    </ion-content>
+    <div on-tap="close()" style="
+    width: 50px;
+    height: 50px;
+    font-size: 25px;
+    text-align: center;
+    right: 15px;
+    bottom: 15px;
+    background-color: #4d799a;
+    color: white;
+    font-weight: bold;
+    border-radius: 50%;
+    padding-top: 15px;
+    box-shadow: 0px 2px 5px #666;
+    position: fixed;
+    " ><i class="ion-android-arrow-back"></div>
+</ion-view>

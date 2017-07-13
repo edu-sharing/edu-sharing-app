@@ -1,0 +1,157 @@
+<ion-view view-title="Share">
+    <ion-content style="background-color: #FFF;">
+
+        <!-- ITEM INFO SECTION -->
+        <div style="padding:12px;padding-top:32px;padding-bottom:0px;">
+            <table style="width: 100%;">
+                <tr>
+                    <td style="width: 75px;">
+                        <div ng-show="externalContent">
+                            <img ng-if="(shareType=='link')" src="./img/link.svg" style="height: 56px;
+                            margin-left: 8px;    
+                            border-width: 1px;
+                            border-style: none;
+                            border-color: lightgrey;
+                            border-radius: 10px;">
+                            <img ng-if="(shareType=='image')" src="{{webIntent.extra}}" fallback-src="./img/image.svg" style="height: 56px;
+                            margin-left: 8px;    
+                            border-width: 1px;
+                            border-style: none;
+                            border-color: lightgrey;
+                            border-radius: 10px;">
+                        </div>
+                        <div ng-show="!externalContent">
+                            <img ng-if="items.length==1" src="{{items[0].previewUrl}}" fallback-src="./img/file.png" 
+                            style="height: 56px;
+                            margin-left: 8px;    
+                            border-width: 1px;
+                            border-style: solid;
+                            border-color: lightgrey;
+                            border-radius: 10px;">
+                            <div ng-if="items.length>1" style="font-size:60px;color:#315774;margin-left: 15px;"><i class="icon ion-ios-browsers"></i></div>
+                        </div>
+                    </td>
+                    <td style="padding-left: 8px;vertical-align: middle;">
+                        <div ng-show="externalContent" style="font-size: 120%;font-weight: 500;">
+                            <div style="font-size: 80%;">{{items[0].name}}</div>
+                        </div>
+                        <div ng-show="!externalContent" style="font-size: 120%;font-weight: 500;">
+                            <div ng-if="items.length==1"><div>{{items[0].name}}</div></div>
+                            <div ng-if="items.length>1"><div>{{items.length}} Objekte</div></div>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+
+        <!-- NOTICE ABOUT WHERE TO STORE EXTERNAL CONTENT -->
+        <div ng-show="externalContent" style="padding-left:23px; padding-top:6px; font-size:90%;color:grey;">
+            Wird gespeichert unter: &nbsp;Meine Inhalte <span style="font-weight: 500;font-size: 125%;">&gt;</span> Inbox
+        </div>
+        <table ng-show="externalContent" width="100%" on-tap="justStoreInInbox()" style="min-height: 35px;">
+                <tr>
+                    <td style="height:27px; width:65px; vertical-align: middle;">
+                        <span class="collection-add-image-cell" style="color: #315774;">
+                            <i class="icon ion-android-add-circle ion-android-folder" style="font-size: 130%;"></i>
+                        </span>    
+                    </td>
+                    <td style="vertical-align: middle;">
+                        <span class="collection-add-content-cell" style="color: #315774;font-weight:bold;">
+                            Nur Speichern
+                        </span>
+                    </td>
+                </tr>
+            </table> 
+
+        <!-- CHOOSE COLLECTION SECTION -->
+
+        <div style="padding:24px;font-style:120%;font-weight:bold;padding-top:18px;">
+            In welche Sammlung einordnen?
+        </div>
+
+        <div style="background-color:#eee;min-height:400px;">
+
+
+            <table width="100%">
+
+                <tr>
+                    <td style="height:50px; width:65px; vertical-align: middle;">
+                        <span class="collection-add-image-cell">
+                            <i class="icon ion-android-search collection-add-icon"></i>
+                        </span>    
+                    </td>
+                    <td style="vertical-align: middle;">
+                        <span class="collection-add-content-cell">
+                            <input type="text" ng-model="collectionSearchTerm" class="collection-add-search-input" placeholder="Meine Sammlungen durchsuchen" ng-change="changedSearch(collectionSearchTerm)" ng-keyup="$event.keyCode == 13 && enterOnSearch()">
+                        </span>
+                    </td>
+                </tr>
+
+                <tr on-tap="createNewCollection()">
+                    <td style="height:50px; width:65px; vertical-align: middle;">
+                        <span class="collection-add-image-cell" style="color: #315774;">
+                            <i class="icon ion-android-add-circle collection-add-icon"></i>
+                        </span>    
+                    </td>
+                    <td style="vertical-align: middle;">
+                        <span class="collection-add-content-cell" style="color: #315774;font-weight:bold;">
+                            Neue Sammlung erstellen
+                        </span>
+                    </td>
+                </tr>
+
+                <tr ng-hide="loadingCollections" on-tap="choosedCollection(collection.ref.id)" ng-repeat="collection in collections track by $index">
+                    <td style="height:50px; width:65px; vertical-align: middle;">
+                            <div class="collection-add-image-wrapper" style="border-bottom-color:{{collection.color}};{{collectionImage(collection)}}" >
+                                <i ng-show="collection.preview.isIcon" class="icon ion-social-buffer"></i>
+                            </div>
+                    </td>
+                    <td style="vertical-align: middle;">
+                        <span class="collection-add-content-cell" style="font-weight:500;">
+                            {{collection.title}} 
+                        </span>
+                    </td>
+                    <td style="
+                        padding-top: 14px;
+                        padding-right: 1px;
+                        font-size: 175%;
+                        color: grey;
+                        ">
+                        <i ng-show="collection.scope!='MY'" class="icon ion-ios-people"></i>
+                    </td>
+                </tr>
+
+                <tr ng-show="(!loadingCollections) && (showNoCollectionsInfo)">
+                    <td style="height:50px; width:65px; vertical-align: middle;">
+                        <span class="collection-add-image-cell" style="color: grey;">
+                            <i ng-show="collectionSearchTerm.length>0" class="icon ion-android-add-circle ion-funnel"></i>
+                        </span>    
+                    </td>
+                    <td style="vertical-align: middle;">
+                        <span ng-show="collectionSearchTerm.length==0" class="collection-add-content-cell" style="color:grey;">
+                            <i class="icon ion-android-add-circle ion-ios-arrow-thin-up"></i> Erstellen sie ihre erste Sammlung 
+                        </span>
+                        <span ng-show="collectionSearchTerm.length>0" class="collection-add-content-cell" style="color:grey;">
+                            Keine Suchtreffer für '{{collectionSearchTerm}}' 
+                        </span>
+                    </td>
+                </tr>
+
+                <tr ng-show="loadingCollections">
+                    <td style="height:50px; width:65px; vertical-align: middle;">
+                       <span class="collection-add-image-cell">
+                            <img src="./img/scanner.gif" style="margin-top: 5px;">
+                        </span>   
+                    </td>
+                    <td style="vertical-align: middle;"></td>
+                </tr>
+
+            </table> 
+
+            <ion-infinite-scroll ng-show="((moreResultsAvailable) && (collections.length>0))" on-infinite="loadMore()" distance="5%"></ion-infinite-scroll>
+
+    </ion-content>
+
+</ion-view>
+

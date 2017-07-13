@@ -1,0 +1,61 @@
+<ion-view view-title="Workspace" style="background-color: white;">
+    <ion-content overflow-scroll="false" scrollbar-x="false" scrollbar-y="true" style="overflow: hidden;padding:10px;">
+
+        <div style="padding:16px;padding-bottom:6px;">
+
+           <label class="item item-input" style="padding-bottom: 4px;padding-top: 8px;border-width:0px; border-bottom-width:2px;padding-left: 0px;">
+            <input type="text" maxlength="40" ng-model="title" placeholder="Titel der Sammlung" style="font-size:105%;" ng-change="isValidToSave(title,description,selectedTab)" ng-keyup="$event.keyCode == 13 && closeKeyboard('description')">
+           </label>
+
+           <div style="height:16px;"></div>
+
+           <label class="item item-input" style="padding-bottom: 4px;padding-top: 8px;border-width:0px; border-bottom-width:2px;padding-left: 0px;">
+            <input type="text" maxlength="100" ng-model="description" placeholder="Beschreibung (optional)" style="font-size:105%;" ng-change="isValidToSave(title,description,selectedTab)" ng-keyup="$event.keyCode == 13 && closeKeyboard()" focus-me="{{focus=='description'}}">
+           </label>
+
+            <div style="font-weight:bold;margin-top:48px;padding-bottom:0px;">
+                Wer darf die Sammlung sehen?
+            </div>
+
+            <!-- Radio Button Select -->
+            <div style="margin-top: 24px;margin-bottom:24px;">
+                <div class="collection-visibility-selection" on-tap="pressedSelectorMy()">
+                    <span class="{{ selectedTab=='MY' ? 'collection-visibility-info-selected' : '' }}">Nur ich</span>
+                    <span style="position: absolute;right:32px;">
+                        <div class="collection-visibility-selector {{ selectedTab=='MAY' ? 'collection-visibility-selector-selected' : '' }}">
+                            <div ng-show="selectedTab=='MY'" class="collection-visibility-selector-inner"></div>
+                        </div>
+                    </span>
+                </div>
+                <div class="collection-visibility-selection" on-tap="pressedSelectorOrga()" style="opacity: {{ allowSetScope ? '1' : '0.2' }};">
+                    <span class="{{ selectedTab=='EDU_GROUPS' ? 'collection-visibility-info-selected' : '' }}">Meine Gruppen dürfen sehen</span>
+                    <span style="position: absolute;right:32px;">
+                        <div class="collection-visibility-selector {{ selectedTab=='EDU_GROUPS' ? 'collection-visibility-selector-selected' : '' }}">
+                            <div ng-show="selectedTab=='EDU_GROUPS'" class="collection-visibility-selector-inner"></div>
+                        </div>
+                    </span>
+                </div>
+                <div class="collection-visibility-selection" on-tap="pressedSelectorAll()" style="opacity: {{ allowSetScope ? '1' : '0.2' }};">
+                    <span class="{{ selectedTab=='EDU_ALL' ? 'collection-visibility-info-selected' : '' }}">Jeder darf sehen</span>
+                    <span style="position: absolute;right:32px;">
+                        <div class="collection-visibility-selector {{ selectedTab=='EDU_ALL' ? 'collection-visibility-selector-selected' : '' }}">
+                            <div ng-show="selectedTab=='EDU_ALL'" class="collection-visibility-selector-inner"></div>
+                        </div>
+                    </span>
+                </div>
+            </div>    
+
+        </div>
+
+        <div style="text-align:right;padding-top:16px;">
+        <button class="button button-clear mainColorDarkTextColor-Important" on-tap="onBack()" style="border-width: 0px;width:48%">
+            <span>ABBRECHEN</span>
+        </button>
+
+        <button class="button darkBackLightText-Button" on-tap="buttonSave(title,description,selectedTab)" style="border-width: 0px;width:50%;" ng-class="validToSave ? '' : 'background-grey'">
+            <span>SPEICHERN</span>
+        </button>
+        </div>
+
+    </ion-content>
+</ion-view>

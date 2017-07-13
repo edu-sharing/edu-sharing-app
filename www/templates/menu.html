@@ -1,0 +1,235 @@
+<ion-side-menus enable-menu-with-back-views="false">
+
+  <ion-side-menu-content ng-cloak id="side-menu-content">
+    <ion-nav-bar class="bar-stable">
+
+      <ion-nav-buttons side="left">
+
+        <div ng-show="headerShowProfile" id="headerProfileBack" ng-click="toggle()" style="display:none;margin-top: 6px;width:150px;text-align:left;{{displayDiv}}" class="transparentButton">
+            <table>
+                <tr>
+                    <td style="vertical-align:middle; width:25px;">
+                        <div style=" font-size: 150%; padding-left: 5px; padding-top: 0px">
+                            <i class="icon ion-ios-arrow-back"></i>
+                        </div>
+                    </td>
+                    <td style="vertical-align:middle;">
+                        <div style="vertical-align:middle; padding-top: 0px;">
+                            Profil
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+        <div ng-show="headerShowCollections" ng-click="toggle()" class="transparentButton" style="display:none;margin-top: 6px;width:150px;text-align:left;{{displayDiv}}">
+            <table>
+                <tr>
+                    <td style="vertical-align:middle; width:30px;">
+                        <div style=" font-size: 150%; padding-left: 5px; padding-top: 0px">
+                            <i class="icon ion-social-buffer"></i>
+                        </div>
+                    </td>
+                    <td style="vertical-align:middle;">
+                        <div style="vertical-align:middle; padding-top: 0px;">
+                            Sammlungen
+                        </div>
+                    </td>
+                    <td>
+                        <div style="vertical-align:middle; padding-top: 0px; margin-top: 1px;">
+                            <i class="icon ion-chevron-down" style="font-size: 100%; padding-left: 5px;"></i>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+        <div ng-show="headerShowWorkspace" ng-click="toggle()" class="transparentButton" style="display:none; margin-top: 6px;width:150px;text-align:left;{{displayDiv}}">
+            <table>
+                <tr>
+                    <td style="vertical-align:middle; width:30px;">
+                        <div style=" font-size: 150%; padding-left: 5px; padding-top: 0px">
+                            <i class="icon ion-android-cloud-outline"></i>
+                        </div>
+                    </td>
+                    <td style="vertical-align:middle;">
+                        <div style="vertical-align:middle; padding-top: 0px;">
+                            Workspace
+                        </div>
+                    </td>
+                    <td>
+                        <div style="vertical-align:middle; padding-top: 0px; margin-top: 1px;">
+                            <i class="icon ion-chevron-down" style="font-size: 100%; padding-left: 7px;"></i>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+        <div ng-show="headerDetail" ng-click="back()" class="transparentButton" style="display:none; margin-top: 6px;width:150px;text-align:left;{{displayDiv}}">
+              <table style="width:100%;">
+                  <tr>
+                      <td width="30px" style="vertical-align:middle;">
+                          <div style=" font-size: 150%; padding-left: 5px; padding-top: 0px">
+                              <i class="icon ion-arrow-left-a"></i>
+                          </div>
+                      </td>
+                      <td style="vertical-align:middle;">
+                          <div style="vertical-align:middle; padding-top: 0px;">
+                              Zurück
+                          </div>
+                      </td>
+                  </tr>
+              </table>
+        </div>
+
+        <div ng-show="headerShowSearch" ng-click="toggle()" class="transparentButton" style="display:none;width:50px;text-align:left;padding-top:7px;{{displayDiv}}">
+            <table>
+                <tr>
+                    <td style="vertical-align:middle; width:28px;">
+                        <div style=" font-size: 150%; padding-left: 6px; padding-top: 0px">
+                            <i class="icon ion-android-search"></i>
+                        </div>
+                    </td>
+                    <td>
+                        <div style="vertical-align:middle; padding-top: 0px; margin-top: 1px;">
+                            <i class="icon ion-chevron-down" style="font-size: 100%;"></i>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+        <div ng-show="(headerCollectionEdit || headerCollectionNew || headerCollectionAdd)" class="transparentButton" style="display:none; margin-top: 6px; width:250px;text-align:left;{{displayDiv}}">
+              <table style="width:100%;">
+                  <tr>
+                      <td style="vertical-align:middle;">
+                          <div style="vertical-align:middle; padding-top: 0px; padding-left: 8px;font-size:120%;">
+                              <span ng-show="headerCollectionNew" >Neue Sammlung</span>
+                              <span ng-show="headerCollectionEdit" >Sammlung bearbeiten</span>
+                              <span ng-show="headerCollectionAdd" >In Sammlung hinzufügen</span>
+                          </div>
+                      </td>
+                  </tr>
+              </table>
+        </div>
+
+        <div ng-show="(headerShowSearch) && (!multiSelectionMode)" class="searchareatop" style="display:none;{{displayDivFlex}};">
+            <label class="item item-input" style="display: inline-block;" >
+              <input id="searchWordInput" ng-keyup="changedSearch($event, searchword)" placeholder="Suchbegriff eingeben" type="search" style="
+              width: 135px;
+              height: 21px;
+              padding-right: 10px;
+              margin-left: -4px;
+              " ng-model="searchword">
+            </label>    
+            <button id="searchareabutton" on-tap="doSearch(searchword)" class="button button-small" style="
+                color: white;
+                border-radius: 0px;
+                height: 37px;
+                margin-top: -1px;
+                border-color: #777;">
+                SUCHEN
+            </button>
+        </div>
+
+
+      </ion-nav-buttons>
+
+      <ion-nav-buttons side="right">
+
+          <div ng-show="multiSelectionMode" on-tap="headerMultiselectAll()" style="color: white; margin-top: 7px; font-size: 125%;">
+              <span style="display:inline;">{{multiSelectionText}}</span>&nbsp;&nbsp;
+          </div>
+
+          <button ng-show="(headerShowWorkspaceOptions) && (!multiSelectionMode) && (!editFolderNotAllowed)"  class="button button-icon button-clear" on-tap="headerSwitchMultiselection()" style="margin-top:4px;min-width: 35px;display:none;{{displayDiv}}">
+              <i  style="width: 20px; margin-top: 0px; font-size: 50%; margin-right: 12px;" class="icon ion-android-checkbox-outline"></i>
+          </button>
+
+          <button ng-show="(headerShowWorkspaceOptions || headerShowSearch) && (multiSelectionMode)"  class="button button-icon button-clear" on-tap="headerSwitchMultiselection()" style="min-width: 35px;display:none;{{displayDiv}}">
+              <div style="color: white;">
+                  <i style="width: 20px; margin-top: 0px; font-size: 50%; margin-right: 12px;" class="icon ion-close"></i>
+              </div>
+          </button>
+
+          <button ng-show="(headerShowWorkspaceOptions) && (!multiSelectionMode) && (!editFolderNotAllowed)"  class="button button-icon button-clear" on-tap="headerButtonUpload()" style="min-width: 35px; font-size: 50%;display:none;{{displayDiv}}">
+              <i  style="width: 20px; margin-top: 0px; font-size: 50%; margin-right: 12px;" class="icon ion-android-upload"></i>
+          </button>
+
+
+          <button ng-show="(headerShowWorkspaceOptions) && (!multiSelectionMode) && (!editFolderNotAllowed)"  class="button button-icon button-clear" on-tap="headerButtonNewFolder()" style="min-width: 35px; font-size: 50%;display:none;{{displayDiv}}">
+              <i style="width: 20px; margin-top: 0px; font-size: 50%; margin-right: 12px;" class="icon ion-android-add-circle"></i>
+          </button>
+
+          <button ng-show="(headerShowCollectionsOptions && headerShowEditCollection)"  class="button button-icon button-clear" on-tap="headerButtonDeleteCollection()" style="min-width: 35px; font-size: 50%;display:none;{{displayDiv}}">
+              <i style="width: 20px; margin-top: 0px; font-size: 50%; margin-right: 12px;" class="icon ion-trash-b"></i>
+          </button>
+
+          <button ng-show="(headerShowCollectionsOptions && headerShowEditCollection)"  class="button button-icon button-clear" on-tap="headerButtonEditCollection()" style="min-width: 35px; font-size: 50%;display:none;{{displayDiv}}">
+              <i style="width: 20px; margin-top: 0px; font-size: 50%; margin-right: 12px;" class="icon ion-edit"></i>
+          </button>
+
+          <button ng-show="(headerShowCollectionsOptions && headerShowNewCollection)"  class="button button-icon button-clear" on-tap="headerButtonNewCollection()" style="min-width: 35px; font-size: 50%;display:none;{{displayDiv}}">
+              <i style="width: 20px; margin-top: 0px; font-size: 50%; margin-right: 12px;" class="icon ion-android-add-circle"></i>
+          </button>
+
+          <button ng-show="headerShowOptionLogout" class="button button-icon button-clear" on-tap="logout()" style="min-width: 35px;display:none;{{displayDiv}}">
+              <i  style="width: 20px; margin-top: 0px; font-size: 50%;" class="icon ion-android-exit"></i>
+          </button>
+
+           <button ng-show="(headerDetail && offerDownloadOption)"  class="button button-icon button-clear" on-tap="detailDownload()" style="min-width: 35px; font-size: 50%;display:none;{{displayDiv}}">
+              <i  style="width: 20px; margin-top: 0px; font-size: 50%;" class="icon ion-android-download"></i>
+          </button>
+
+          <button ng-show="(headerCollectionEdit || headerCollectionNew || headerCollectionAdd)"  class="button button-icon button-clear" on-tap="back()" style="min-width: 35px; font-size: 50%;display:none;{{displayDiv}}">
+              <i  style="width: 20px; margin-top: 0px; font-size: 50%;" class="icon ion-android-close"></i>
+          </button>
+           
+           <!-- MORE OPTIONS ON DETAIL PAGE LATER
+           <button ng-show="headerDetail"  class="button button-icon button-clear" on-tap="detailOptions()" style="min-width: 35px; font-size: 50%;display:none;{{displayDiv}}">
+              <i  style="width: 20px; margin-top: 0px; font-size: 50%;" class="icon ion-android-more-vertical"></i>
+           </button>
+           -->
+
+      </ion-nav-buttons>
+
+    </ion-nav-bar>
+    <ion-nav-view name="menuContent" animation="none"></ion-nav-view>
+  </ion-side-menu-content>
+
+  <ion-side-menu is-enabled="isLoggedIn" ng-cloak id="side-menu" side="left" style="border-right-width: 1px;border-right-color: lightgray;border-right-style: solid;">
+    <ion-header-bar id="side-menu-header" class="bar-stable" style="height: 160px;border-width: 0px;">
+      <img style="position: absolute;top: 15px;left: 15px;border-radius: 50%;width: 85px;" ng-src="{{profileImageUrl}}">
+      <!--<div id="side-menu-profile-link" style="position: absolute;top: 125px;right: 20px;font-weight:500;"><a menu-close href="#/app/account" style="text-decoration: none;">Profil</a></div>-->
+      <div id="side-menu-profile-name" style="position: absolute;top: 115px;left: 15px;">{{profileName}}</div>
+    </ion-header-bar>
+    <ion-content style="top: 160px;">
+      <ion-list>
+        <ion-item menu-close href="#/app/search">
+          <i style="width: 20px; position: absolute; font-size: 150%;" class="icon ion-android-search"></i>
+          <div style="padding-left: 30px;margin-top: 2px;">Suchumgebung</div>
+          <i ng-show="activePage==='/app/search'" style="width: 20px; position: absolute; right: 20px; top: 16px;" class="icon ion-checkmark"></i>
+        </ion-item>
+        <ion-item menu-close href="#/app/collections">
+          <i style="width: 20px; position: absolute; font-size: 150%;" class="icon ion-social-buffer"></i>
+          <div style="padding-left: 30px;margin-top: 2px;">Sammlungen</div>
+          <i ng-show="activePage==='/app/collections'" style="width: 20px; position: absolute; right: 20px; top: 16px;" class="icon ion-checkmark"></i>
+        </ion-item>
+        <ion-item menu-close href="#/app/workspace">
+          <i style="width: 20px; position: absolute; font-size: 150%;" class="icon ion-android-cloud-outline"></i>
+          <div style="padding-left: 30px;margin-top: 2px;">Workspace</div>
+          <i ng-show="activePage==='/app/workspace'" style="width: 20px; position: absolute; right: 20px; top: 16px;" class="icon ion-checkmark"></i>
+        </ion-item>
+        <ion-item menu-close href="#" ng-click="logout()">
+          <i style="width: 20px; position: absolute; font-size: 150%;" class="icon ion-android-exit"></i>
+          <div style="padding-left: 30px;margin-top: 2px;">Abmelden</div>
+        </ion-item>
+      </ion-list>
+
+      <p style=" font-size: 75%; color: grey; padding-left: 17px; padding-top: 12px;">
+          Version {{appVersion}} - {{appSvnRevison}}
+      </p>
+
+    </ion-content>
+  </ion-side-menu>
+</ion-side-menus>

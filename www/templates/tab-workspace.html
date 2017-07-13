@@ -1,0 +1,105 @@
+<ion-view view-title="Workspace" style="background-color: #EEEEEE;">
+    <ion-content overflow-scroll="false" scrollbar-x="false" scrollbar-y="true" style="overflow: hidden;">
+
+        <!-- BREAD CRUMBS --> 
+        <table width="100%">
+            <tr>
+                <td width="*">
+                    <div style="
+                        padding-left: 8px;
+                        padding-top: 4px;
+                        padding-bottom: 4px;
+                        padding-right: 4px;
+                        border-bottom-width: 1px;
+                        border-bottom-color: #888;
+                        border-bottom-style: none;">
+                        <div style="display: inline-block;margin-right: 3px; width:100%;">
+                            <table width="100%">
+                                <tr ng-show="breadCrumbs.length>1">
+                                    <td style="vertical-align: top;" width="80px">
+                                        <div class="crumb" style="color: #315774;"  on-tap="back()">
+                                            <i class="icon icon-small ion-chevron-left" style="    padding-right: 4px;padding-left: 2px;font-size: 16px;"></i> <span>Zurück</span>
+                                        </div>
+                                    </td>        
+                                    <td style="vertical-align: top;" width="*">
+                                        <div class="crumb" style="padding-top: 1px;font-weight: bold;     text-align: center;">
+                                        <span>{{breadCrumbs[breadCrumbs.length-1].name | limitTo:32}}</span>  
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr ng-show="breadCrumbs.length==1" on-tap="changeRoot()">  
+                                    <td style="vertical-align: top;">
+                                        <div class="crumb" style="margin-left:-2px;margin-right: -1px;">
+                                        <span>{{breadCrumbs[0].name}}</span>  
+                                        <i class="icon icon-small ion-chevron-down" style="    padding-right: 0px;padding-left: 0px;font-size: 14px;"></i>
+                                        </div>
+                                    </td>
+                                    <td style="vertical-align: top;">
+                                    </td>      
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </td>
+                <td width="40px" style="vertical-align: top; text-align: center; padding-top: 6px;">
+                    <a class="button button-clear icon" ng-class="contentViewMode=='tiles' ? 'ion-android-menu' : 'ion-android-apps'" on-tap="changeViewMode()" style="color: #315774;"></a>
+                </td>   
+            </tr>    
+        </table>   
+
+        <!-- LOADING SCREEN -->
+        <div ng-show="loading" style="text-align: center; padding: 14px; font-size: 100%; color: #A8A8A8;">
+            ... lade ...
+        </div>
+
+        <!-- EMPTY SCREEN -->
+        <div ng-show="empty" style="text-align: center; padding: 14px; font-size: 100%; color: #A8A8A8;">
+            <p>keine Materialien vorhanden</p>
+            <button ng-show="breadCrumbs.length>1" class="button button-light" on-tap="back()">
+                Zurück
+            </button>
+        </div>
+
+        <!-- ERROR SCREEN -->
+        <div ng-show="error.length>0" style="text-align: center; color: #A8A8A8; padding: 10px; padding-top: 14px; font-size: 100%;">
+            <p>{{error}}</p>
+            <button class="button button-light" on-tap="refreshDataFromServer()">
+                Erneut Laden
+            </button>
+        </div>
+
+        <!-- DATA SCREEN -->
+        <div ng-show="!loading" style="margin-top: -10px;min-width:350px;" ng-class="contentViewMode=='tiles' ? 'centerWhenPotrait' : ''" ng-cloak>
+
+             <table width="100%">
+                 <tr ng-show="((contentViewMode=='tiles') && (nodeData.folders.length>0))"><td>
+                    <div class="workspace-tiles-subheadline" style="margin-top:6px;">
+                        Ordner
+                    </div>  
+                 </td></tr>    
+                  <tr ><td>
+                     <ion-list>
+                        <div item-tile-big ng-repeat="item in nodeData.folders" ng-class="contentViewMode=='tiles' ? 'tile-container' : 'list-container'" on-hold="longPressItem(item)" context="workspace">
+                        </div>
+                    </ion-list>
+                 </td></tr>  
+                 <tr ng-show="((contentViewMode=='tiles') && (nodeData.items.length>0))"><td>
+                    <div class="workspace-tiles-subheadline" style="margin-top:12px;">
+                        Material
+                    </div>    
+                 </td></tr>
+                 <tr><td>
+                    <ion-list>
+                        <div item-tile-big ng-repeat="item in nodeData.items" ng-class="contentViewMode=='tiles' ? 'tile-container' : 'list-container'" on-hold="longPressItem(item)" context="workspace">
+                    </div>
+                    </ion-list>
+                 </td></tr>  
+             </table>    
+
+            <ion-infinite-scroll ng-show="moreResultsAvailable" on-infinite="loadMore()" distance="5%"></ion-infinite-scroll>
+
+        </div>
+
+    </ion-content>
+    
+</ion-view>

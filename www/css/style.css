@@ -1,0 +1,612 @@
+/* Empty. Add your own CSS if you like */
+
+iframe::-webkit-scrollbar {
+    display: none;
+}
+
+.headerIconAndText {
+    padding-top: 6px;
+    padding-left: 10px;
+}
+
+.transparentButton {
+    border-style: none;
+    background-color: transparent;
+}
+
+/* dont show the ionic header titles */
+div .title-center {
+    display: none;
+}
+div .title-left {
+    display: none;
+}
+div .title-right {
+    display: none;
+}
+
+.svg-icon{
+    position: absolute;
+}
+
+.svg-icon svg {
+    fill: red;
+}
+
+#headerProfileBack::before {
+    font-size: 20px;
+}
+
+.item-complex {
+    border-color: rgba(221, 221, 221, 0);
+}
+
+.bar.bar-stable {
+    border-width: 0px;
+}
+
+.bar.bar-header {
+    height: 45px;
+}
+
+.bar .button.button-clear .icon:before, .bar .button.button-clear.icon:before, .bar .button.button-clear.icon-left:before, .bar .button.button-clear.icon-right:before {
+    font-size: 24px;
+    line-height: 32px;
+}
+
+.roundBox {
+    margin-left: 12px;
+    margin-right: 12px;
+    border-radius: 12px
+}
+
+/*
+    styles for breadcrumbs
+*/
+
+.crumb {
+    height: 40px;
+    border-color: transparent;
+    border-width: 10px;
+    border-style: solid;
+    border-top-left-radius: 4px;
+    border-bottom-left-radius: 4px;
+    border-right-width: 3px;
+    border-left-width: 0px;
+    padding-left: 6px;
+    padding-right: 0px;
+    margin-top: 6px;
+    margin-right: 0px;
+}
+
+.crumb-collection {
+    height: 40px;
+    border-color: transparent;
+    border-width: 10px;
+    border-style: solid;
+    border-top-left-radius: 4px;
+    border-bottom-left-radius: 4px;
+    border-right-width: 3px;
+    border-left-width: 0px;
+    padding-left: 6px;
+    padding-right: 0px;
+    margin-top: 6px;
+    margin-right: 0px;
+}
+
+.crumbArrow {
+
+    height: 40px;
+    width: 18px;
+
+    margin: 0px;
+    margin-top: 6px;
+
+    border-top: 19px solid transparent;
+    border-bottom: 20px solid transparent;
+    border-left: 19px solid #e9e9e9;
+
+    position: relative;
+
+}
+
+.workspaceItem {
+
+    display: inline-block;
+
+    margin-top: 10px;
+    margin-bottom: 10px;
+    margin-left: 10px;
+    margin-right: 4px;
+}
+
+.workspaceItemInfo {
+    font-size: 90%;
+}
+
+.icon-small:before {
+    vertical-align: baseline;
+}
+
+.centerWhenPotrait {
+    text-align: left;
+}
+
+.selected-tile-big {
+    border-color: #345574;
+    border-width: 1px;
+    border-style: solid;
+}
+
+.unselected-tile-big {
+    border-color: transparent;
+    border-style: solid;
+}
+
+.opacity {
+    opacity: 0.4;
+}
+
+@-webkit-keyframes keysFadeOut {
+    0% {
+        opacity: 1.0;
+    }
+    100% {
+        opacity: 0.0;
+    }
+}
+
+.animationFadeOut {
+    animation: keysFadeOut ease-in 1;
+    animation-fill-mode: forwards;
+    animation-duration: 800ms;
+    -webkit-animation: keysFadeOut ease-in 1;
+    -webkit-animation-fill-mode: forwards;
+    -webkit-animation-duration: 800ms;
+}
+
+.ion-android-checkbox-outline-blank:before {
+    content: "\f372";
+    margin-top: -4px;
+}
+
+.ion-android-checkbox-outline:before {
+    content: "\f373";
+    margin-top: -4px;
+}
+
+.tile-container {
+    float: left;
+}
+
+.list-container {
+    text-align: left;
+}
+
+.icon-list {
+    font-size: 250%;
+}
+
+.list-option-icon:before {
+    font-size: 28px !important;
+}
+
+.collection-select-info {
+    padding: 8px;
+    padding-top: 32px;
+    font-size: 120%;
+    text-align: center;
+}
+
+@media only screen and (max-width : 530px) {
+    .centerWhenPotrait {
+        padding-right: 8px;
+        margin-left: auto;
+        margin-right: auto;
+        text-align: left;
+    }
+}
+
+.centerWhenPotraitInvert {
+    text-align: left;
+}
+
+@media only screen and (max-width : 530px) {
+    .centerWhenPotraitInvert {
+        padding-right: 8px;
+        margin-left: auto;
+        margin-right: auto;
+        text-align: center;
+    }
+}
+
+@media (min-width: 680px) {
+    .active .modal-backdrop-bg {
+        opacity: 0 !important;
+    }
+}
+
+.popup {
+    background-color: white !important; 
+}
+
+.popup-head {
+    border-bottom: 0px solid #fff !important;
+}
+
+.popupSelectionCollection .popup {
+    width: 90%;
+}
+
+.popupSelectionCollection .popup-body {
+    padding: 0px;
+    background-color: white;
+}
+
+.popupSelectionCollection .popup-head {
+    background-color: white;
+}
+
+.popupSelectionCollection .popup-title {
+    font-size: 130%;
+    font-weight: 400;
+}
+
+.collections-selector {
+    background-color: #ddd;
+    color: #222;
+}
+
+.collections-selector-active {
+    background-color: #aaa;
+    color: #222;
+}
+
+.searchareatop {
+    min-width: 340px;
+}
+
+.tabs-striped.tabs-background-positive .tabs {
+    background-color: #315774;
+}
+
+.tabs-top > .tabs, .tabs.tabs-top {
+    top: 0px;
+}
+
+.tabs-background-positive .tabs, .tabs-background-positive > .tabs {
+    border-color: transparent;
+}
+
+body {
+    -webkit-font-smoothing:antialiased;
+}
+
+.item-menu-button {
+    color:white !important;
+    padding:5px;
+    width:98%;
+    text-align:left;
+    padding-left: 18px;
+    margin-top:5px;
+}
+
+.item-menu-icon {
+    padding-right: 10px;
+}
+
+.item-menu-text {
+    position: absolute;
+    left: 50px;
+}
+
+.item-menu-popup .popup-head {
+    text-align: left;
+    padding-left: 16px;
+    padding-bottom: 0px;
+}
+
+.item-menu-popup .popup {
+    width: 340px;
+}
+
+.button.button-positive.active, .button.button-positive.activated {
+    border-color: #5982a0 !important;
+    background-color: #5982a0 !important;
+}
+
+.popup-title {
+    text-align: left;
+    padding-left: 4px;
+}
+
+.intro-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 8px;
+    border-width: 1px;
+    border-style: solid;
+    border-color: #315774;
+    display:inline-block;
+    margin: 4px;
+}
+
+.intro-slide {
+    text-align: center;
+    padding: 16px;
+    color: white;
+}
+
+.bounceOutLeft {
+    animation: bounceOutLeftFrames 1.7s;
+}
+
+@keyframes bounceOutLeftFrames {
+   0% {
+      opacity: 1;
+      transform: translateX(0px);
+   }
+   100% {
+      opacity: 0;
+      transform: translateX(-1000px);
+   }
+}
+
+.intro-headline {
+    font-size: 140%;
+    margin-top: -16px;
+    margin-bottom: 24px;
+    width: 80%;
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.intro-image {
+    width: 80%;
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.serverselect .popup {
+    width: 270px;
+}
+
+.serverselect .popup-head {
+    display: none;
+}
+
+.serverselect .popup-body {
+    min-height: 230px;
+}
+
+.serverselect .has-header {
+    top: 0px;
+}
+
+.animationPulsateSimple{
+    -webkit-animation-name: pulsateSimple;
+    -webkit-animation-duration: 1s;
+    -webkit-animation-timing-function: ease-in-out;
+    -webkit-animation-iteration-count: infinite
+}
+
+@-webkit-keyframes pulsateSimple {
+    0% { opacity: 1.0}
+    50% {  opacity: 0.0}
+    100% { opacity: 1.0}
+}
+
+.action-sheet {
+    background-color: white;
+    margin: 0px;
+}
+
+.action-sheet-title  {
+    padding-left: 39px;
+    text-align: left;
+    background-color: white;
+    font-size: 110%;
+}
+
+.action-sheet .button{
+        text-align: left !important;
+        padding-left: 82px !important;
+        border-width: 0px ;
+        background-color: white !important;
+        color: #315774 !important;
+}
+
+.action-sheet-option {
+  padding-top: 6px !important;
+  padding-bottom: 6px !important;
+}
+
+.action-sheet-option:last-child {
+  border-top-width: 1px !important;
+  border-top-color: lightgray !important;
+  border-top-style: solid !important;
+  margin-top: 8px;
+  padding-top: 12px !important;
+  padding-bottom: 8px !important;
+}
+
+
+.select-sheet .action-sheet-option:last-child {
+    border-top-width: 0px !important;
+}    
+
+.action-sheet-cancel .button {
+       text-align: left !important;
+       padding-left: 82px !important;
+       background-color: white !important;
+       border-top-width: 1px !important;
+       border-top-color: lightgray !important;
+       border-top-style: solid !important;
+       color: #315774 !important;
+}
+
+.action-sheet-options {
+    background:white !important;
+}
+
+.action-sheet-icon {
+       margin-left: 24px;
+}
+
+.action-sheet-icon-selected {
+    right: 24px;
+    left: initial !important;
+}
+
+.action-sheet-option-deactivated {
+    color: lightgray !important;
+}
+
+.upload-progress-panel {
+    width: 80px;
+    background-color: #333;
+    color: white;
+    text-align: center;
+    border-radius: 10px;
+}
+
+.edusharing_rendering_content_title {
+    padding-top: 16px;
+}
+
+#renderDiv > div > div.edusharing_rendering_content_wrapper > a {
+    color: white !important;
+}
+
+.background-grey {
+    background-color: lightgrey !important;
+}
+
+.workspace-tiles-subheadline {
+    padding-left:12px;
+    color: grey;
+    font-size: 90%;
+}
+
+.collection-visibility-selection {
+    margin-top: 16px;
+    height: 32px;
+    border-bottom-width: 1px;
+    border-bottom-style: solid;
+    border-bottom-color: lightgray;
+    font-size: 110%;
+    color: #333;
+}
+
+.collection-visibility-selector {
+    height: 21px;
+    width: 21px;
+    border-width: 2px;
+    border-color: #315774;
+    border-radius: 15px;
+    border-style: solid;
+    opacity: 0.75;
+}
+
+.collection-visibility-selector-inner {
+    margin: 4px;
+    height: 9px;
+    width: 9px;
+    background-color: #315774;
+    border-radius: 5px;
+}
+
+.collection-visibility-info-selected {
+    color:#315774;
+    font-weight:bold;
+}
+
+.collection-visibility-selector-selected {
+    opacity: 1;
+}
+
+.collection-add-image-cell {
+    width: 65px;
+    padding: 12px;
+    padding-left: 24px;
+    min-height: 100px;
+}
+
+.collection-add-icon {
+    font-size: 150%;
+    line-height: 150%;
+}
+
+.collection-add-search-input {
+    background-color: transparent;
+    width: 95%;
+    border-bottom-style: solid !important;
+    border-bottom-color: grey !important;
+    border-bottom-width: 1.5px !important;
+}
+
+.collection-add-image-wrapper {
+    border-width: 1px;
+    border-color: grey;
+    border-style: solid;
+    width: 30px;
+    height: 30px;
+    margin-left: 20px;
+    border-radius: 5px;
+    padding: 4px;
+    font-size: 140%;
+    background-color: white;
+    padding-left: 6px;
+    color: #315774;
+    border-bottom-width: 4px;
+    background-size: 30px 30px;
+}
+
+.popup-confirm-delete button {
+    background-color: #315774 !important;
+    color: white;
+}
+
+.popup-confirm-delete .popup-buttons {
+    width: 300px;
+}
+
+.popup-confirm-delete .popup {
+    width: 300px;
+}
+
+.popup-confirm-delete .button-default {
+    background-color: white !important;
+    color: #315774 !important;
+    border-width: 0px;
+}
+
+.dialog-new-folder .popup {
+    min-width: 260px;
+}
+
+.dialog-new-folder .button-default {
+    background-color: white;
+    border-width: 0px;
+    min-width: 130px;
+}
+
+.dialog-new-folder .popup-sub-title {
+    text-align: left;
+    padding-left: 5px;
+}
+
+.dialog-new-folder .input-foldername {
+    border-bottom-width: 1px;
+    border-bottom-color: black;
+    border-bottom-style: solid;
+    margin-left: 6px;
+    width: 95%;
+    padding-bottom: 4px;
+}
+
+.dialog-new-folder .popup-head {
+    padding-bottom: 0px;
+}  

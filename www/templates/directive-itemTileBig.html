@@ -1,0 +1,182 @@
+<div id="tile-{{item.ref.id}}" on-tap="itemClick(item)">
+
+<!-- LIST VIEW -->
+
+<div ng-if="((contentViewMode=='list') && (item.typeStyle!='unknown'))" class="list card workspaceItem list-item" style="margin-bottom: -9px; width: 95%; box-shadow: none;">
+
+    <table width="100%" style="height: 54px;">
+        <tr>
+            <!-- Icon Part -->
+            <td width="60px" style="text-align:center;vertical-align:middle; color: darkgray;">
+                <i ng-show="(item.typeStyle=='file')" class="icon icon-list ion-document"></i>
+                <i ng-show="(item.typeStyle=='link')" class="icon icon-list ion-earth"></i>
+                <i ng-show="(item.typeStyle=='folder')" class="icon icon-list ion-android-folder"></i>
+                <i ng-show="(item.typeStyle=='collection')" class="icon icon-list ion-ios-browsers"></i>
+                <img ng-show="((item.typeStyle!='folder') && (item.previewUrl!=null))" src="{{item.previewUrl}}" fallback-src="./img/transparent.gif" style="width:65px;height:57px;position:absolute;top:-1px;left:0px;">
+            </td>
+            <!-- Name & Info -->
+            <td width="*" style="text-align:left;vertical-align:middle;">
+                <div style="
+                font-weight: bold;
+                padding-left: 14px;
+                padding-right: 5px;
+                width: 99%;
+                overflow: hidden;
+                height: 20px;">
+                {{item.name | limitTo : 30}}
+                </div>
+                <div style="
+                color: darkgray;
+                padding-left: 14px;
+                padding-right: 5px;" ng-bind-html="getInfoSubLineList(item)">
+                </div>
+            </td>
+            <!-- Options -->
+            <td width="40px" style="text-align:right;vertical-align:middle;">
+                <div ng-show="multiSelectionMode" style="font-size: 250%; background-color: white; height: 26px; color: #315574; padding-right: 10px;">
+                    <i ng-show="!item.isSelected" class="icon ion-android-checkbox-outline-blank"></i>
+                    <i ng-show="item.isSelected" class="icon ion-android-checkbox-outline"></i>
+                </div>
+                <div ng-show="(!multiSelectionMode) && (!editFolderNotAllowed)" on-tap="menuItemClick($event, item)">
+                    <a class="button button-clear icon ion-android-more-vertical list-option-icon"></a>
+                </div>
+            </td>
+        </tr>
+    </table>
+
+</div>    
+
+<!-- TILE VIEW (not folder) -->
+
+<div ng-if="((contentViewMode=='tiles') && (item.typeStyle!='unknown') && (item.typeStyle!='folder'))" class="list card workspaceItem tile-item" style="margin-bottom: 10px;width: {{tileWidthPixel}}px; min-height: 265px; padding:0px; background-color:{{(item.typeStyle=='collection') ? item.color : 'none'}};" ng-class="{'selected-tile-big': item.isSelected, 'unselected-tile-big': !item.isSelected}">
+
+    <div ng-show="multiSelectionMode" style="position: absolute; top: 12px; right: 10px; font-size: 250%; z-index: 100; background-color: white; height: 26px; margin-top: -3px; color: #315574;">
+        <i ng-show="!item.isSelected" class="icon ion-android-checkbox-outline-blank"></i>
+        <i ng-show="item.isSelected" class="icon ion-android-checkbox-outline"></i>
+    </div>
+
+    <div class="item item-image" ng-class="{'opacity': multiSelectionMode}" style="border-width:0px; height: {{(item.typeStyle=='collection') ? '120' : '140'}}px;display: table-cell;text-align: center;vertical-align: middle;background-color: rgba(49, 87, 116, 0.06);">
+        <div ng-if="(item.typeStyle=='folder') || (item.typeStyle=='collection') || (item.typeStyle=='file') || (item.typeStyle=='link')"
+             style="width: {{tileWidthPixel}}px; height: {{(item.typeStyle=='collection') ? '140' : '140'}}px; padding-top:{{(item.typeStyle=='collection') ? '30' : '30'}}px;background-color: white;">
+            <div class="mainColorDarkTextColor mainColorDarkTextColor-Border" style="
+                        margin:{{((tileWidthPixel-80)/2)}}px;
+                        margin-top: 0px;
+                        margin-bottom: 0px;
+                        width: 80px;
+                        height: 78px;
+                        border-width: 2px;
+                        border-style: {{((item.typeStyle=='file') || (item.typeStyle=='link')) ? 'hidden' : 'solid'}};
+                        border-radius: 40px;
+                        padding: 10px;
+                        padding-top: 15px;
+                        font-size: 50px;
+                        background-color: white;
+                        color: {{item.color}};
+                        border-color: {{item.color}};
+                        ">
+                <i ng-show="(item.typeStyle=='folder')" class="icon ion-android-folder"></i>
+                <i ng-show="(item.typeStyle=='collection')" class="icon ion-social-buffer"></i>
+                <i ng-show="(item.typeStyle=='file')" class="icon ion-document"></i>
+                <i ng-show="(item.typeStyle=='link')" class="icon ion-earth"></i>
+            </div>
+            <img ng-show="((item.typeStyle!='folder') && (item.previewUrl!=null))" src="{{item.previewUrl}}" fallback-src="./img/transparent.gif" style="width:{{tileWidthPixel}}px;height:141px;margin-top:-109px;">
+        </div>
+    </div>
+    <div style="text-align: center; min-height: 41px;">
+
+            <div class="mainColorDarkTextColor" style="
+                font-weight: bold;
+                padding-top: 5px;
+                padding-left: 16px;
+                padding-right: 16px;
+                text-align: left;
+                width: 100%;
+                height: 42px;
+                overflow: hidden;
+                font-size: 90%;
+                margin-top: 2px;">
+                <span ng-show="(item.typeStyle=='file')">{{item.name}}</span>
+                <span ng-show="(item.typeStyle=='link')">{{item.name}}</span>
+                <span ng-show="(item.typeStyle=='folder')">{{item.name}}</span>
+                <span ng-show="(item.typeStyle=='collection')" style="color: white;">{{item.name}}</span>
+            </div><div ng-bind-html="getInfoSubLineList(item)" style="font-size: {{(item.typeStyle=='collection') ? '80%' : '85%'}}; color:{{(item.typeStyle=='collection') ? 'white' : '#999999'}}; opacity: {{(item.typeStyle=='collection') ? '0.5' : '1'}}; height:47px; padding: 16px; padding-top: 8px; text-align: left;"></div>
+
+    </div>
+    <table width="100%" style="font-size: 95%;">
+        <tr>
+            <td width="50%">
+                <div on-tap="secondaryItemClick($event, item)" class="workspaceItemInfo mainColorDarkTextColor" style="
+                    padding:8px;
+                    text-align: left">
+                    <!-- <span ng-show="(item.typeStyle=='file')">HERUNTERLADEN</span>
+                    <span ng-show="((item.typeStyle=='link') || (item.typeStyle=='file'))">ÖFFNEN</span>
+                    <span ng-show="(item.typeStyle=='folder')">MEHR</span>
+                    -->
+                    <span ng-show="(item.typeStyle=='collection')" style="margin-left: 4px;color: white; opacity: 0.5;">
+                        <i class="icon icon-small ion-social-buffer" style="padding-left: 5px;"></i>
+                        {{item.childCollectionsCount}}
+                        <i class="icon icon-small ion-document" style="padding-left: 5px;"></i>
+                        {{item.childReferencesCount}}
+                    </span>
+                </div>
+            </td>
+            <td width="50%" style="text-align: center;">
+                <div ng-show="(item.typeStyle!='collection')" on-tap="menuItemClick($event, item)" class="workspaceItemInfo mainColorDarkTextColor" style="
+                    padding-right:8px;
+                    font-weight: bold;
+                    text-align: right;
+                    padding-right: 19px;
+                    font-size: 25px">
+                    <i class="icon icon-big ion-more"></i>
+                </div>
+                <div ng-show="(item.typeStyle=='collection')" class="workspaceItemInfo" style="color: white; text-align: left; opacity: 0.5;">
+
+                        <span ng-show="(item.scope=='EDU_ALL')"><i class="icon icon-small ion-ios-world-outline" style="padding-left: 5px;"></i>
+                        öffentlich</span>
+
+                       <span ng-show="(item.scope=='EDU_GROUPS')"><i class="icon icon-small ion-android-contacts" style="padding-left: 5px;"></i>
+                        Gruppe</span>
+
+                       <span ng-show="(item.scope=='MY')"><i class="icon icon-small ion-locked" style="padding-left: 5px;"></i>
+                        privat</span>
+
+                </div>
+            </td>
+        </tr>
+    </table>
+
+    </div>
+
+<!-- TILE VIEW (is folder) -->
+
+<div ng-if="((contentViewMode=='tiles') && (item.typeStyle!='unknown') && (item.typeStyle=='folder'))" class="list card workspaceItem tile-folder" style="margin-bottom: 0px;width: {{tileWidthPixel}}px; min-height: 45px; padding:0px; background-color:none;box-shadow: none; border-width: 1px; border-radius: 5px;" ng-class="{'selected-tile-big': item.isSelected, 'unselected-tile-big': !item.isSelected}">
+    
+    <div ng-show="multiSelectionMode" style="position: absolute; top: 12px; right: 10px; font-size: 250%; z-index: 100; background-color: white; height: 26px; margin-top: -3px; color: #315574;">
+        <i ng-show="!item.isSelected" class="icon ion-android-checkbox-outline-blank"></i>
+        <i ng-show="item.isSelected" class="icon ion-android-checkbox-outline"></i>
+    </div>
+
+    <table width="100%" height="45px">
+        <tr>
+            <td width="37px" style="
+            padding: 9px;
+            padding-right:4px;
+            color: #999;
+            vertical-align:middle;
+            font-size: 180%;">
+                <i class="icon ion-android-folder"></i>
+            </td>
+             <td width="*" style="padding-top:3px;padding-bottom:2px;vertical-align:middle;">
+                <div style="font-weight:bold;font-size:90%;color:#111;line-height:1.1;">
+                    {{smallfolderTileNameBreak(item.name)}}
+                </div>
+            </td>
+            <td width="18px" ng-show="!editFolderNotAllowed" on-tap="menuItemClick($event, item)" style="text-align:right;padding-right:10px;padding-top:5px;font-size: 180%; color:#b2b2b2;vertical-align:middle;">
+                <i class="icon ion-android-more-vertical"></i>
+            </td>        
+        </tr>    
+    </table>
+
+    </div>
+
+</div>

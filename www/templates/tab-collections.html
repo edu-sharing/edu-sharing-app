@@ -1,0 +1,187 @@
+<ion-view view-title="Workspace" style="background-color: #EEEEEE;">
+    <ion-content overflow-scroll="false" scrollbar-x="false" scrollbar-y="true" style="overflow: hidden;">
+
+        <!-- TABS  -->
+        <div ng-show="isRoot" class="tabs-striped tabs-top tabs-background-positive tabs-color-light" style="height:59px;">
+            <div class="tabs" style="height:59px;top:0px;">
+                <a class="tab-item" ng-class="selectedTab=='my' ? 'active' : ''" on-tap="pressedSelectorMy()" href="#">
+                    <span style="color:white;opacity:{{ selectedTab=='my' ? '1.0' : '0.5' }};">Meine</span>
+                </a>
+                <a class="tab-item" ng-show="showOrgaTab" ng-class="selectedTab=='orga' ? 'active' : ''" on-tap="pressedSelectorOrga()" href="#">
+                    <span style="color:white;opacity:{{ selectedTab=='orga' ? '1.0' : '0.5' }};">Orga</span>
+                </a>
+                <a class="tab-item" ng-class="selectedTab=='all' ? 'active' : ''" on-tap="pressedSelectorAll()" href="#">
+                    <span style="color:white;opacity:{{ selectedTab=='all' ? '1.0' : '0.5' }};">Alle</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- BREAD CRUMBS  -->
+        <table ng-show="!isRoot" width="100%" style="background-color: #98ABBA; min-height:59px;">
+            <tr>
+                <td width="*">
+                    <div style="
+                        padding-left: 8px;
+                        padding-top: 4px;
+                        padding-bottom: 4px;
+                        padding-right: 4px;
+                        border-bottom-width: 1px;
+                        border-bottom-color: #888;
+                        border-bottom-style: none;
+                        background-color: #315774;
+                        height: 59px;">
+                        <!--
+                        <div ng-repeat="crumb in breadCrumbs track by $index" on-tap="breadCrumbClick(crumb)" style="display: inline-block;margin-right: 3px;">
+                            <table>
+                                <tr>
+                                    <td style="vertical-align: top;">
+                                        <div class="crumb-collection">
+                                        <span ng-hide="($index==(breadCrumbs.length-1))" style="color:white;opacity:0.5;">{{crumb.name}}</span>    
+                                        <span ng-show="($index==(breadCrumbs.length-1))" style="color:white;">{{crumb.name}}</span>  
+                                        </div></td><td style="vertical-align: middle; padding-top: 9px; font-size: 17px;color:white;opacity:0.5;" ng-hide="($index==(breadCrumbs.length-1))"><i class="icon icon-small ion-chevron-right" style="padding-left: 5px;"></i>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                        -->
+                        <div on-tap="breadCrumbClick(breadCrumbs[breadCrumbs.length-1])" style="display: inline-block;margin-right: 3px;">
+                            <table>
+                                <tr>
+                                    <td style="vertical-align: top;">
+                                        <div class="crumb-collection">
+                                            <i class="icon icon-small ion-chevron-left" style="padding-right: 5px;color:white;"></i>
+                                            <span style="color:white;">{{breadCrumbs[breadCrumbs.length-1].name}}</span>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        </table>
+
+        <!-- COLLECTION DETAILS --> 
+
+        <div ng-show="((!error) && (!isRoot))" style="background-color: {{actualCollection.color}}; color: white;">
+            <table>
+                <tr>
+                    <td>
+                       <div style="
+                        margin:10px;
+                        margin-top: 5px;
+                        margin-bottom: 7px;
+                        margin-right: 18px;
+                        width: 50px;
+                        height: 50px;
+                        border-width: 2px;
+                        border-style: solid;
+                        border-radius: 40px;
+                        padding: 10px;
+                        padding-top: 5px;
+                        font-size: 35px;
+                        color: white;
+                        border-color: white;
+                        ">
+                        <i class="icon ion-social-buffer"></i>
+                     </div>
+                     <img ng-show="(actualCollection.previewUrl!=null)" src="{{actualCollection.previewUrl}}"  fallback-src="./img/transparent.gif" style="width: 70px;height: 63px;position: absolute;top: 59px;">
+                        
+                    </td>
+                    <td style="vertical-align: top;">
+                        <div style="
+                        margin-top: 8px;
+                        overflow: hidden;
+                        height: 20px;
+                        font-weight: bold;
+                        {{(actualCollection.description.length==0) ? 'margin-top:18px; font-size: 125%;' : ''}}
+                        ">
+                        {{actualCollection.title}}</div>
+                        <div style="
+                            font-size: 11px;
+                            height: 25px;
+                            line-height: 12px;
+                            overflow: hidden;
+                            margin-top: 0px;">
+                        {{actualCollection.description}}</div>
+                    </td>
+                </tr>    
+            </table>    
+        </div>  
+
+        <!-- EMPTY SCREEN ROOT -->
+        <div ng-show="empty" style="text-align: center; padding: 14px; font-size: 100%; color: #A8A8A8;">
+            <p ng-show="selectedTab=='orga'">Es gibt bisher keine von deinen Organisationen geteilten Sammlungen.</p>
+            <p ng-show="selectedTab=='all'">Es wurden bisher keine Sammlungen freigegeben.</p>
+            <div ng-show="selectedTab=='my'">
+
+                <img style="width: 110%;width: calc(100% + 30px); max-width: 600px;margin-left: -15px;" src="./img/intro-collections.png">
+
+                <div style="font-size:80%;margin-top:4px;margin-bottom:0px;color:black;font-weight: bold;">Tipp:</div>
+                <div style="font-size:100%;width:80%;text-align:center;margin-left:auto;margin-right:auto;">Sammlungen kannst du erstellen, indem du auf das "+" rechts oben drückst.</div>
+                
+                <button class="button button-block darkBackLightText-Button" ng-click="createNewCollection()" style="
+                    width: 90%;
+                    max-width: 550px;
+                    border-width:0px; 
+                    margin-left:auto;
+                    margin-right: auto;
+                    display: inline-block;
+                    font-size:100%;
+                    font-weight: 500;">
+                    ERSTE SAMMLUNG ERSTELLEN
+                </button>
+            </div>
+        </div>
+
+        <!-- ERROR SCREEN -->
+        <div ng-show="error.length>0" style="text-align: center; color: #A8A8A8; padding: 10px; padding-top: 14px; font-size: 100%;">
+            <p>{{error}}</p>
+            <button class="button button-light" on-tap="reload()">
+                Erneut Laden
+            </button>
+        </div>
+
+        <div ng-show="(!error) && (!isRoot) && (collections.length>0)" style="
+            font-size: 12px;
+            color: #5c5c5c;
+            padding: 3px;
+            margin-top: 10px;
+            padding-left: 17px;">
+            Sammlungen in der Sammlung
+        </div>
+
+        <!-- COLLECTIONS -->
+        <div ng-show="(collections.length>0)" class='centerWhenPotrait' style="display: table;min-width:350px;" ng-cloak>
+
+            <div item-tile-big ng-repeat="item in collections" ng-class="contentViewMode=='tiles' ? 'tile-container' : 'list-container'">
+            </div>
+
+        </div>
+
+        <div ng-show="(!error) && (!isRoot)" style="
+            font-size: 12px;
+            color: #5c5c5c;
+            padding: 3px;
+            padding-left: 17px;
+            margin-top: 10px">
+            Objekte der Sammlung
+        </div>
+        
+
+        <!-- CONTENT -->
+        <div class='centerWhenPotrait' style="display: table;width: 100%;" ng-cloak>
+
+            <div item-tile-big ng-repeat="item in contentReferences" ng-class="contentViewMode=='tiles' ? 'tile-container' : 'list-container'" context="collections">
+            </div>
+
+            <div ng-show="(!isRoot) && (contentReferences.length==0)" style="text-align: center; padding: 14px; font-size: 100%; color: #A8A8A8;">
+                <div class="centerWhenPotraitInvert" >Diese Sammlung enthält bisher keine Materialien.</div>
+                <div ng-show="headerShowNewCollection" on-tap="goSearch()" style="margin-top:16px; font-size:120%; color: #315774;" class="centerWhenPotraitInvert">ZUR SUCHE</div>
+            </div>    
+
+        </div>
+        
+
+    </ion-content>
+</ion-view>

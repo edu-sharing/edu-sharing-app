@@ -1,0 +1,14 @@
+{
+  "name": "edu-sharing",
+  "app_id": "org.edusharing.app",
+  "gulpStartupTasks": [
+    "sass",
+    "watch"
+  ],
+  "watchPatterns": [
+    "www/**/*",
+    "!www/lib/**/*",
+    "scss/**/*"
+  ],
+  "type": "ionic1"
+}

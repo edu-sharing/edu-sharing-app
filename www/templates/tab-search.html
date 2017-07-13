@@ -1,0 +1,41 @@
+<ion-view view-title="Suche" style="background-color: #EEEEEE;">
+    <ion-content overflow-scroll="false" scrollbar-x="false" scrollbar-y="true" style="overflow: hidden;">
+
+        <!-- LOADING SCREEN -->
+        <div ng-show="loading" style="text-align: center; padding: 14px; font-size: 100%; color: #A8A8A8;">
+            ... lade ...
+        </div>
+
+        <!-- INFO SCREEN -->
+        <div ng-show="startInfo" style="text-align: center; padding: 14px; font-size: 100%; color: #A8A8A8;">
+            <p>Bitte Suchwort eingeben, um nach Materialien zu suchen.</p>
+        </div>
+
+        <!-- EMPTY SCREEN -->
+        <div ng-show="empty" style="text-align: center; padding: 14px; font-size: 100%; color: #A8A8A8;">
+            <p>keine Materialien gefunden für '{{actualSearchWord}}'</p>
+        </div>
+
+        <!-- ERROR SCREEN -->
+        <div ng-show="error.length>0" style="text-align: center; color: #A8A8A8; padding: 10px; padding-top: 14px; font-size: 100%;">
+            <p>{{error}}</p>
+            <button class="button button-light" on-tap="refreshDataFromServer()">
+                Erneut Laden
+            </button>
+        </div>
+
+        <!-- DATA SCREEN -->
+        <div ng-show="!loading" style="min-width:350px;" ng-class="contentViewMode=='tiles' ? 'centerWhenPotrait' : ''" ng-cloak>
+
+            <!-- THE TILES IN REPEAT LOOP -->
+            <ion-list>
+                    <div item-tile-big ng-repeat="item in nodeData.nodes" ng-class="contentViewMode=='tiles' ? 'tile-container' : 'list-container'" on-hold="longPressItem(item)" context="search">
+                    </div>
+            </ion-list>
+
+            <ion-infinite-scroll ng-show="moreResultsAvailable" on-infinite="loadMore()" distance="5%"></ion-infinite-scroll>
+
+        </div>
+
+  </ion-content>
+</ion-view>

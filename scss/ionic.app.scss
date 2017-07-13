@@ -1,0 +1,206 @@
+/*
+To customize the look and feel of Ionic, you can override the variables
+in ionic's _variables.scss file.
+
+For example, you might change some of the default colors:
+*/
+
+$light:                           white !default;
+$stable:                          #264561 !default;
+$positive:                        blue !default;
+$calm:                            cyan !default;
+$balanced:                        green !default;
+$energized:                       #ffc900 !default;
+$assertive:                       #ef473a !default;
+$royal:                           #886aea !default;
+$dark:                            #000000 !default;
+
+$mainColorDark:                   rgb(49, 87, 116) !default;
+$mainColorDark-active:            #1E688A !default;
+$mainColorLight:                  #ffffff !default;
+$mainColorLight-active:           #e9e9e9 !default;
+
+// The path for our ionicons font files, relative to the built CSS in www/css
+$ionicons-font-path: "../lib/ionic/fonts" !default;
+
+// Include all of Ionic
+@import "www/lib/ionic/scss/ionic";
+
+// ----------- Own Styles --------------
+
+.darkBackLightText {
+  background-color: $mainColorDark;
+  color: $mainColorLight;
+}
+
+.darkBackLightText-Button {
+  background-color: $mainColorDark;
+  color: $mainColorLight;
+}
+
+.darkBackLightText-Button:active {
+  background-color: $mainColorDark-active;
+  color: $mainColorLight-active;
+}
+
+.darkBackLightText-Button:hover {
+  background-color: $mainColorDark-active;
+  color: $mainColorLight-active;
+}
+
+.lightBackDarkText {
+  background-color: $mainColorLight;
+  color: $mainColorDark;
+}
+
+.lightBackDarkText-Button {
+  background-color: $mainColorLight;
+  color: $mainColorDark;
+}
+
+.lightBackDarkText-Button:active {
+  background-color: $mainColorLight-active;
+  color: $mainColorDark-active;
+}
+
+.lightBackDarkText-Button:hover {
+  background-color: $mainColorLight-active;
+  color: $mainColorDark-active;
+}
+
+.mainColorDarkBackground {
+  background-color: $mainColorDark;
+  border-color: $mainColorDark;
+}
+
+.mainColorDarkBackground-Button {
+  background-color: $mainColorDark;
+}
+
+.mainColorDarkBackground-Button:active {
+  background-color: $mainColorDark-active;
+}
+
+.mainColorDarkBackground-Button:hover {
+  background-color: $mainColorDark-active;
+}
+
+.mainColorDarkTextColor {
+  color: $mainColorDark;
+}
+
+.mainColorDarkTextColor-Border {
+  border-color: $mainColorDark;
+}
+
+.mainColorDarkTextColor-Important {
+  color: $mainColorDark !important;
+}
+
+.mainColorLightBackground {
+  background-color: $mainColorLight;
+}
+
+.mainColorLightBackground-Button {
+  background-color: $mainColorLight;
+}
+
+.mainColorLightBackground-Button:active {
+  background-color: $mainColorLight-active;
+}
+
+.mainColorLightBackground-Button:hover {
+  background-color: $mainColorLight-active;
+}
+
+.mainColorLightTextColor {
+  color: $mainColorLight;
+}
+
+.mainColorLightTextColor-Important {
+  color: $mainColorLight !important;
+}
+
+.textDarkGray {
+  color: darkgray;
+}
+
+ion-header-bar  {
+  color: $mainColorLight !important;
+}
+
+#side-menu-header {
+  background-color: $mainColorDark;
+}
+
+.item-complex .item-content {
+  background-color: $light;
+}
+
+#side-menu {
+  background-color: $light;
+}
+
+.button-icon .icon {
+  color: $light;
+}
+
+#side-menu-profile-name {
+  color: $light;
+}
+
+#side-menu-profile-link {
+  color: $light;
+}
+
+a:-webkit-any-link {
+  color: inherit !important;
+}
+
+#side-menu-profile-link:visited {
+  color: $mainColorDark;
+}
+
+.popup-buttons .button-positive {
+  background-color: $mainColorDark;
+  border-color: $mainColorDark;
+}
+
+.popup-buttons .button-positive .activated {
+  background-color: $mainColorDark-active !important;
+  border-color: $mainColorDark-active !important;
+}
+
+.popup-buttons .button-positive .activated:active {
+  background-color: $mainColorDark-active !important;
+  border-color: $mainColorDark-active !important;
+}
+
+.popup-buttons .button-positive .activated:hover {
+  background-color: $mainColorDark-active !important;
+  border-color: $mainColorDark-active !important;
+}
+
+.popup-buttons .button-positive:active {
+  background-color: $mainColorDark-active !important;
+  border-color: $mainColorDark-active !important;
+}
+
+.popup-buttons .button-positive:hover {
+  background-color: $mainColorDark-active !important;
+  border-color: $mainColorDark-active !important;
+}
+
+.popup-buttons .button-positive:focus {
+  background-color: $mainColorDark-active !important;
+  border-color: $mainColorDark-active !important;
+}
+
+.nav-bar-block ion-header-bar {
+  background-color: $mainColorDark !important;
+}
+
+.bar.bar-stable {
+  background-color: $mainColorDark;
+  border-color: $mainColorDark;
+}
