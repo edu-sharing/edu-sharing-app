@@ -133,7 +133,6 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.controllerWo
     System.pushWebIntent({type: "android.intent.extra.TEXT", url: "", extra: "https://www.tagesschau.de/ausland/usa-faktenpruefer-101.html"});
     */
 
-
     // support native BACK button --> http://ionicframework.com/docs/api/service/$ionicPlatform/
     // send as broadcast to all sub scopes
     $ionicPlatform.registerBackButtonAction(function(e) {
