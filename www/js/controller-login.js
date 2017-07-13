@@ -58,27 +58,6 @@ angular.module('starter.controllerLogin', [])
                 $scope.selectSeverDialog();
             });
 
-            /*
-            // simulated data from the internet
-            $timeout(function(){
-                $scope.serverDirectory = [
-                {
-                    'name' : 'Metaventis Testserver HTTPS',
-                    'url'  : 'https://appserver7.metaventis.com/edu-sharing/'
-                },
-                {
-                    'name' : 'Metaventis Testserver 7140',
-                    'url'  : 'http://appserver7.metaventis.com:7140/edu-sharing/'
-                },           
-                {
-                    'name' : 'Metaventis Testserver 7137',
-                    'url'  : 'http://appserver7.metaventis.com:7137/edu-sharing/'
-                }
-                ];
-                $scope.selectSeverDialog();
-            },3000);
-            */
-
         };
 
         $scope.selectSeverDialog = function() {

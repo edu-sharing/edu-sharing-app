@@ -131,7 +131,8 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.controllerWo
     /* for simulating WebIntent on development in browser
     console.warn("running fake webintent - remove after testing");
     System.pushWebIntent({type: "android.intent.extra.TEXT", url: "", extra: "https://www.tagesschau.de/ausland/usa-faktenpruefer-101.html"});
-     */
+    */
+
 
     // support native BACK button --> http://ionicframework.com/docs/api/service/$ionicPlatform/
     // send as broadcast to all sub scopes
@@ -238,17 +239,6 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.controllerWo
                   }
               }
           })
-          /*
-          .state('app.share', {
-              url: '/share',
-              views: {
-                  'menuContent' : {
-                      templateUrl: 'templates/tab-share.html',
-                      controller: 'ShareCtrl'
-                  }
-              }
-          })
-          */
           .state('app.workspace', {
               url: '/workspace',
               views: {
