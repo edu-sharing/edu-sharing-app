@@ -816,6 +816,10 @@ angular.module('starter.services', [])
             );
         };
 
+    /*  DEACTIVATED because download is now handled by render service
+        needs plugins:
+        - https://github.com/apache/cordova-plugin-file-transfer
+        - https://github.com/SpiderOak/FileViewerPlugin
         var downloadContent = function(item) {
             try {
                 // https://github.com/apache/cordova-plugin-file-transfer
@@ -902,6 +906,7 @@ angular.module('starter.services', [])
                 alert("FAIL DOWNLOAD: "+e);
             }
         };
+        */
 
         var prepareData = function (data, numberOfValidNodesCallback) {
 
@@ -945,7 +950,8 @@ angular.module('starter.services', [])
                 deleteNextItem(itemArray, then);
             },
             downloadItem: function(item, then) {
-                downloadContent(item, then);
+                alert("DEACTIVATED: downloadContent in services.js");
+                //downloadContent(item, then);
             },
             openItemsEditDialog: function(scope, item) {
                 return editItemsDialog(scope, item);
