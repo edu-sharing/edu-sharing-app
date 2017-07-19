@@ -12,9 +12,9 @@ Make sure basic frameworks are installed:
 
 When you have NodeJS installed, you just need to run:
 
-`run npm install -g cordova ionic`
+`npm install -g cordova ionic`
 
-This will install also cordova for you.
+This will install ionic and also cordova for you.
 
 ## Run Local in Browser for Development
 
