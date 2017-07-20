@@ -52,6 +52,11 @@ Before final building check if you have all requirements for Android and iOS ins
 
 `cordova requirements`
 
+Basic requirements should be:
+* Java 1.8.x
+* Android SDK Version : Android 7.1.1 (APi 25)
+* Gradle  (https://gradle.org/install/)
+
 _Note that if you build on Windows - you should probably remove the iOS platform from the configuration with `ionic cordova platform remove ios` to avoid error messages during build. Please remember to not commit a configuration without iOS later on._
 
 Now you should be able to build the Android or iOS app:
