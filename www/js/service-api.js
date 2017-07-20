@@ -3,7 +3,7 @@ angular.module('starter.serviceApi', [])
 /*
  * Providing access to the edu-sharing API.
  */
-.factory('EduApi', ['Base64', '$http', function(Base64, $http) {
+.factory('EduApi', ['Base64', '$http', '$timeout', function(Base64, $http, $timeout) {
 
   // set minimum version of api
   var minApiVersionMajor = 1;
@@ -24,6 +24,8 @@ angular.module('starter.serviceApi', [])
   var oAuthLastRefresh = 0;
   var oAuthRefreshCallback = null;
   var userSessionDataRefreshListener = null;
+
+  var refreshingTokenIsRunning = 0;
 
   /*
    * PRIVATE METHODS
@@ -155,7 +157,10 @@ angular.module('starter.serviceApi', [])
   };
 
   // is used within this service to wrap API calls
-  var makeSureOAuthTokensAreFresh = function(onError, whenDone) {
+  // make sure just running once
+  var makeSureOAuthTokensAreFresh = function(onError, whenDone, optionalTag) {
+
+      //console.log("called makeSureOAuthTokensAreFresh ("+optionalTag+")");
 
       // check if oAuth was ever set
       if (oAuthExpiresIn===0) {
@@ -164,19 +169,45 @@ angular.module('starter.serviceApi', [])
         return;
       }
 
+      // the main works of the function - after sync with sharing extension token sync
       var afteriOSsync = function () {
 
           // check if oAuth access token is still valid
           var tokensValidUntil = oAuthLastRefresh + (oAuthExpiresIn * 1000) - 10000;
-          //console.log("makeSureOAuthTokensAreFresh: token valid until ("+JSON.stringify(new Date(tokensValidUntil))+")");
+          
+          //console.log("makeSureOAuthTokensAreFresh: token("+oAuthAccessToken+") valid until ("+JSON.stringify(new Date(tokensValidUntil))+")");
+
           if (tokensValidUntil > (new Date().getTime())) {
               // ok access token should be valid - done
+              //console.log("AUTH OK");
               whenDone();
               return;
           }
 
-          // DO REFRESH OF OAUTH TOKENS
+          // OAUTH TOKENS NEED REFRESH
 
+          // check if refresh is already in process
+          if (refreshingTokenIsRunning > 0) {
+
+              // check if running refresh is outdated (just in case)
+              var refreshRunningTime = new Date().getTime() - refreshingTokenIsRunning;
+              if (refreshRunningTime<5000) {
+                  //console.log("WAIT 1sec for tokemn refresh on other request to finish - refreshRunningTime("+refreshRunningTime+") ... ");
+                  $timeout(function(){
+                      makeSureOAuthTokensAreFresh(onError, whenDone, optionalTag)
+                  },1000);
+                  return;
+              } else {
+                  console.log(" if first refresh request takes more than 5 secs consider it failed - refreshRunningTime("+refreshRunningTime+") ... ");
+              }
+
+          }
+
+          // remember when refreshing of token started
+          refreshingTokenIsRunning = new Date().getTime();
+
+          // DO REFRESH OF OAUTH TOKENS
+          console.log("REFRESH TOKEN -->");
           var reducedBaseUrl = baseUrl.substr(0, baseUrl.length - 5);
           var config = getBasicConfig();
           config.method = 'POST';
@@ -189,10 +220,13 @@ angular.module('starter.serviceApi', [])
           var errorCallback = function (response) {
               console.log("makeSureOAuthTokensAreFresh: FAIL refresh token:");
               console.dir(response);
+              refreshingTokenIsRunning = 0;
               onError("fail on refresh token");
           };
           var successCallback = function (response) {
               if ((typeof response !== "undefined") && (typeof response.data !== "undefined")) {
+
+                  console.log("oAuth REFRESH done newToken("+response.data.access_token+")");
 
                   // remember new tokens local
                   oAuthAccessToken = response.data.access_token;
@@ -221,9 +255,11 @@ angular.module('starter.serviceApi', [])
                   }
 
                   // now execute the following task
+                  refreshingTokenIsRunning = 0;
                   whenDone();
 
               } else {
+                  refreshingTokenIsRunning = 0;
                   onError("fail on refresh token return data");
               }
           };
@@ -478,7 +514,7 @@ angular.module('starter.serviceApi', [])
               // DO REQUEST
               $http(config).then(successCallback, errorCallback);
 
-          });
+          }, "createImageNodeIntern");
 
   };
 
@@ -653,7 +689,7 @@ angular.module('starter.serviceApi', [])
               // DO REQUEST
               $http(config).then(successCallback, errorCallback);
 
-          });
+          },"getApiInfo");
 
       },
       getChildNodes : function(nodeId, win, fail, maxItems, skipCount) {
@@ -702,7 +738,7 @@ angular.module('starter.serviceApi', [])
               // DO REQUEST
               $http(config).then(successCallback, errorCallback);
 
-          });
+          },"getChildNodes");
 
       },
       searchNodes : function(keyword, maxItems, skipCount, win, fail) {
@@ -739,7 +775,7 @@ angular.module('starter.serviceApi', [])
               // DO REQUEST
               $http(config).then(successCallback, errorCallback);
 
-          });
+          },"searchNodes");
 
       },      
       getCollections : function(parentId, win, fail, scopeStr) {
@@ -800,7 +836,7 @@ angular.module('starter.serviceApi', [])
               // DO REQUEST
               $http(config).then(successCallback, errorCallback);
 
-          });
+          },"getCollections");
 
       },
       getCollection : function(collectionId, win, fail) {
@@ -833,7 +869,7 @@ angular.module('starter.serviceApi', [])
               // DO REQUEST
               $http(config).then(successCallback, errorCallback);
 
-          });
+          },"getCollection");
 
       },
       getUsersOrganization : function(win, fail) {
@@ -864,7 +900,7 @@ angular.module('starter.serviceApi', [])
               // DO REQUEST
               $http(config).then(successCallback, errorCallback);
 
-          });
+          },"getUsersOrganization");
 
       },
       serachCollections : function(query, maxItems, skipCount, win, fail) {
@@ -901,7 +937,7 @@ angular.module('starter.serviceApi', [])
               // DO REQUEST
               $http(config).then(successCallback, errorCallback);
 
-          });
+          },"serachCollections");
 
       },
       createCollection : function(repoId, parentCollectionId, title, description, scope, color, win, fail) {
@@ -933,7 +969,7 @@ angular.module('starter.serviceApi', [])
               // DO REQUEST
               $http(config).then(successCallback, errorCallback);
 
-          });
+          },"createCollection");
 
       },
       updateCollection : function(collectionObj, win, fail) {
@@ -971,7 +1007,7 @@ angular.module('starter.serviceApi', [])
               // DO REQUEST
               $http(config).then(successCallback, errorCallback);
 
-          });
+          },"updateCollection");
 
       },
       deleteCollection : function(collectionObj, win, fail) {
@@ -1004,7 +1040,7 @@ angular.module('starter.serviceApi', [])
               // DO REQUEST
               $http(config).then(successCallback, errorCallback);
 
-          });
+          },"deleteCollection");
 
       },
       addContentToCollection : function(repoId, collectionId, nodeId, win, fail) {
@@ -1047,7 +1083,7 @@ angular.module('starter.serviceApi', [])
               // DO REQUEST
               $http(config).then(successCallback, errorCallback);
 
-          });
+          },"addContentToCollection");
 
       },
       removeContentFromCollection : function(repoId, collectionId, nodeId, win, fail) {
@@ -1078,7 +1114,7 @@ angular.module('starter.serviceApi', [])
               // DO REQUEST
               $http(config).then(successCallback, errorCallback);
 
-          });
+          },"removeContentFromCollection");
 
       },
       getTitleFromHTMLWebsite : function(url, win, fail) {
@@ -1131,7 +1167,7 @@ angular.module('starter.serviceApi', [])
               // DO REQUEST
               $http(config).then(successCallback, errorCallback);
 
-          });
+          },"getNodePersmission");
       },
       getUserSessionInfo : function(win, fail) {
             getUserSessionInfoIntern(win,fail);
@@ -1163,7 +1199,7 @@ angular.module('starter.serviceApi', [])
               // DO REQUEST
               $http(config).then(successCallback, errorCallback);
 
-          });
+          },"getWebsiteInfo");
       },
       createFolder : function(parentNodeId, name, win, fail) {
 
@@ -1200,7 +1236,7 @@ angular.module('starter.serviceApi', [])
 
               // DO REQUEST
               $http(config).then(successCallback, errorCallback);
-          });
+          },"createFolder");
 
       },
       createLinkNode : function(parentNodeId, name, link, tagStrArray, win, fail) {
@@ -1243,7 +1279,7 @@ angular.module('starter.serviceApi', [])
 
               // DO REQUEST
               $http(config).then(successCallback, errorCallback);
-            });
+            },"createLinkNode");
           };
           createLinkNodeProc();
       },
@@ -1279,7 +1315,7 @@ angular.module('starter.serviceApi', [])
 
               // DO REQUEST
               $http(config).then(successCallback, errorCallback);
-            });
+            },"createFolderNode");
           };
           createLinkNodeProc();
       },
@@ -1313,7 +1349,7 @@ angular.module('starter.serviceApi', [])
 
               // DO REQUEST
               $http(config).then(successCallback, errorCallback);
-          });
+          },"getOwnUserProfile");
 
       },
       getRenderSnippetForContent : function(contentId, win, fail) {
@@ -1344,7 +1380,7 @@ angular.module('starter.serviceApi', [])
 
               // DO REQUEST
               $http(config).then(successCallback, errorCallback);
-          });
+          },"getRenderSnippetForContent");
 
       }, 
       getNode : function(repoid, nodeid, win, fail) {
@@ -1389,7 +1425,7 @@ angular.module('starter.serviceApi', [])
 
               // DO REQUEST
               $http(config).then(successCallback, errorCallback);
-          });
+          },"getNode");
 
       },
       deleteNode : function(nodeID, win, fail) {
@@ -1419,7 +1455,7 @@ angular.module('starter.serviceApi', [])
 
               // DO REQUEST
               $http(config).then(successCallback, errorCallback);
-          });
+          },"deleteNode");
 
       },  
       updateMetadataNode : function(nodeID, propertiesObject, win, fail) {
@@ -1450,7 +1486,7 @@ angular.module('starter.serviceApi', [])
 
               // DO REQUEST
               $http(config).then(successCallback, errorCallback);
-          });
+          },"updateMetadataNode");
 
       },  
     simpleGetHttp : function(url, win, fail) {

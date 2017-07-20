@@ -202,7 +202,7 @@ angular.module('starter.controllerWorkspace', [])
                     $scope.nodeData = Toolbox.afterProcessNodeDataFromServer(data, function(numberOfValidNodes){
                          $scope.empty=(numberOfValidNodes===0);
                     });
-                    console.log("NodeData",$scope.nodeData);
+                    //console.log("NodeData",$scope.nodeData);
                     for (var i=0; i < $scope.nodeData.nodes.length; i++) {
                         if ($scope.nodeData.nodes[i].typeStyle==="folder") {
                         $scope.nodeData.folders.push( $scope.nodeData.nodes[i] );
@@ -211,14 +211,14 @@ angular.module('starter.controllerWorkspace', [])
                         }    
                     }
                     $ionicLoading.hide();
-                    if (win!==null) win();
+                    if ((typeof win !== "undefined") && (win!==null)) win();
 
                     // load parent node data to determine if user is allowed to edit this folder
                     EduApi.getNode("-home-",$scope.actualNodeId, function(win){
                         if (typeof win.access !== "undefined") {
                             var allowedToEdit = false;
                             for (var i=0;i<win.access.length;i++) {
-                                console.log(win.access[i]);
+                                //console.log(win.access[i]);
                                 if (win.access[i]==="Write") allowedToEdit = true;
                             }
                             $rootScope.editFolderNotAllowed = !allowedToEdit;
