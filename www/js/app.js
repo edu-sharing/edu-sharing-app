@@ -15,6 +15,20 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.controllerWo
 
   $ionicPlatform.ready(function() {
 
+
+      // dynamic setting of tile width - so that on
+      // portrait view always two tiles in a row
+      var w = window,
+          d = document,
+          e = d.documentElement,
+          g = d.getElementsByTagName('body')[0],
+          screenX = w.innerWidth || e.clientWidth || g.clientWidth
+      $rootScope.tileWidthPixel = 160;
+      //if (System.isNativeIOS()) {
+      if (screenX<=420) {
+        $rootScope.tileWidthPixel = Math.round((screenX - 40) / 2);
+      }
+
     // provide app version set in config.xml
     $rootScope.appVersion = "n/a";
     if (typeof cordova !== "undefined") {

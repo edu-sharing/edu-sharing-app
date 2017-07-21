@@ -26,9 +26,6 @@ angular.module('starter.controllerWorkspace', [])
 
     $scope.progress = 0;
 
-    $scope.tileWidthPixel = 160;
-    if (System.isNativeIOS()) $scope.tileWidthPixel = 143;
-
     $scope.breadCrumbs = [];
 
     $log.debug("WorkspaceCtrl");

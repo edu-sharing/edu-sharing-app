@@ -1,6 +1,6 @@
 {
     "name": "edu-sharing",
-    "version": "1.0.6",
+    "version": "1.0.7",
     "description": "edu-sharing app",
     "dependencies": {
         "com.borismus.webintent": "git+https://github.com/rootzoll/cordova-webintent.git",

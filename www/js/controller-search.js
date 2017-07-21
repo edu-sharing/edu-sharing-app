@@ -24,9 +24,6 @@ angular.module('starter.controllerSearch', [])
 
     $scope.breadCrumbs = [];
 
-    $scope.tileWidthPixel = 160;
-    if (System.isNativeIOS()) $scope.tileWidthPixel = 143;
-
     // BACK button receiver
     $scope.onBack = function() {
         if ($rootScope.actionSheet) return;

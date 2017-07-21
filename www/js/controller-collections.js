@@ -17,9 +17,6 @@ angular.module('starter.controllerCollections', [])
 
     $scope.showOrgaTab = false;
 
-    $scope.tileWidthPixel = 160;
-    if (System.isNativeIOS()) $scope.tileWidthPixel = 143;
-
     $scope.onBack = function() {
         if ($rootScope.actionSheet) return;
         console.log("Collections Back Button");
