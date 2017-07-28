@@ -464,7 +464,7 @@ angular.module('starter.controllerCollectionAdd', [])
     // 2. store content in collection
     $scope.choosedCollection = function(collectionId) {
 
-        console.log("choosedCollection");
+        console.log("choosedCollection ("+collectionId+")");
 
         // init parameters
         if (typeof collectionId === "undefined") collectionId = $scope.selectedCollectionId;
@@ -479,7 +479,9 @@ angular.module('starter.controllerCollectionAdd', [])
         }
 
         // for external content store as node first
-        if ($scope.webIntent!==null) {
+        if ($scope.webIntent!=null) {
+
+            console.log("webintent content - save in inbox first");
 
             // remember collection id to put in later
             $scope.selectedCollectionId = collectionId;
