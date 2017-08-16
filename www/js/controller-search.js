@@ -27,7 +27,7 @@ angular.module('starter.controllerSearch', [])
     // BACK button receiver
     $scope.onBack = function() {
         if ($rootScope.actionSheet) return;
-        console.log("Searcg Back Button");
+        //console.log("Search Back Button");
         $scope.back();
     };
     $scope.onBackUnbind = $scope.$on('button:back',$scope.onBack);
@@ -153,7 +153,7 @@ angular.module('starter.controllerSearch', [])
         EduApi.searchNodes(data, $scope.loadPerBatch , $scope.actualSkipCount, function(data) {
             // WIN
             $scope.actualSkipCount = $scope.loadPerBatch ;
-            $scope.moreResultsAvailable = (data.nodes.length>=$scope.loadPerBatch );
+            $scope.moreResultsAvailable = (data.pagination.total>(data.pagination.from+data.pagination.count));
 
             $scope.nodeData = Toolbox.afterProcessNodeDataFromServer(data, function(numberOfValidNodes){
                 $scope.empty=(numberOfValidNodes===0);
@@ -242,16 +242,20 @@ angular.module('starter.controllerSearch', [])
     };
 
     $scope.loadMore = function() {
+
+        //console.log("Load More scope.moreResultsAvailable("+$scope.moreResultsAvailable+") scope.empty("+$scope.empty+")");
+
         if (($scope.empty) || (!$scope.moreResultsAvailable)) {
             $timeout(function(){
                 $scope.$broadcast('scroll.infiniteScrollComplete');
             }, 500);
             return;
         }
+
         EduApi.searchNodes($scope.actualSearchWord, $scope.loadPerBatch , $scope.actualSkipCount, function(data) {
             // WIN
             $scope.actualSkipCount += $scope.loadPerBatch ;
-            $scope.moreResultsAvailable = (data.nodes.length>=$scope.loadPerBatch );
+            $scope.moreResultsAvailable = (data.pagination.total>(data.pagination.from+data.pagination.count));
 
             var loadingResult = Toolbox.afterProcessNodeDataFromServer(data, function(){});
 
