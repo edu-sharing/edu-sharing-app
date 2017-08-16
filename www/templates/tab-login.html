@@ -25,13 +25,13 @@
                             <span class="input-label lightBackDarkText" style="width: 35px;font-size: 150%;">
                                 <i class="icon ion-android-person textDarkGray"></i>
                             </span>
-                            <input type="text" ng-model="loginUser" placeholder="Benutzername" ng-keydown="passwordOnKey($event, loginUser, loginPassword, loginServer)" ng-focus="inputFocus(true)" class="textDarkGray" focus-me="{{focus=='user'}}">
+                            <input type="text" id="login-username" ng-model="loginUser" placeholder="Benutzername" ng-keydown="passwordOnKey($event, loginUser, loginPassword, loginServer)" ng-focus="inputFocus(true)" class="textDarkGray" focus-me="{{focus=='user'}}">
                         </label>
                         <label class="item item-input {{passAnimationPulsateSimple ? 'animationPulsateSimple' : '';}}" style="padding-bottom: 8px;padding-top: 8px;">
                             <span class="input-label lightBackDarkText" style="width: 35px;font-size: 150%;">
                                 <i class="icon ion-android-lock textDarkGray"></i>
                             </span>
-                            <input type="password" ng-model="loginPassword" placeholder="Passwort" ng-keydown="passwordOnKey($event, loginUser, loginPassword, loginServer)" 
+                            <input type="password" id="login-password" ng-model="loginPassword" placeholder="Passwort" ng-keydown="passwordOnKey($event, loginUser, loginPassword, loginServer)"
                             ng-focus="inputFocus(true)" focus-me="{{focus=='password'}}">
                         </label>
                         <label class="item item-input {{serverAnimationPulsateSimple ? 'animationPulsateSimple' : '';}}" style="border-bottom-color:white; padding-top:12px;">
