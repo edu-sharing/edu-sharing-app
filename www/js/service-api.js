@@ -1170,7 +1170,11 @@ angular.module('starter.serviceApi', [])
           },"getNodePersmission");
       },
       getUserSessionInfo : function(win, fail) {
+
+          makeSureOAuthTokensAreFresh(fail, function() {
             getUserSessionInfoIntern(win,fail);
+          }, "getUserSessionInfo");
+
       },
       getWebsiteInfo : function(url, win, fail) {
           makeSureOAuthTokensAreFresh(fail, function() {
