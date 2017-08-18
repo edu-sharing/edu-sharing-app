@@ -1199,11 +1199,22 @@ angular.module('starter.services', [])
         },
 
         hasToolPermission : function(permissionStr) {
-            if (sessionData === null) return false;
-            if ((typeof sessionData.toolPermissions === "undefined") || (sessionData.toolPermissions == null)) return false;
+            if (sessionData === null) {
+                console.log("sessionData === null");
+                return false;
+            }
+            if (typeof sessionData.toolPermissions === "undefined") {
+                console.log("typeof sessionData.toolPermissions === \"undefined\"");
+                return false;
+            }
+            if (sessionData.toolPermissions == null) {
+                console.log("sessionData.toolPermissions == null"); // !!!
+                return false;
+            }
             for (var i=0; i<sessionData.toolPermissions.length; i++) {
                 if (sessionData.toolPermissions[i]===permissionStr) return true;
             }
+            console.log("not found ("+permissionStr+")");
             return false;
         },
 

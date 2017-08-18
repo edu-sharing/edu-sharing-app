@@ -138,10 +138,6 @@ angular.module('starter.controllerCollectionEdit', [])
             return;
         }
 
-        // check if user is allowed to set group/public scope
-        $scope.allowSetScope = Account.hasToolPermission("TOOLPERMISSION_INVITE");
-        if (!$scope.allowSetScope) $scope.selectedTab = "MY";
-
         // BACK button receiver
         $scope.onBackUnbind = $scope.$on('button:back',$scope.onBack);
 
@@ -149,21 +145,46 @@ angular.module('starter.controllerCollectionEdit', [])
         $scope.parentId = $stateParams.second;
         if ($scope.parentId === 'null') $scope.parentId = null;
 
-        if ($scope.collectionId!=='0') {
+        var checkScope = function() {
 
-            $ionicLoading.show({
-                template: '<img src="./img/spinner.gif">'
+            EduApi.getUserSessionInfo(function(sessionData){
+                // WIN
+
+                // store session data in account
+                JSON.stringify(sessionData);
+                Account.setSessionData(sessionData);
+
+                // check if user is allowed to set group/public scope
+                $scope.allowSetScope = Account.hasToolPermission("TOOLPERMISSION_INVITE");
+                if (!$scope.allowSetScope) $scope.selectedTab = "MY";
+
+                $ionicLoading.hide();
+
+            }, function(){
+                // FAIL
+                $ionicLoading.hide();
+                console.warn("FAILED LOADING SESSION DATA");
+                $scope.onBack();
             });
+
+        };
+
+        $ionicLoading.show({
+            template: '<img src="./img/spinner.gif">'
+        });
+
+        if ($scope.collectionId!=='0') {
 
             EduApi.getCollection($scope.collectionId, function(data){
                 // WIN
 
-                $ionicLoading.hide();
                 $scope.loadedCollection = data;
 
                 $scope.title = data.title;
                 $scope.description = data.description;
                 $scope.selectedTab = data.scope;
+
+                checkScope();
 
             }, function(e){
                 // FAIL
@@ -171,7 +192,12 @@ angular.module('starter.controllerCollectionEdit', [])
                 console.warn("FAILED LOADING COLLECTION("+$scope.collectionId+") --> "+JSON.stringify(e));
                 $scope.onBack();
             });
+        } else {
+
+            checkScope();
         }
+
+
 
     });
 

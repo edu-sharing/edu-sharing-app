@@ -125,12 +125,6 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.controllerWo
             Account.setSessionData(userSessionData);
         });
 
-        // connect EduApi and Context to keep user session data fresh
-        EduApi.setUserSessionDataRefreshListener(function(userSessionData){
-            Account.setSessionData(userSessionData);
-        });
-
-
     } catch (e) {
         console.log("EXCEPTION - on check for WebIntent :");
         console.dir(e);

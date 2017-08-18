@@ -593,9 +593,9 @@ angular.module('starter.serviceApi', [])
           // SUCCESS
           var successCallback = function(response) {
               if ((typeof response !== "undefined") && (typeof response.data !== "undefined")) {
+                oAuthAccessToken = response.data.access_token;
                 // refresh user session data
                 if (userSessionDataRefreshListener!==null) {
-                  oAuthAccessToken = response.data.access_token;
                   getUserSessionInfoIntern(function(sessionData){
                       // win
                       userSessionDataRefreshListener(sessionData);
