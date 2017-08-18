@@ -276,13 +276,22 @@ angular.module('starter.controllerCollections', [])
     $scope.$on('collections:child', function(event, data) {
         // simulate click
         if ($scope.actualCollection === null) $scope.breadCrumbs = [{name:'Meine', nodeId:'-MY'}];
-        $scope.itemClick({
-            ref : {
-                repo: $scope.actualCollection!==null ? $scope.actualCollection.ref.repo : "repo",
-                id: data
-            },
-            typeStyle: "collection"
+
+        $ionicLoading.show({
+            template: '<img src="./img/spinner.gif">'
         });
+
+        $timeout(function(){
+            $ionicLoading.hide();
+            $scope.itemClick({
+                ref : {
+                    repo: $scope.actualCollection!==null ? $scope.actualCollection.ref.repo : "repo",
+                    id: data
+                },
+                typeStyle: "collection"
+            });
+        },500);
+
     });
 
     $scope.goSearch = function() {
