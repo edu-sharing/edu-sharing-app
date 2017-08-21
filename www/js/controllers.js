@@ -326,6 +326,14 @@ angular.module('starter.controllers', [])
             }
 
             var fail = function(){
+
+                // make sure screen time out gets back to normal
+                try {
+                    StayAwake.enableScreenTimeout();
+                } catch (e) {
+                    console("FAIL: StayAwake.enableScreenTimeout - "+e);
+                }
+
                 $ionicLoading.hide();
                 $ionicPopup.alert({
                     title: 'Problem',
@@ -336,8 +344,25 @@ angular.module('starter.controllers', [])
             $ionicLoading.show({
                 template: '<img src="img/spinner.gif" /><div class="upload-progress-panel" ng-show="(progress>0) && (progress<100)">{{progress}} %</div>'
             });
+
+
+            // make sure screen is not turning black during upload
+            try {
+                StayAwake.disableScreenTimeout();
+            } catch (e) {
+                console("FAIL: StayAwake.disableScreenTimeout() - "+e);
+            }
+
             EduApi.createImageNode(parentNodeID, "Bild "+Date.now(), null, imageData, true, "image/jpeg", function(newNodeId){
                 // WIN
+
+                // make sure screen time out gets back to normal
+                try {
+                    StayAwake.enableScreenTimeout();
+                } catch (e) {
+                    console("FAIL: StayAwake.enableScreenTimeout - "+e);
+                }
+
                 $ionicLoading.hide();
                 $scope.$broadcast('workspace:reload', newNodeId);
             }, fail, function(progress){

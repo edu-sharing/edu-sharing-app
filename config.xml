@@ -81,6 +81,7 @@
     <engine name="android" spec="^6.2.3" />
     <engine name="ios" spec="^4.4.0" />
     <plugin name="com.borismus.webintent" spec="git+https://github.com/rootzoll/cordova-webintent.git" />
+    <plugin name="cordova-android-stayawake" spec="git+https://github.com/rootzoll/cordova-android-stayawake.git" />
     <plugin name="cordova-plugin-app-version" spec="git+https://github.com/whiteoctober/cordova-plugin-app-version.git" />
     <plugin name="cordova-plugin-camera" spec="^2.4.1">
         <variable name="CAMERA_USAGE_DESCRIPTION" value="post photo to edu-sharing platform" />

@@ -387,8 +387,22 @@ angular.module('starter.controllerCollectionAdd', [])
             keyWordArray = $scope.linkPreviewData.keywords;
         }
 
+        // make sure screen is not turning black during upload
+        try {
+            StayAwake.disableScreenTimeout();
+        } catch (e) {
+            console("FAIL: StayAwake.disableScreenTimeout() - "+e);
+        }
+
         // win - after share content was created
         var winShare = function(createdNodeId) {
+
+            // make sure screen time out gets back to normal
+            try {
+                StayAwake.enableScreenTimeout();
+            } catch (e) {
+                console("FAIL: StayAwake.enableScreenTimeout - "+e);
+            }
 
             // clean webIntent
             System.cleanWebIntent();

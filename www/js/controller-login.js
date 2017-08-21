@@ -132,7 +132,7 @@ angular.module('starter.controllerLogin', [])
 
         // allow landscape mode when app leaves login screen
         $scope.$on('$ionicView.leave', function() {
-                if ((typeof window.screen !== "undefined") && (typeof window.screen.lockOrientation !== "undefined"))   window.screen.unlockOrientation();
+            if ((typeof window.screen !== "undefined") && (typeof window.screen.lockOrientation !== "undefined"))   window.screen.unlockOrientation();
         });
 
         $scope.onEnter = function() {
