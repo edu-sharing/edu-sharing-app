@@ -1,1 +1,0 @@
-window.appSvnRevison='n/a';

@@ -44,9 +44,6 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.controllerWo
        $rootScope.appVersion = "BROWSER";
     }
 
-    // provide SVN build version created by IONIC before_buid hook to app
-    $rootScope.appSvnRevison = window.appSvnRevison;
-
     // some root scope data init
     $rootScope.progress = 0;
     $rootScope.actionSheet = false;

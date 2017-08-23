@@ -8,7 +8,7 @@ Make sure basic frameworks are installed:
 
 * NODEJS version should be >=6.9.5
 * CORDOVA version should be >=7.0.1 
-* IONIC version should be >=3.5.0
+* IONIC version should be >=3.9.2
 
 When you have NodeJS installed, you just need to run:
 
