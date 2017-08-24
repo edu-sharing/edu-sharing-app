@@ -115,20 +115,24 @@
         </div>
 
         <div ng-show="(headerShowSearch) && (!multiSelectionMode)" class="searchareatop" style="display:none;{{displayDivFlex}};">
-            <label class="item item-input" style="display: inline-block;" >
-              <input id="searchWordInput" ng-keyup="changedSearch($event, searchword)" placeholder="Suchbegriff eingeben" type="search" style="
-              width: 135px;
+              <input id="searchWordInput" ng-keyup="changedSearch($event, searchword)" placeholder="Suchbegriff" type="search" style="
+              min-width: 130px;
+              width: 50%;
               height: 21px;
-              padding-right: 10px;
-              margin-left: -4px;
+              padding: 6px;
+              margin-left: 2px;
+              margin-top: 1px;
+              border-radius: 3px;
+              -webkit-appearance: none;
+              -webkit-border-radius: 3;
               " ng-model="searchword">
-            </label>    
             <button id="searchareabutton" on-tap="doSearch(searchword)" class="button button-small" style="
                 color: white;
                 border-radius: 0px;
-                height: 37px;
-                margin-top: -1px;
-                border-color: #777;">
+                height: 30px;
+                margin-top: 2px;
+                border-color: rgba(178, 178, 178, 0);
+                background-color: rgba(38, 69, 97, 0);">
                 SUCHEN
             </button>
         </div>

@@ -52,7 +52,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.controllerWo
     $rootScope.offerDownloadOption = true;
     $rootScope.displayDiv = "display:block;";
     $rootScope.displayDivFlex = "display:flex;";
-    if (System.isNativeIOS()) $rootScope.displayDivFlex = "display:flex;margin-left:44px;";
+    if (System.isNativeIOS()) $rootScope.displayDivFlex = "display:flex;";
     if (typeof $rootScope.profileName === "undefined") $rootScope.profileName = "";
     $rootScope.profileImageUrl = "./img/profile-default.png";
     $rootScope.isLoggedIn = false;
