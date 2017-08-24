@@ -18,7 +18,7 @@
             </div>
 
             <!-- Radio Button Select -->
-            <div style="margin-top: 24px;margin-bottom:24px;">
+            <div style="margin-top: 24px;margin-bottom:24px;" ng-hide="selectedTab=='CUSTOM'">
                 <div class="collection-visibility-selection" on-tap="pressedSelectorMy()">
                     <span class="{{ selectedTab=='MY' ? 'collection-visibility-info-selected' : '' }}">Nur ich</span>
                     <span style="position: absolute;right:32px;">
@@ -43,8 +43,10 @@
                         </div>
                     </span>
                 </div>
-            </div>    
-
+            </div>
+            <div ng-show="selectedTab=='CUSTOM'" style="min-height:128px;margin-top: 24px;margin-bottom:24px;color:darkgray;">
+                Die Sammlung ist aktuell mit benutzerdefinierten Berechtigungen freigegeben, die in der App noch nicht bearbeitet werden können.
+            </div>
         </div>
 
         <div style="text-align:right;padding-top:16px;">

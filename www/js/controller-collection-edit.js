@@ -100,7 +100,7 @@ angular.module('starter.controllerCollectionEdit', [])
 
             $scope.loadedCollection.title = title;
             $scope.loadedCollection.description = desc;           
-            $scope.loadedCollection.scope = scope; 
+            if (scope!="CUSTOM") $scope.loadedCollection.scope = scope;
 
             EduApi.updateCollection($scope.loadedCollection, function(){
                 // WIN
