@@ -2,17 +2,17 @@
 
 <!-- LIST VIEW -->
 
-<div ng-if="((contentViewMode=='list') && (item.typeStyle!='unknown'))" class="list card workspaceItem list-item" style="margin-bottom: -9px; width: 95%; box-shadow: none;">
+<div ng-if="((contentViewMode=='list') && (item.typeStyle!='unknown'))" class="list card workspaceItem list-item" style="margin-bottom: -9px; width: 95%; box-shadow: none; height: 50px;">
 
     <table width="100%" style="height: 54px;">
         <tr>
             <!-- Icon Part -->
-            <td width="60px" style="text-align:center;vertical-align:middle; color: darkgray;">
+            <td width="60px" style="text-align:center;vertical-align:middle; color: darkgray; height:50px;">
                 <i ng-show="(item.typeStyle=='file')" class="icon icon-list ion-document"></i>
                 <i ng-show="(item.typeStyle=='link')" class="icon icon-list ion-earth"></i>
                 <i ng-show="(item.typeStyle=='folder')" class="icon icon-list ion-android-folder"></i>
                 <i ng-show="(item.typeStyle=='collection')" class="icon icon-list ion-ios-browsers"></i>
-                <img ng-show="((item.typeStyle!='folder') && (item.previewUrl!=null))" src="{{item.previewUrl}}" fallback-src="./img/transparent.gif" style="width:65px;height:57px;position:absolute;top:-1px;left:0px;">
+                <img ng-show="((item.typeStyle!='folder') && (item.previewUrl!=null))" src="{{item.previewUrl}}" fallback-src="./img/transparent.gif" style="width:65px;height:58px;position:absolute;top:-4px;left:0px;">
             </td>
             <!-- Name & Info -->
             <td width="*" style="text-align:left;vertical-align:middle;">
@@ -149,7 +149,7 @@
 
 <!-- TILE VIEW (is folder) -->
 
-<div ng-if="((contentViewMode=='tiles') && (item.typeStyle!='unknown') && (item.typeStyle=='folder'))" class="list card workspaceItem tile-folder" style="margin-bottom: 0px;width: {{tileWidthPixel}}px; min-height: 45px; padding:0px; background-color:none;box-shadow: none; border-width: 1px; border-radius: 5px;" ng-class="{'selected-tile-big': item.isSelected, 'unselected-tile-big': !item.isSelected}">
+<div ng-if="((contentViewMode=='tiles') && (item.typeStyle!='unknown') && (item.typeStyle=='folder'))" class="list card workspaceItem tile-folder" style="margin-bottom: 0px;width: {{tileWidthPixel}}px; min-height: 45px padding:0px; background-color:none; box-shadow: none; border-width: 1px; border-radius: 5px;" ng-class="{'selected-tile-big': item.isSelected, 'unselected-tile-big': !item.isSelected}">
     
     <div ng-show="multiSelectionMode" style="position: absolute; top: 12px; right: 10px; font-size: 250%; z-index: 100; background-color: white; height: 26px; margin-top: -3px; color: #315574;">
         <i ng-show="!item.isSelected" class="icon ion-android-checkbox-outline-blank"></i>
