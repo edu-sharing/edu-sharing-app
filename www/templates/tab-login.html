@@ -52,7 +52,7 @@
                                 {{loginServer.name | limitTo:30 }} 
                             </span> 
                              
-                            <input ng-show="((loginServer.name==null) && (loginServer.url!=null))" type="text" ng-model="loginServer.url" class="textDarkGray" style="font-size: 60%;" focus-me="{{focus=='server'}}" 
+                            <input ng-show="((loginServer.name==null) && (loginServer.url!=null))" id="login-server"  type="text" ng-model="loginServer.url" class="textDarkGray" style="font-size: 60%;" focus-me="{{focus=='server'}}"
                             ng-focus="inputFocus(true)" ng-keydown="passwordOnKey($event, loginUser, loginPassword, loginServer)">
                             
                             <span on-tap="selectServer($event)" ng-show='loginServer.url!=null' 

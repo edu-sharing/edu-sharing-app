@@ -72,6 +72,7 @@ angular.module('starter.controllerLogin', [])
             // remove cursor from input fields
             document.getElementById("login-username").blur();
             document.getElementById("login-password").blur();
+            document.getElementById("login-server").blur();
 
             $scope.serverChoosePopup = $ionicPopup.show({
                 templateUrl: './templates/pop-selectserver.html',
