@@ -1251,7 +1251,8 @@ angular.module('starter.serviceApi', [])
               // REQUEST CONFIG
               var config = getBasicConfig();
               config.method = 'POST';
-              config.url = baseUrl+'node/v1/nodes/-home-/'+parentNodeId+'/children?renameIfExists=true&type=ccm%3Aio';
+
+              config.url = baseUrl+'node/v1/nodes/-home-/'+parentNodeId+'/children?type=ccm%3Aio&renameIfExists=true&versionComment=MAIN_FILE_UPLOAD&';
               config.data = {
                 "ccm:wwwurl": [
                     link
