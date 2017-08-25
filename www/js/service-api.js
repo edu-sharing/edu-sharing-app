@@ -912,7 +912,7 @@ angular.module('starter.serviceApi', [])
               // REQUEST CONFIG
               var config = getBasicConfig();
               config.method = 'GET';
-              config.url = baseUrl+'collection/v1/collections/-home-/search?query='+encodeURIComponent(query)+'&maxItems='+maxItems+'&skipCount='+skipCount;
+              config.url = baseUrl+'collection/v1/collections/-home-/search?query='+encodeURIComponent(query)+'&maxItems='+maxItems+'&skipCount='+skipCount+"&sortProperties=cm:modified&sortAscending=false";
 
               // FAIL
               var errorCallback = function(response) {
