@@ -48,27 +48,27 @@
 
 <!-- TILE VIEW (not folder) -->
 
-<div ng-if="((contentViewMode=='tiles') && (item.typeStyle!='unknown') && (item.typeStyle!='folder'))" class="list card workspaceItem tile-item" style="margin-bottom: 10px;width: {{tileWidthPixel}}px; min-height: 265px; padding:0px; background-color:{{(item.typeStyle=='collection') ? item.color : 'none'}};" ng-class="{'selected-tile-big': item.isSelected, 'unselected-tile-big': !item.isSelected}">
+<div ng-if="((contentViewMode=='tiles') && (item.typeStyle!='unknown') && (item.typeStyle!='folder'))" class="list card workspaceItem tile-item" style="margin-bottom: 10px;width: {{tileWidthPixel}}px; min-height: 240px; padding:0px; background-color:{{(item.typeStyle=='collection') ? item.color : 'none'}};" ng-class="{'selected-tile-big': item.isSelected, 'unselected-tile-big': !item.isSelected}">
 
     <div ng-show="multiSelectionMode" style="position: absolute; top: 12px; right: 10px; font-size: 250%; z-index: 100; background-color: white; height: 26px; margin-top: -3px; color: #315574;">
         <i ng-show="!item.isSelected" class="icon ion-android-checkbox-outline-blank"></i>
         <i ng-show="item.isSelected" class="icon ion-android-checkbox-outline"></i>
     </div>
 
-    <div class="item item-image" ng-class="{'opacity': multiSelectionMode}" style="border-width:0px; height: {{(item.typeStyle=='collection') ? '120' : '140'}}px;display: table-cell;text-align: center;vertical-align: middle;background-color: rgba(49, 87, 116, 0.06);">
+    <div class="item item-image" ng-class="{'opacity': multiSelectionMode}" style="border-width:0px; height: 120px;display: table-cell;text-align: center;vertical-align: middle;background-color: rgba(49, 87, 116, 0.06);">
         <div ng-if="(item.typeStyle=='folder') || (item.typeStyle=='collection') || (item.typeStyle=='file') || (item.typeStyle=='link')"
-             style="width: {{tileWidthPixel}}px; height: {{(item.typeStyle=='collection') ? '140' : '140'}}px; padding-top:{{(item.typeStyle=='collection') ? '30' : '30'}}px;background-color: white;">
+             style="width: {{tileWidthPixel}}px; height: 120px; padding-top:24px;background-color: white;">
             <div class="mainColorDarkTextColor mainColorDarkTextColor-Border" style="
                         margin:{{((tileWidthPixel-80)/2)}}px;
                         margin-top: 0px;
                         margin-bottom: 0px;
                         width: 80px;
-                        height: 78px;
+                        height: 80px;
                         border-width: 2px;
                         border-style: {{((item.typeStyle=='file') || (item.typeStyle=='link')) ? 'hidden' : 'solid'}};
                         border-radius: 40px;
                         padding: 10px;
-                        padding-top: 15px;
+                        padding-top: 14px;
                         font-size: 50px;
                         background-color: white;
                         color: {{item.color}};
