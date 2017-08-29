@@ -133,7 +133,14 @@ angular.module('starter.controllerLogin', [])
 
         // allow landscape mode when app leaves login screen
         $scope.$on('$ionicView.leave', function() {
-            if ((typeof window.screen !== "undefined") && (typeof window.screen.lockOrientation !== "undefined"))   window.screen.unlockOrientation();
+
+            // unlock screen orientation on leave
+            try {
+                screen.orientation.unlock();
+            } catch (e) {
+                alert("FAIL screen.orientation.unlock()");
+            }
+
         });
 
         $scope.onEnter = function() {
@@ -144,8 +151,14 @@ angular.module('starter.controllerLogin', [])
                 return;
             }
 
-            $scope.showTopLogo = true;
+            // lock screen orientation to potrait on login screen and intro
+            try {
+                screen.orientation.lock('portrait');
+            } catch (e) {
+                console.log("FAIL screen.orientation.lock('portrait')");
+            }
 
+            $scope.showTopLogo = true;
             System.appWentOverLoginScreen();
 
             // check if oauth data is available
