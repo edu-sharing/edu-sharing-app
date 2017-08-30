@@ -178,7 +178,7 @@ angular.module('starter.controllerWorkspace', [])
         $scope.error = "";
         $ionicScrollDelegate.scrollTop();
         $ionicLoading.show({
-            template: '<img src="./img/spinner.gif">'
+            template: $rootScope.spinnerSVG
         });
 
         // remember last parent node in service
@@ -346,7 +346,7 @@ angular.module('starter.controllerWorkspace', [])
                                 $scope.data.name = $scope.data.name.trim();
                                 if ($scope.data.name.length<=0) return;
                                 $ionicLoading.show({
-                                    template: '<img src="./img/spinner.gif">'
+                                    template: $rootScope.spinnerSVG
                                 });
                                 EduApi.createFolderNode($scope.actualNodeId, $scope.data.name, 
                                 function(){

@@ -87,7 +87,7 @@ angular.module('starter.controllerCollections', [])
         }
 
         $ionicLoading.show({
-            template: '<img src="./img/spinner.gif">'
+            template: $rootScope.spinnerSVG
         });
 
         EduApi.getCollections(parentId, function(data){
@@ -278,7 +278,7 @@ angular.module('starter.controllerCollections', [])
         if ($scope.actualCollection === null) $scope.breadCrumbs = [{name:'Meine', nodeId:'-MY'}];
 
         $ionicLoading.show({
-            template: '<img src="./img/spinner.gif">'
+            template: $rootScope.spinnerSVG
         });
 
         $timeout(function(){

@@ -192,7 +192,7 @@ angular.module('starter.directives', [])
             // refresh display of collection navigation
             scope.collectionRefresh = function() {
                 $ionicLoading.show({
-                    template: '<img src="./img/spinner.gif">'
+                    template: $rootScope.spinnerSVG
                 });
                 scope.collectionLoading = true;
                 EduApi.getCollections(scope.collectionSelectId, function(data) {

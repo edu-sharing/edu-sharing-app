@@ -67,7 +67,7 @@ angular.module('starter.controllerCollectionEdit', [])
         desc = desc.trim();
 
         $ionicLoading.show({
-            template: '<img src="./img/spinner.gif">'
+            template: $rootScope.spinnerSVG
         });
 
         if ($scope.collectionId==='0') {
@@ -170,7 +170,7 @@ angular.module('starter.controllerCollectionEdit', [])
         };
 
         $ionicLoading.show({
-            template: '<img src="./img/spinner.gif">'
+            template: $rootScope.spinnerSVG
         });
 
         if ($scope.collectionId!=='0') {

@@ -355,33 +355,9 @@ angular.module('starter.serviceApi', [])
                 }
               };
 
-              /* DEACTIVATED because plugin no longer compatible
-
-              // GET WAKELOCK SO THAT NOT GOES TO SLEEP ON BIG UPLOADS
-              // https://github.com/Viras-/cordova-plugin-powermanagement
-              var wakelocked = false;
-              try {
-                window.powerManagement.acquire(function() {
-                    //alert("GOT WAKELOCK");
-                    wakelocked = true;
-                }, function() {
-                    //alert("NO WAKELOCK");
-                    console.log("FAILED to get WakeLock");
-                });
-              } catch (e) { alert("EXCEPTION WAKELOCK"); console.log("EXCEPTION to get wakelock");}
-
-              */
-
               // FAIL
               var errorCallback = function(response) {
 
-                  /*
-                  // RELEASE WAKELOCK
-                  try {
-                      if (wakelocked) window.powerManagement.release(function() { console.log('Wakelock released');}, function() { console.log('FAILED to release wakelock'); });
-                      wakelocked = false;
-                  } catch (e) { console.log("EXCEPTION  to unwakelock"); }
-                  */
 
                   if ((typeof response !== "undefined") && (typeof response.data !== "undefined") && (typeof response.data.error !== "undefined") && (response.data.error === "org.edu_sharing.restservices.DAODuplicateNodeNameException")) {
                       console.log("Name already in use ... try again.");
@@ -396,14 +372,6 @@ angular.module('starter.serviceApi', [])
 
               // SUCCESS
               var successCallback = function(response) {
-
-                  /*
-                  // RELEASE WAKELOCK
-                  try {
-                      if (wakelocked) window.powerManagement.release(function() { console.log('Wakelock released');}, function() { console.log('FAILED to release wakelock'); });
-                      wakelocked = false;
-                  } catch (e) { console.log("EXCEPTION  to unwakelock"); }
-                  */
 
                   if ((typeof response !== "undefined")
                       && (typeof response.data !== "undefined")
@@ -1217,7 +1185,7 @@ angular.module('starter.serviceApi', [])
                 "cm:name": [
                     name
                 ],
-                "cm:title": [
+                "cclom:title": [
                     name
                 ]
               };

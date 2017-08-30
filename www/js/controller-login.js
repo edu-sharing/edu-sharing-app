@@ -44,7 +44,7 @@ angular.module('starter.controllerLogin', [])
             e.stopPropagation();
 
             $ionicLoading.show({
-                template: '<img src="./img/spinner.gif">'
+                template: $rootScope.spinnerSVG
             });
 
             // real request from internet
@@ -185,7 +185,7 @@ angular.module('starter.controllerLogin', [])
                         Account.storeOAuthData
                     );
                     $ionicLoading.show({
-                        template: '<img src="./img/spinner.gif">'
+                        template: $rootScope.spinnerSVG
                     });
 
                     try {
@@ -400,7 +400,7 @@ angular.module('starter.controllerLogin', [])
                     serverUrl = System.buildFullApiUrlFromUserInput(serverUrl);
 
                     // $ionicLoading.show({
-                    //    template: '<img src="./img/spinner.gif">'
+                    //    template: $rootScope.spinnerSVG
                     //});
                     $scope.loading = true;
                     EduApi.testServer(serverUrl, function(){
@@ -452,7 +452,7 @@ angular.module('starter.controllerLogin', [])
                 return;
             }
             $ionicLoading.show({
-                template: '<img src="./img/spinner.gif">'
+                template: $rootScope.spinnerSVG
             });
             $scope.loading = true;
 

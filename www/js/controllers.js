@@ -13,7 +13,7 @@ angular.module('starter.controllers', [])
 
         $scope.logout = function() {
             $ionicLoading.show({
-                template: '<img src="./img/spinner.gif">'
+                template: $rootScope.spinnerSVG
             });
             Account.loginOut();
             window.postMessage({command: "logout", message: ""}, "*");
@@ -342,7 +342,7 @@ angular.module('starter.controllers', [])
             };
 
             $ionicLoading.show({
-                template: '<img src="img/spinner.gif" /><div class="upload-progress-panel" ng-show="(progress>0) && (progress<100)">{{progress}} %</div>'
+                template: $rootScope.spinnerSVG+'<div class="upload-progress-panel" ng-show="(progress>0) && (progress<100)">{{progress}} %</div>'
             });
 
 

@@ -146,7 +146,7 @@ angular.module('starter.controllerCollectionAdd', [])
 
                 // get preview of url
                 $ionicLoading.show({
-                    template: '<img src="./img/spinner.gif">'
+                    template: $rootScope.spinnerSVG
                 });
                 EduApi.getWebsiteInfo($scope.webIntent.extra, function(previewData){
                     // WIN
@@ -368,7 +368,7 @@ angular.module('starter.controllerCollectionAdd', [])
         console.log("savePrepare");
 
         $ionicLoading.show({
-            template: '<img src="./img/spinner.gif"><br>Upload {{progress}}'
+            template: $rootScope.spinnerSVG+'<br>Upload {{progress}}'
         });
 
         $scope.saveShare("-inbox-");
@@ -533,7 +533,7 @@ angular.module('starter.controllerCollectionAdd', [])
             });
         };
         $ionicLoading.show({
-            template: '<img src="./img/spinner.gif">'
+            template: $rootScope.spinnerSVG
         });
         addToCollection($scope.items[0]);
 

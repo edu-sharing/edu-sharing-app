@@ -146,7 +146,7 @@ angular.module('starter.controllerSearch', [])
         $scope.error = "";
         $scope.empty = false;
         $ionicLoading.show({
-            template: '<img src="./img/spinner.gif">'
+            template: $rootScope.spinnerSVG
         });
         $scope.actualSearchWord = data;
         $scope.actualSkipCount = 0;

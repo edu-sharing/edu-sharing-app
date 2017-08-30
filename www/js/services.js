@@ -405,7 +405,7 @@ angular.module('starter.services', [])
                 confirmPopup.then(function(res) {
                     if(res) {
                         $ionicLoading.show({
-                        template: '<img src="./img/spinner.gif">'
+                        template: $rootScope.spinnerSVG
                     });
                     deleteNextItem(item, function(){
                         // WIN
@@ -450,7 +450,7 @@ angular.module('starter.services', [])
                 /*
                 $rootScope.dialogCallback = function(data) {
                     $ionicLoading.show({
-                        template: '<img src="./img/spinner.gif">'
+                        template: $rootScope.spinnerSVG
                     });
                     addToCollectionNextItem(item, data.id, true, function(allOK){
                         // DONE
@@ -509,7 +509,7 @@ angular.module('starter.services', [])
                                 var newProperties = JSON.parse(JSON.stringify(item.properties));
                                 newProperties['cm:name'][0] = scope.tempitem.name;
                                 $ionicLoading.show({
-                                    template: '<img src="./img/spinner.gif">'
+                                    template: $rootScope.spinnerSVG
                                 });
                                 EduApi.updateMetadataNode(item.ref.id, newProperties,
                                 function(){
@@ -559,7 +559,7 @@ angular.module('starter.services', [])
             confirmPopup.then(function(res) {
                 if(res) {
                   $ionicLoading.show({
-                        template: '<img src="./img/spinner.gif">'
+                        template: $rootScope.spinnerSVG
                     });
                     removeFromCollectionNextItem(item, item[0].collection, true, function(allOK){
                         // DONE
@@ -842,7 +842,7 @@ angular.module('starter.services', [])
                 if (System.isNativeIOS()) targetPath = cordova.file.documentsDirectory;
                 //alert("PATH: "+targetPath);
                 $ionicLoading.show({
-                    template: '<img src="./img/spinner.gif">'
+                    template: $rootScope.spinnerSVG
                 });
                 var filePath = targetPath + item.name;
                 fileTransfer.download(downloadUrl, filePath,
