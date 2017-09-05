@@ -316,10 +316,13 @@ angular.module('starter.controllerWorkspace', [])
     $scope.$on('workspace:reload', function(event, data) {
         if ($rootScope.multiSelectionMode) $rootScope.headerSwitchMultiselection();
         $scope.refreshDataFromServer(function(){
-            // TODO
-            console.log("TODO: scroll to item --> tile-"+data);
+            // console.log("TODO: scroll to item --> tile-"+data);
         });
     });
+
+    $scope.uploadImage = function() {
+        Toolbox.uploadImageWorkspace($scope);
+    };
 
     // new folder dialog
     $scope.$on('folder:new', function(event, data) {

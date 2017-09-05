@@ -217,9 +217,177 @@ angular.module('starter.services', [])
 /*
  * Toolbox
  */
-.factory('Toolbox', function($rootScope, $timeout, EduApi, $ionicLoading, $ionicPopup, System, $ionicActionSheet, $location, $cordovaToast, $sce, $ionicScrollDelegate, $ionicModal) {
+.factory('Toolbox', function($rootScope, $timeout, EduApi, $ionicLoading, $ionicPopup, Share, System, $ionicActionSheet, $location, $cordovaToast, $sce, $ionicScrollDelegate, $ionicModal, $cordovaCamera) {
 
-        /* ------ DETAILS MODAL PAGE --- START ----------- */
+    var headerButtonUpload = function(scope) {
+
+        var buttons = [];
+        buttons.push({
+            action: 'album',
+            text: '<i class="icon ion-images action-sheet-icon"></i> Bild Aus Galerie'
+        });
+        buttons.push({
+            action: 'camera',
+            text: '<i class="icon ion-camera action-sheet-icon"></i> Bild Von Kamera'
+        });
+        buttons.push({
+            action: 'close',
+            text: '<i class="icon ion-close action-sheet-icon"></i> Abbrechen'
+        });
+
+        // Show the action sheet
+        var hidesheet = $ionicActionSheet.show({
+            buttons: buttons,
+            titleText: 'Hochladen',
+            //cancelText: '<i class="icon ion-close action-sheet-icon"></i> Abbrechen',
+            cancel: function() {
+                onEndActionSheet();
+            },
+            buttonClicked: function(index) {
+                onEndActionSheet();
+                if (buttons[index].action==='album') {
+                    uploadGallery(scope)
+                }
+                else if (buttons[index].action==='camera') {
+                    uploadCamera(scope);
+                }
+                else if (buttons[index].action==='close') {
+                }
+                else {
+                    alert("unkown action("+buttons[index].action+")");
+                }
+                return true;
+            }
+        });
+
+        // temp overide of back button
+
+        //scope.onBackUnbind();
+        $rootScope.actionSheet = true;
+        var unbindBack = scope.$on('button:back',function(){
+            hidesheet();
+        });
+
+        //reset back button to old function
+        var onEndActionSheet = function() {
+            $rootScope.actionSheet = false;
+            unbindBack();
+        };
+
+    };
+
+    var uploadGallery = function(scope) {
+
+            var options = {
+                destinationType: 0, //Camera.DestinationType.DATA_URL
+                sourceType: 0, // Camera.PictureSourceType.PHOTOLIBRARY
+                encodingType: 0 //Camera.EncodingType.JPEG
+            };
+
+            var fail = function() {
+                $ionicPopup.alert({
+                    title: 'Problem',
+                    template: 'Konnte nicht auf die Gallerie zugreifen.'
+                }).then(function() {});
+            };
+
+            $rootScope.ignorePause = true; // set flag so that app is not existing when background
+
+            $cordovaCamera.getPicture(options).then(function(imageData) {
+                $rootScope.ignorePause = false; // reset flag
+
+                createImageNode(imageData, scope);
+
+            }, function(err) {
+                $rootScope.ignorePause = false; // reset flag
+                fail();
+                console.dir(err);
+            });
+     };
+
+     var uploadCamera = function(scope) {
+
+            var options = {
+                correctOrientation: true,
+                destinationType: 0, //Camera.DestinationType.DATA_URL
+                sourceType: 1, // Camera.PictureSourceType.CAMERA
+                encodingType: 0 //Camera.EncodingType.JPEG
+            };
+
+            var fail = function() {
+                $ionicPopup.alert({
+                    title: 'Problem',
+                    template: 'Konnte nicht auf Kamera zugreifen.'
+                }).then(function() {});
+            };
+
+            $rootScope.ignorePause = true; // set flag so that app is not existing when background
+            $cordovaCamera.getPicture(options).then(function(imageData) {
+
+                $rootScope.ignorePause = false; // reset flag
+
+                createImageNode(imageData, scope);
+
+            }, function(err) {
+                $rootScope.ignorePause = false; // reset flag
+                fail();
+                console.dir(err);
+            });
+     };
+
+      var createImageNode = function(imageData, scope) {
+
+            var parentNodeID = Share.pullParentNodeId();
+            if ((typeof parentNodeID === "undefined") || (parentNodeID===null)) {
+                alert("No parent Node ID.");
+                return;
+            }
+
+            var fail = function(){
+
+                // make sure screen time out gets back to normal
+                try {
+                    StayAwake.enableScreenTimeout();
+                } catch (e) {
+                    console("FAIL: StayAwake.enableScreenTimeout - "+e);
+                }
+
+                $ionicLoading.hide();
+                $ionicPopup.alert({
+                    title: 'Problem',
+                    template: 'Fehler beim Speichern.'
+                }).then(function() {});
+            };
+
+            $ionicLoading.show({
+                template: $rootScope.spinnerSVG+'<div class="upload-progress-panel" ng-show="(progress>0) && (progress<100)">{{progress}} %</div>'
+            });
+
+
+            // make sure screen is not turning black during upload
+            try {
+                StayAwake.disableScreenTimeout();
+            } catch (e) {
+                console.log("FAIL: StayAwake.disableScreenTimeout() - "+e);
+            }
+
+            EduApi.createImageNode(parentNodeID, "Bild "+Date.now(), null, imageData, true, "image/jpeg", function(newNodeId){
+                // WIN
+
+                // make sure screen time out gets back to normal
+                try {
+                    StayAwake.enableScreenTimeout();
+                } catch (e) {
+                    console.log("FAIL: StayAwake.enableScreenTimeout - "+e);
+                }
+
+                $ionicLoading.hide();
+                scope.$broadcast('workspace:reload', newNodeId);
+            }, fail, function(progress){
+                $timeout(function(){$rootScope.progress = progress;},10);
+            });
+
+      };
 
         var showDetailsModal = function(scope, contentNodeId, whenDone) {
 
@@ -375,8 +543,6 @@ angular.module('starter.services', [])
 
         };
 
-        /* ------ DETAILS MODAL PAGE --- END ----------- */
-
         // edit dialog
         var editItemsDialog = function(scope, item) {
 
@@ -447,38 +613,6 @@ angular.module('starter.services', [])
                 System.setAddToCollectionItems(item);
                 $location.path("/app/collectionadd");
 
-                /*
-                $rootScope.dialogCallback = function(data) {
-                    $ionicLoading.show({
-                        template: $rootScope.spinnerSVG
-                    });
-                    addToCollectionNextItem(item, data.id, true, function(allOK){
-                        // DONE
-                        $ionicLoading.hide();
-                        scope.$broadcast('workspace:reload');
-                        scope.$emit('workspace:reload');
-                        if (allOK) {
-                            $ionicPopup.alert({
-                                title: 'OK',
-                            template: 'Der Sammlung "'+data.name+'" hinzugefügt.'
-                            }).then(function(res) {});
-                        } else {
-                            $ionicPopup.alert({
-                                title: 'Problem',
-                            template: 'Nicht alle Inhalte konnten der Sammlung hinzugefügt werden.'
-                            }).then(function(res) {});
-                        }
-                    });
-                };
-                $rootScope.dialogPopUp = $ionicPopup.show({
-                    cssClass: 'popupSelectionCollection',
-                    template: '<div choose-collection show-breadcrumbs="true"></div>',
-                    title: 'Bitte Sammlung auswählen',
-                    subTitle: 'In diese wird das Material eingeordnet.',
-                    buttons: []
-                });
-                */
-                
             };
 
             // rename a folder
@@ -764,7 +898,7 @@ angular.module('starter.services', [])
             var nextItem = itemArray.pop();
             EduApi.deleteNode(nextItem.ref.id,function(){
                 // WIN
-                console.log("WIN DELETE "+nextItem.ref.id);
+                //console.log("WIN DELETE "+nextItem.ref.id);
                 try {
                     document.getElementById('tile-'+nextItem.ref.id).classList.add("animationFadeOut");
                 } catch (e) {}
@@ -816,98 +950,6 @@ angular.module('starter.services', [])
             );
         };
 
-    /*  DEACTIVATED because download is now handled by render service
-        needs plugins:
-        - https://github.com/apache/cordova-plugin-file-transfer
-        - https://github.com/SpiderOak/FileViewerPlugin
-        var downloadContent = function(item) {
-            try {
-                // https://github.com/apache/cordova-plugin-file-transfer
-
-                var downloadUrl = item.downloadUrl + "&accessToken="+EduApi.getOAuthAccessToken();
-
-                // add oAuthToken to URL
-
-                var fileTransfer = null;
-                try {
-                    fileTransfer = new FileTransfer();
-                } catch (e) {}
-                if ((typeof fileTransfer === "undefined") || (fileTransfer===null)) {
-                    console.log("File Transfer is not available on this environment");
-                    window.open(downloadUrl,'Download');
-                    return;
-                }
-                //console.log("About to start transfer");
-                var targetPath = cordova.file.externalRootDirectory + "Download/";
-                if (System.isNativeIOS()) targetPath = cordova.file.documentsDirectory;
-                //alert("PATH: "+targetPath);
-                $ionicLoading.show({
-                    template: $rootScope.spinnerSVG
-                });
-                var filePath = targetPath + item.name;
-                fileTransfer.download(downloadUrl, filePath,
-                    function () {
-                        // WIN
-                        var openInOtherApp = function() {
-                            try {
-                                // https://github.com/SpiderOak/FileViewerPlugin
-                                window.FileViewerPlugin.view({
-                                        action: window.FileViewerPlugin.ACTION_VIEW,
-                                        url: filePath
-                                    },
-                                    function() {},
-                                    function(error) {
-                                        alert("OPEN FAIL-1:"+JSON.stringify(error));
-                                    }
-                                );
-                            } catch (e) {
-                                alert("OPEN FAIL-2:"+JSON.stringify(e));
-                            }
-                        };
-
-                        $ionicLoading.hide();
-                        if (System.isNativeIOS()) {
-
-                            // iOS
-                            openInOtherApp();
-
-                        } else {
-
-                            // Android
-                            $ionicPopup.show({
-                                template: 'Die Datei "'+item.name+'" wurde erfolgreich in den Ordner "Downloads" heruntergeladen.',
-                                title: 'Objekt heruntergeladen',
-                                buttons: [
-                                    {
-                                        text: 'Öffnen',
-                                        type: 'button-positive',
-                                        onTap: function() {
-                                            openInOtherApp();
-                                        }
-                                    },
-                                    { text: 'OK', type: 'button-positive' }
-                                ]
-                            });
-
-                        }
-                    },
-                    function (err) {
-                        // FAIL
-                        $ionicLoading.hide();
-                        console.dir(err);
-                        var alertPopup = $ionicPopup.alert({
-                            title: 'Problem',
-                            template: 'Die Datei konnte nicht heruntergeladen werden. '+JSON.stringify(err)
-                        });
-                        alertPopup.then(function() {});
-                    });
-            } catch (e) {
-                // missing: cordova plugin add cordova-plugin-file-transfer
-                alert("FAIL DOWNLOAD: "+e);
-            }
-        };
-        */
-
         var prepareData = function (data, numberOfValidNodesCallback) {
 
             if (typeof data.nodes === "undefined") return data;
@@ -943,7 +985,99 @@ angular.module('starter.services', [])
             }
 
             return data;
-        }; 
+        };
+
+    /*  DEACTIVATED because download is now handled by render service
+needs plugins:
+- https://github.com/apache/cordova-plugin-file-transfer
+- https://github.com/SpiderOak/FileViewerPlugin
+var downloadContent = function(item) {
+    try {
+        // https://github.com/apache/cordova-plugin-file-transfer
+
+        var downloadUrl = item.downloadUrl + "&accessToken="+EduApi.getOAuthAccessToken();
+
+        // add oAuthToken to URL
+
+        var fileTransfer = null;
+        try {
+            fileTransfer = new FileTransfer();
+        } catch (e) {}
+        if ((typeof fileTransfer === "undefined") || (fileTransfer===null)) {
+            console.log("File Transfer is not available on this environment");
+            window.open(downloadUrl,'Download');
+            return;
+        }
+        //console.log("About to start transfer");
+        var targetPath = cordova.file.externalRootDirectory + "Download/";
+        if (System.isNativeIOS()) targetPath = cordova.file.documentsDirectory;
+        //alert("PATH: "+targetPath);
+        $ionicLoading.show({
+            template: $rootScope.spinnerSVG
+        });
+        var filePath = targetPath + item.name;
+        fileTransfer.download(downloadUrl, filePath,
+            function () {
+                // WIN
+                var openInOtherApp = function() {
+                    try {
+                        // https://github.com/SpiderOak/FileViewerPlugin
+                        window.FileViewerPlugin.view({
+                                action: window.FileViewerPlugin.ACTION_VIEW,
+                                url: filePath
+                            },
+                            function() {},
+                            function(error) {
+                                alert("OPEN FAIL-1:"+JSON.stringify(error));
+                            }
+                        );
+                    } catch (e) {
+                        alert("OPEN FAIL-2:"+JSON.stringify(e));
+                    }
+                };
+
+                $ionicLoading.hide();
+                if (System.isNativeIOS()) {
+
+                    // iOS
+                    openInOtherApp();
+
+                } else {
+
+                    // Android
+                    $ionicPopup.show({
+                        template: 'Die Datei "'+item.name+'" wurde erfolgreich in den Ordner "Downloads" heruntergeladen.',
+                        title: 'Objekt heruntergeladen',
+                        buttons: [
+                            {
+                                text: 'Öffnen',
+                                type: 'button-positive',
+                                onTap: function() {
+                                    openInOtherApp();
+                                }
+                            },
+                            { text: 'OK', type: 'button-positive' }
+                        ]
+                    });
+
+                }
+            },
+            function (err) {
+                // FAIL
+                $ionicLoading.hide();
+                console.dir(err);
+                var alertPopup = $ionicPopup.alert({
+                    title: 'Problem',
+                    template: 'Die Datei konnte nicht heruntergeladen werden. '+JSON.stringify(err)
+                });
+                alertPopup.then(function() {});
+            });
+    } catch (e) {
+        // missing: cordova plugin add cordova-plugin-file-transfer
+        alert("FAIL DOWNLOAD: "+e);
+    }
+};
+        */
 
         return {
             deleteNodeItems: function(itemArray, then) {
@@ -970,8 +1104,11 @@ angular.module('starter.services', [])
             },
             showItemDetailsModal : function(scope, itemId, whenDone) {
                 return showDetailsModal(scope, itemId, whenDone);
+            },
+            uploadImageWorkspace : function(scope) {
+                return headerButtonUpload(scope);
             }
-        };
+        }
  
 })
 
@@ -1321,3 +1458,4 @@ angular.module('starter.services', [])
         };
 
 });
+

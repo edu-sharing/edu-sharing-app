@@ -439,7 +439,7 @@ angular.module('starter.serviceApi', [])
                                   if ((typeof event.total !== "undefined") && (typeof event.loaded !== "undefined")) {
                                       try {
                                           var progress = Math.round((event.loaded / event.total) * 100);
-                                          console.log(progress+"% loaded("+event.loaded+") total("+event.total+")");
+                                          //console.log(progress+"% loaded("+event.loaded+") total("+event.total+")");
                                           if ((typeof progressCallback!=="undefined") && (progressCallback!==null)) progressCallback(progress);
                                       } catch (e) { console.log("E:"); }
                                   }

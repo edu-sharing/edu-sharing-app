@@ -201,6 +201,12 @@ angular.module('starter.controllers', [])
             $scope.$broadcast('collection:delete');
         };
 
+
+       $scope.headerButtonUpload = function(){
+            Toolbox.uploadImageWorkspace($scope);
+       };
+
+       /*
         $scope.headerButtonUpload = function() {
 
             var buttons = [];
@@ -241,6 +247,7 @@ angular.module('starter.controllers', [])
                     return true;
                 }
             });
+
 
             // temp overide of back button
             
@@ -370,6 +377,8 @@ angular.module('starter.controllers', [])
             });
 
         };
+
+        */
 
         $scope.toggle = function() {
             // dont show while multi select mode
