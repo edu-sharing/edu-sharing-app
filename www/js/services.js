@@ -219,6 +219,38 @@ angular.module('starter.services', [])
  */
 .factory('Toolbox', function($rootScope, $timeout, EduApi, $ionicLoading, $ionicPopup, Share, System, $ionicActionSheet, $location, $cordovaToast, $sce, $ionicScrollDelegate, $ionicModal, $cordovaCamera) {
 
+
+    var addItemsToCollectionIntern = function(items, collectionId, callback) {
+        var i = 0;
+        var addToCollection = function(item) {
+            var repo = "-home-";
+            if (item.ref.repo!=="repo") repo = item.ref.repo;
+            EduApi.addContentToCollection(repo, collectionId, item.ref.id, function(){
+                i++;
+                if (i<items.length) {
+                    // next item
+                    addToCollection(items[i]);
+                } else {
+                    // all done
+                    $ionicLoading.hide();
+                    var message = "Objekt wurde in die Sammlung eingeordnet.";
+                    if (items.length>1) message = "Objekte wurden in die Sammlung eingeordnet.";
+                    callback(message);
+                }
+            }, function(e){
+                $ionicLoading.hide();
+                console.warn(JSON.stringify(e));
+                var message = "Konnte nicht zur Sammlung hinzugefügt werden.";
+                if (items.length>1) message = "Nicht alles konnte zur Sammlung hinzugefügt werden.";
+                callback(message);
+            });
+        };
+        $ionicLoading.show({
+            template: $rootScope.spinnerSVG
+        });
+        addToCollection(items[0]);
+    };
+
     var headerButtonUpload = function(scope) {
 
         var buttons = [];
@@ -594,8 +626,9 @@ angular.module('starter.services', [])
             };
 
             // add item(s) to collection
-            scope.itemActionAddCollection = function() {
+            scope.itemActionAddCollection = function(useLatestCollection) {
 
+                if (typeof useLatestCollection == "undefined") useLatestCollection = false;
                 if (typeof item.type !== "undefined") item = [item];
 
                 // check if no folders are selected
@@ -609,9 +642,37 @@ angular.module('starter.services', [])
                     }
                 }
 
-                // store item to share in system service and go to page
-                System.setAddToCollectionItems(item);
-                $location.path("/app/collectionadd");
+                if (!useLatestCollection) {
+                    // store item to share in system service and go to page
+                    System.setAddToCollectionItems(item);
+                    $location.path("/app/collectionadd");
+                } else {
+                    addItemsToCollectionIntern(item, $rootScope.lastActiveCollection.ref.id , function(message) {
+                        try {
+                            $cordovaToast.show(message, 'long', 'bottom')
+                                .then(function() {
+                                    $timeout(function(){
+                                        $scope.onBack();
+                                    },2000);
+                                }, function () {
+                                    $scope.loading = false;
+                                    var alertPop = $ionicPopup.alert({
+                                        title: 'Info',
+                                        template: message
+                                    });
+                                    alertPop.then(function() {
+                                    });
+                                });
+                        } catch (e) {
+                            var alertPop = $ionicPopup.alert({
+                                title: 'Info',
+                                template: message
+                            });
+                            alertPop.then(function() {
+                            });
+                        }
+                    });
+                }
 
             };
 
@@ -781,10 +842,29 @@ angular.module('starter.services', [])
 
                     if (scope.context!=='collections') {
 
-                        if (hasPublishRight) buttons.push({ 
-                            action: 'collection-add',
-                            text: '<i class="icon ion-social-buffer action-sheet-icon"></i> Zu Sammlung Hinzufügen'
-                        });
+                        if (hasPublishRight) {
+
+                            if ($rootScope.lastActiveCollection==null) {
+                                buttons.push({
+                                    action: 'collection-add',
+                                    text: '<i class="icon ion-social-buffer action-sheet-icon"></i> In eine Sammlung hinzufügen'
+                                });
+                            } else {
+
+                                var imageDivContent = "<i class=\"icon ion-arrow-right-a action-text-icon\"></i>\n";
+                                if (!$rootScope.lastActiveCollection.preview.isIcon) imageDivContent = "<img class='action-text-image-inner' src='"+$rootScope.lastActiveCollection.preview.url+"&width=30&height=30'/>";
+                                buttons.push({
+                                    action: 'collection-add',
+                                    text: '<i class="icon ion-social-buffer action-sheet-icon"></i> In eine Sammlung hinzufügen'
+                                });
+                                buttons.push({
+                                    action: 'collection-add-last',
+                                    text: "<div class='collection-add-image-wrapper action-text-image'>\n"+
+                                     imageDivContent +
+                                    "</div>"+$rootScope.lastActiveCollection.title.substring(0, 30)
+                                });
+                            }
+                        }
 
                         if (hasDeleteRight) buttons.push({ 
                             action: 'delete',
@@ -855,8 +935,15 @@ angular.module('starter.services', [])
                             // refuse to select
                             return false;
                         } 
-                        scope.itemActionAddCollection();
-                    } 
+                        scope.itemActionAddCollection(false);
+                    }
+                    else if (buttons[index].action==='collection-add-last') {
+                        if (selectionWithFolder) {
+                            // refuse to select
+                            return false;
+                        }
+                        scope.itemActionAddCollection(true);
+                    }
                     else if (buttons[index].action==='rename-folder') {
                         scope.folderRename();
                     } 
@@ -1107,6 +1194,17 @@ var downloadContent = function(item) {
             },
             uploadImageWorkspace : function(scope) {
                 return headerButtonUpload(scope);
+            },
+            addItemsToCollection : function(items, collectionId, callback) {
+                return addItemsToCollectionIntern(items, collectionId, callback);
+            },
+            setLatestCollection : function(collection) {
+                if (typeof collection == "undefined") return;
+                if (typeof collection.access == "undefined") return;
+                var canPublishOnCollection = false;
+                for (var i=0; i<collection.access.length; i++) if (collection.access[i]=="CCPublish") canPublishOnCollection = true;
+                if (!canPublishOnCollection) return;
+                $rootScope.lastActiveCollection = collection;
             }
         }
  

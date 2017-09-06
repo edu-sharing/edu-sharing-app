@@ -1,7 +1,7 @@
 
 angular.module('starter.controllerCollectionAdd', [])
 
-.controller('CollectionAddCtrl', function($rootScope, $scope, $log, $location, EduApi, $ionicLoading, $timeout, $ionicHistory, $stateParams, System, $cordovaToast, Account, $ionicPopup, $cordovaKeyboard) {
+.controller('CollectionAddCtrl', function($rootScope, $scope, $log, $location, EduApi, $ionicLoading, $timeout, $ionicHistory, $stateParams, System, $cordovaToast, Account, $ionicPopup, $cordovaKeyboard, Toolbox) {
 
     $scope.DEFAULT_FOLDER_NAME = "InBox";
 
@@ -476,12 +476,18 @@ angular.module('starter.controllerCollectionAdd', [])
     };
 
     // 2. store content in collection
-    $scope.choosedCollection = function(collectionId) {
-
-        console.log("choosedCollection ("+collectionId+")");
+    $scope.choosedCollection = function(collection) {
 
         // init parameters
-        if (typeof collectionId === "undefined") collectionId = $scope.selectedCollectionId;
+        var collectionId = null;
+        if (typeof collection === "undefined") {
+            collectionId = $scope.selectedCollectionId;
+        } else {
+            collectionId = collection.ref.id;
+
+            // remember the last collection context
+            Toolbox.setLatestCollection(collection);
+        }
         $scope.selectedCollectionId = null;
         if (collectionId===null) {
             $scope.goBackWithMessage("Objekt in Inbox gespeichert.");
@@ -506,36 +512,7 @@ angular.module('starter.controllerCollectionAdd', [])
             return;    
         }
 
-        // add all items to collection
-        
-        var i = 0;
-        var addToCollection = function(item) {
-            var repo = "-home-";
-            if (item.ref.repo!=="repo") repo = item.ref.repo;
-            EduApi.addContentToCollection(repo, collectionId, item.ref.id, function(){
-                i++;
-                if (i<$scope.items.length) {
-                    // next item
-                    addToCollection($scope.items[i]);
-                } else {
-                    // all done
-                    $ionicLoading.hide();
-                    var message = "Objekt wurde in die Sammlung eingeordnet.";
-                    if ($scope.items.length>1) message = "Objekte wurden in die Sammlung eingeordnet.";
-                    $scope.goBackWithMessage(message);
-                }
-            }, function(e){
-                $ionicLoading.hide();
-                console.warn(JSON.stringify(e));
-                var message = "Konnte nicht zur Sammlung hinzugefügt werden.";
-                if ($scope.items.length>1) message = "Nicht alles konnte zur Sammlung hinzugefügt werden.";
-                $scope.goBackWithMessage(message);
-            });
-        };
-        $ionicLoading.show({
-            template: $rootScope.spinnerSVG
-        });
-        addToCollection($scope.items[0]);
+        Toolbox.addItemsToCollection($scope.items, collectionId, $scope.goBackWithMessage);
 
     };
 

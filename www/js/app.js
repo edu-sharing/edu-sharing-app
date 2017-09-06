@@ -15,6 +15,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.controllerWo
 
   $ionicPlatform.ready(function() {
 
+      // the spinner to show on waiting screens
       $rootScope.spinnerSVG ='<svg class="spinner" width="32px" height="32px" viewBox="0 0 66 66" xmlns="http://www.w3.org/2000/svg">\n' +
       '   <circle class="path" fill="none" stroke-width="6" stroke-linecap="round" cx="33" cy="33" r="30"></circle>\n' +
       '</svg>';
@@ -63,6 +64,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.controllerWo
     $rootScope.headerShowEditCollection = false;
     $rootScope.headerShowNewCollection = false;
     $rootScope.headerClass = "header-dialog";
+    $rootScope.lastActiveCollection = null;
 
     // listen if detail view wants to open link in system browser
     window.addEventListener('openInBrowser', function(m) {

@@ -701,6 +701,26 @@ body {
     margin-top: -2px;
 }
 
+.action-text-image {
+    display: inline-flex;
+    margin-left: -1px;
+    margin-right: 9px;
+}
+
+.action-text-image-inner {
+    position: absolute;
+    width: 28px;
+    height: 27px;
+    top: 14px;
+    left: 82px;
+    border-radius: 4px;
+}
+
+.action-text-icon {
+    margin-left: 72px;
+    margin-top: -11px;
+}
+
 /*
     SPINNER END
  */

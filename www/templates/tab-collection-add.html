@@ -101,7 +101,7 @@
                     </td>
                 </tr>
 
-                <tr ng-hide="loadingCollections" on-tap="choosedCollection(collection.ref.id)" ng-repeat="collection in collections track by $index">
+                <tr ng-hide="loadingCollections" on-tap="choosedCollection(collection)" ng-repeat="collection in collections track by $index">
                     <td style="height:50px; width:65px; vertical-align: middle;">
                             <div class="collection-add-image-wrapper" style="border-bottom-color:{{collection.color}};{{collectionImage(collection)}}" >
                                 <i ng-show="collection.preview.isIcon" class="icon ion-social-buffer"></i>

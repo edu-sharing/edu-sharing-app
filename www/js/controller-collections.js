@@ -148,6 +148,7 @@ angular.module('starter.controllerCollections', [])
                 EduApi.getCollection(parentId, function(parentData){
                     // WIN
                     $scope.actualCollection = parentData;
+                    Toolbox.setLatestCollection(parentData);
                     $ionicLoading.hide();
                 }, function(){
                     // FAIL
@@ -305,6 +306,9 @@ angular.module('starter.controllerCollections', [])
 
             if (($scope.breadCrumbs.length>0) && ($scope.actualCollection!==null)
             && ( $scope.breadCrumbs[$scope.breadCrumbs.length-1].nodeId!==$scope.actualCollection.ref.id)) $scope.breadCrumbs.push({ name: $scope.actualCollection.title, nodeId: $scope.actualCollection.ref.id});
+
+            // remember the last collection context
+            Toolbox.setLatestCollection(item);
 
             $scope.actualCollection = item;
             $scope.empty = false;
