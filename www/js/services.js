@@ -819,10 +819,23 @@ angular.module('starter.services', [])
                     });
 
                     if ((hasDeleteRight) && (item.typeStyle==='folder')) {
-                        buttons.push({ 
-                            action: 'rename-folder',
-                            text: '<i class="icon ion-edit action-sheet-icon"></i> Umbenennen'
-                        });
+
+                        var folderProtected = false;
+                        if (item.properties['ccm:maptype'][0]==="USERDATAFOLDER") folderProtected = true;
+                        if (item.properties['ccm:maptype'][0]==="IMAGES") folderProtected = true;
+
+                        if (folderProtected) {
+                            buttons.push({
+                                action: 'rename-folder-notpossible',
+                                text: '<i class="icon ion-edit action-sheet-icon action-deactivated"></i> <span class="action-deactivated">Umbenennen</span>'
+                            });
+                        } else {
+                            buttons.push({
+                                action: 'rename-folder',
+                                text: '<i class="icon ion-edit action-sheet-icon"></i> Umbenennen'
+                            });
+                        }
+
                     }
 
                     if (hasDeleteRight) buttons.push({ 
@@ -998,7 +1011,33 @@ angular.module('starter.services', [])
                     }
                     else if (buttons[index].action==='rename-folder') {
                         scope.folderRename();
-                    } 
+                    }
+                    else if (buttons[index].action==='rename-folder-notpossible') {
+                        try {
+                            var message = "Systemordner können nicht umbenannt werden.";
+                            $cordovaToast.show(message, 'long', 'bottom')
+                                .then(function() {
+                                    $timeout(function(){
+                                        $scope.onBack();
+                                    },2000);
+                                }, function () {
+                                    $scope.loading = false;
+                                    var alertPop = $ionicPopup.alert({
+                                        title: 'Info',
+                                        template: message
+                                    });
+                                    alertPop.then(function() {
+                                    });
+                                });
+                        } catch (e) {
+                            var alertPop = $ionicPopup.alert({
+                                title: 'Info',
+                                template: message
+                            });
+                            alertPop.then(function () {
+                            });
+                        }
+                    }
                     else if (buttons[index].action==='collection-remove') {
                         scope.itemActionRemoveCollection();
                     } 
