@@ -1,5 +1,5 @@
 <ion-view view-title="Suche" style="background-color: #EEEEEE;">
-    <ion-content overflow-scroll="false" scrollbar-x="false" scrollbar-y="true" style="overflow: hidden;">
+    <ion-content ng-hide="showIntro" overflow-scroll="false" scrollbar-x="false" scrollbar-y="true" style="overflow: hidden;">
 
         <!-- LOADING SCREEN -->
         <div ng-show="loading" style="text-align: center; padding: 14px; font-size: 100%; color: #A8A8A8;">
@@ -38,4 +38,23 @@
         </div>
 
   </ion-content>
+
+  <ion-content ng-show="showIntro" overflow-scroll="false" scrollbar-x="false" scrollbar-y="true" style="overflow: hidden; text-align: center">
+
+        <div style="padding-top: 16px;">
+            <img src="./img/introSearch.png" style="width:80%; max-width: 372px;">
+        </div>
+
+        <div style="padding-top: 24px; width:80%; max-width: 370px;margin-right: auto; margin-left: auto; color: grey;">
+            <span style="font-weight: bold">Tipp:</span> In der Suchumgebung kannst du Materialien finden und diese in Sammlungen einsortieren.
+        </div>
+
+        <div style="padding-top: 32px;">
+            <button class="button darkBackLightText-Button" on-tap="setIntroShown()" style="border-width: 0px; min-width:30%; max-width: 370px;">
+                <span>OK, VERSTANDEN</span>
+            </button>
+        </div>
+
+  </ion-content>
+
 </ion-view>

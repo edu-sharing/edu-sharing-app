@@ -721,6 +721,10 @@ body {
     margin-top: -11px;
 }
 
+.action-deactivated {
+    color: grey;
+}
+
 /*
     SPINNER END
  */

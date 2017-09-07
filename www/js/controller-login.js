@@ -237,9 +237,11 @@ angular.module('starter.controllerLogin', [])
                                     template: 'Keine Internetverbindung - bitte prüfen oder später noch einmal probieren.'
                                 });
                                 alertPopup.then(function () {
+                                    /*
                                     try {
                                         ionic.Platform.exitApp();
                                     } catch (e) { alert("Bitte App schließen und neu laden."); }
+                                    */
                                 });
 
                             });

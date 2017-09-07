@@ -1,5 +1,5 @@
 <ion-view view-title="Workspace" style="background-color: #EEEEEE;">
-    <ion-content overflow-scroll="false" scrollbar-x="false" scrollbar-y="true" style="overflow: hidden;">
+    <ion-content ng-hide="showIntro" overflow-scroll="false" scrollbar-x="false" scrollbar-y="true" style="overflow: hidden;">
 
         <!-- BREAD CRUMBS --> 
         <table width="100%">
@@ -101,5 +101,24 @@
         </div>
 
     </ion-content>
-    <div on-tap="uploadImage()" class="floatingButton" ><i class="ion-camera float-camera-icon" /></div>
+    <div ng-hide="showIntro" on-tap="uploadImage()" class="floatingButton" ><i class="ion-camera float-camera-icon" /></div>
+
+    <ion-content ng-show="showIntro" overflow-scroll="false" scrollbar-x="false" scrollbar-y="true" style="overflow: hidden; text-align: center">
+
+        <div style="padding-top: 16px;">
+            <img src="./img/introWorkspace.png" style="width:90%; max-width: 372px;">
+        </div>
+
+        <div style="padding-top: 24px; width:80%; max-width: 370px;margin-right: auto; margin-left: auto; color: grey;">
+            <span style="font-weight: bold">Tipp:</span> Hier kannst du eigene Fotos direkt über deine Kamera oder aus deiner Fotogalarie hochladen.
+        </div>
+
+        <div style="padding-top: 32px;">
+            <button class="button darkBackLightText-Button" on-tap="setIntroShown()" style="border-width: 0px; min-width:30%; max-width: 370px;">
+                <span>OK, VERSTANDEN</span>
+            </button>
+        </div>
+
+    </ion-content>
+
 </ion-view>

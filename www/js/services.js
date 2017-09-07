@@ -864,6 +864,14 @@ angular.module('starter.services', [])
                                     "</div>"+$rootScope.lastActiveCollection.title.substring(0, 30)
                                 });
                             }
+
+                        } else {
+
+                            buttons.push({
+                                action: 'collection-add-notallowed',
+                                text: '<i class="icon ion-social-buffer action-sheet-icon action-deactivated"></i> <span class="action-deactivated">Keine Berechtigung zum Sammeln</span>'
+                            });
+
                         }
 
                         if (hasDeleteRight) buttons.push({ 
@@ -897,10 +905,51 @@ angular.module('starter.services', [])
 
                 headlineName = item.length+" Objekte";
 
-                if (hasPublishRight) buttons.push({ 
-                    action: 'collection-add',
-                    text: '<span '+( selectionWithFolder ? ' class="action-sheet-option-deactivated"' : '')+'><i class="icon ion-social-buffer action-sheet-icon"></i> Zu Sammlung Hinzufügen</span>'
-                });
+
+                if (hasPublishRight) {
+
+                    if (selectionWithFolder) {
+
+                        buttons.push({
+                            action: 'collection-add-notallowed',
+                            text: '<span class="action-sheet-option-deactivated"><i class="icon ion-social-buffer action-sheet-icon"></i> Zu Sammlung Hinzufügen</span>'
+                        });
+
+                    } else {
+
+                        if ($rootScope.lastActiveCollection==null) {
+
+                            buttons.push({
+                                action: 'collection-add',
+                                text: '<i class="icon ion-social-buffer action-sheet-icon"></i> In eine Sammlung hinzufügen'
+                            });
+
+                        } else {
+
+                            var imageDivContent = "<i class=\"icon ion-arrow-right-a action-text-icon\"></i>\n";
+                            if (!$rootScope.lastActiveCollection.preview.isIcon) imageDivContent = "<img class='action-text-image-inner' src='"+$rootScope.lastActiveCollection.preview.url+"&width=30&height=30'/>";
+                            buttons.push({
+                                action: 'collection-add',
+                                text: '<i class="icon ion-social-buffer action-sheet-icon"></i> In eine Sammlung hinzufügen'
+                            });
+                            buttons.push({
+                                action: 'collection-add-last',
+                                text: "<div class='collection-add-image-wrapper action-text-image'>\n"+
+                                imageDivContent +
+                                "</div>"+$rootScope.lastActiveCollection.title.substring(0, 30)
+                            });
+                        }
+
+                    }
+
+                } else {
+
+                    buttons.push({
+                        action: 'collection-add-notallowed',
+                        text: '<i class="icon ion-social-buffer action-sheet-icon action-deactivated"></i> <span class="action-deactivated">Keine Berechtigung zum Sammeln</span>'
+                    });
+
+                }
 
                 if (hasDeleteRight) buttons.push({ 
                     action: 'delete',
@@ -943,6 +992,9 @@ angular.module('starter.services', [])
                             return false;
                         }
                         scope.itemActionAddCollection(true);
+                    }
+                    else if (buttons[index].action==='collection-add-notallowed') {
+                        return false;
                     }
                     else if (buttons[index].action==='rename-folder') {
                         scope.folderRename();
@@ -1225,7 +1277,9 @@ var downloadContent = function(item) {
         lastLogin: 0,
         clientSettings : {
             workspaceViewMode : 'list',
-            selectedServer: {name:null,url: null}
+            selectedServer: {name:null, url: null},
+            introShownWorkspace : false,
+            introShownSearch : false
         }
     };
 

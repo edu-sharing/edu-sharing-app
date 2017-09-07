@@ -24,6 +24,8 @@ angular.module('starter.controllerWorkspace', [])
         }
     };
 
+    $scope.showIntro = false;
+
     $scope.progress = 0;
 
     $scope.breadCrumbs = [];
@@ -169,6 +171,13 @@ angular.module('starter.controllerWorkspace', [])
        $rootScope.contentViewMode = clientSettings.workspaceViewMode;
     };
 
+    $scope.setIntroShown = function() {
+        var clientSettings = Account.getClientSettings();
+        clientSettings.introShownWorkspace = true;
+        Account.storeClientSettings(clientSettings);
+        $scope.showIntro = false;
+    };
+
     $scope.refreshDataFromServer = function(win) {
 
         $rootScope.editFolderNotAllowed = $scope.actualNodeId === "-shared_files-";
@@ -258,6 +267,15 @@ angular.module('starter.controllerWorkspace', [])
             clientSettings.workspaceViewMode = "list";
             Account.storeClientSettings(clientSettings);
         }
+
+        // get info is intro was already shown
+        if (typeof clientSettings.introShownWorkspace === "undefined") {
+            clientSettings.introShownWorkspace = false;
+            Account.storeClientSettings(clientSettings);
+        }
+        $scope.showIntro = !clientSettings.introShownWorkspace;
+
+
         $rootScope.contentViewMode = clientSettings.workspaceViewMode;
 
         // init on first enter and load data
@@ -314,6 +332,10 @@ angular.module('starter.controllerWorkspace', [])
     });
 
     $scope.$on('workspace:reload', function(event, data) {
+
+        // invalid intro screen if search gets fired
+        if ($scope.showIntro) $scope.setIntroShown();
+
         if ($rootScope.multiSelectionMode) $rootScope.headerSwitchMultiselection();
         $scope.refreshDataFromServer(function(){
             // console.log("TODO: scroll to item --> tile-"+data);

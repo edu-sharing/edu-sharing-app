@@ -21,13 +21,20 @@ angular.module('starter.controllerSearch', [])
             total: 0
         }
     };
+    $scope.showIntro = false;
 
     $scope.breadCrumbs = [];
+
+    $scope.setIntroShown = function() {
+        var clientSettings = Account.getClientSettings();
+        clientSettings.introShownSearch = true;
+        Account.storeClientSettings(clientSettings);
+        $scope.showIntro = false;
+    };
 
     // BACK button receiver
     $scope.onBack = function() {
         if ($rootScope.actionSheet) return;
-        //console.log("Search Back Button");
         $scope.back();
     };
     $scope.onBackUnbind = $scope.$on('button:back',$scope.onBack);
@@ -109,6 +116,14 @@ angular.module('starter.controllerSearch', [])
             return;
         }
 
+        // check if intro was shown
+        var clientSettings = Account.getClientSettings();
+        if (typeof clientSettings.introShownSearch === "undefined") {
+            clientSettings.introShownSearch = false;
+            Account.storeClientSettings(clientSettings);
+        }
+        $scope.showIntro = !clientSettings.introShownSearch;
+
         if ($scope.empty) {
             $scope.breadCrumbs.push("*");
             $scope.startSearch("*");
@@ -118,6 +133,10 @@ angular.module('starter.controllerSearch', [])
 
     // trigger search from outside (normally its from the header bar)
     $scope.$on('search:keyword', function(event, data) {
+
+        // invalid intro screen if search gets fired
+        if ($scope.showIntro) $scope.setIntroShown();
+
         // add breadCrumb
         $scope.breadCrumbs.push(data);
         $scope.startSearch(data);

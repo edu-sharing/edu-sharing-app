@@ -219,7 +219,6 @@ angular.module('starter.serviceApi', [])
           config.data = "grant_type=refresh_token&client_id=" + oAuthClientId + "&client_secret=" + oAuthClientSecret + "&refresh_token=" + encodeURIComponent(oAuthRefreshToken);
           var errorCallback = function (response) {
               console.log("makeSureOAuthTokensAreFresh: FAIL refresh token:");
-              console.dir(response);
               refreshingTokenIsRunning = 0;
               onError("fail on refresh token");
           };
