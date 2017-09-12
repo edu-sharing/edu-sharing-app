@@ -5,8 +5,8 @@
 
 #define SERVER @"/edu-sharing"
 #define POST_SERVER [NSString stringWithFormat:@"%@%@",SERVER,@"/oauth2/token"]
-#define SAMMLUNG [NSString stringWithFormat:@"%@%@",SERVER,@"/rest/collection/v1/collections/-home-/search?query=&maxItems=500&skipCount=0"]
-#define PICNODEID [NSString stringWithFormat:@"%@%@",SERVER,@"/rest/node/v1/nodes/-home-/-inbox-/children?renameIfExists=true&type=%7Bhttp%3A%2F%2Fwww.campuscontent.de%2Fmodel%2F1.0%7Dio"]
+#define SAMMLUNG [NSString stringWithFormat:@"%@%@",SERVER,@"/rest/collection/v1/collections/-home-/search?sortProperties=cm%3Amodified&sortAscending=false&query=&maxItems=500&skipCount=0"]
+#define PICNODEID [NSString stringWithFormat:@"%@%@",SERVER,@"/rest/node/v1/nodes/-home-/-inbox-/children?renameIfExists=true&versionComment=MAIN_FILE_UPLOAD&type=%7Bhttp%3A%2F%2Fwww.campuscontent.de%2Fmodel%2F1.0%7Dio"]
 
 
 @interface ShareViewController ()
@@ -27,6 +27,7 @@
     [super viewDidLoad];
     self.link = false;
     self.loadingSpinner.transform = CGAffineTransformMakeScale(1.5f, 1.5f);
+    self.controlSpinnerView.hidden = true;
 }
 
 - (void)loadeduApp {
@@ -85,6 +86,7 @@
                     self.urlString = url.absoluteString;
                     self.linkLB.hidden = false;
                     self.link = true;
+
                     UIWebView *webView = [[UIWebView alloc] initWithFrame:CGRectMake(0,0,0,0)];
                     webView.delegate = self;
                     [self.view addSubview:webView];
@@ -100,10 +102,13 @@
     self.ititleTXT.text = [webView stringByEvaluatingJavaScriptFromString:@"document.title"];
 }
 
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    [self minheightView];
+}
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
 }
-
 
 - (void)alertlogin {
     NSString* message = @"Bitte loggen Sie sich ein!";
@@ -320,6 +325,7 @@
 }
 - (void)savePic:(BOOL)sammlung :(NSString *)picNodeID {
     self.myProgress.hidden = false;
+    self.controlSpinnerView.hidden = false;
     if (self.link) {
         if (sammlung) {
             NSString *authorization = [NSString stringWithFormat:@"Bearer %@",[self.responseDict valueForKey:@"access_token"]];
@@ -432,7 +438,13 @@
 -(void)removeProgressView {
     self.myProgress.hidden = true;
     self.myProgress.progress = 0;
-    [self.extensionContext completeRequestReturningItems:@[] completionHandler:nil];
+    self.controlSpinnerView.hidden = true;
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"gespeichert" message:nil preferredStyle:UIAlertControllerStyleAlert];
+    [self presentViewController:alert animated:YES completion:nil];
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [alert dismissViewControllerAnimated:YES completion:nil];
+        [self.extensionContext completeRequestReturningItems:@[] completionHandler:nil];
+    });
 }
 
 - (void)URLSession:(nonnull NSURLSession *)session task:(nonnull NSURLSessionTask *)task didReceiveChallenge:(nonnull NSURLAuthenticationChallenge *)challenge completionHandler:(nonnull void (^)(NSURLSessionAuthChallengeDisposition, NSURLCredential * __nullable))completionHandler {
@@ -450,7 +462,6 @@
 - (void)URLSession:(NSURLSession *)session task:(NSURLSessionTask *)task didCompleteWithError:(NSError *)error {
     NSLog(@"errors %@",error.debugDescription);
     dispatch_async(dispatch_get_main_queue(), ^{
-        //[UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
     });
 }
 - (void)URLSession:(NSURLSession *)session downloadTask:(NSURLSessionDownloadTask *)downloadTask didResumeAtOffset:(int64_t)fileOffset expectedTotalBytes:(int64_t)expectedTotalBytes {
@@ -470,6 +481,7 @@
 
 -(void)throwError:(NSString *)hinweis :(NSString *)error {
     [self.loadingSpinner stopAnimating];
+    self.controlSpinnerView.hidden = true;
     UIAlertController *alert = [UIAlertController alertControllerWithTitle:hinweis message:error preferredStyle:UIAlertControllerStyleAlert];
     UIAlertAction *okBTN = [UIAlertAction actionWithTitle:@"OK"
                                                     style:UIAlertActionStyleDefault
@@ -479,6 +491,26 @@
                                                   }];
     [alert addAction:okBTN];
     [self presentViewController:alert animated:YES completion:nil];
+}
+
+
+- (void)minheightView {
+    if (self.contentTableView.frame.size.height < 298) {
+        CGRect frame = self.contentTableView.frame;
+        frame.size.height = 298;
+        self.contentTableView.frame = frame;
+    }else{
+        CGRect frame = self.contentTableView.frame;
+        frame.size.height = self.view.frame.size.height - self.contentTableView.frame.origin.y;
+        self.contentTableView.frame = frame;
+    }
+}
+- (void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator {
+    [coordinator animateAlongsideTransition:^(id<UIViewControllerTransitionCoordinatorContext> context) {
+        [self minheightView];
+    } completion:^(id<UIViewControllerTransitionCoordinatorContext> context) {
+    }];
+    [super viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
 }
 
 
