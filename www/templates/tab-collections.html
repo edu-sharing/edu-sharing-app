@@ -152,7 +152,7 @@
         </div>
 
         <!-- COLLECTIONS -->
-        <div ng-show="(collections.length>0)" class='centerWhenPotrait' style="display: table;min-width:350px;" ng-cloak>
+        <div ng-show="(collections.length>0)" class='centerWhenPotrait' ng-style="collectionDivStyle" ng-cloak>
 
             <div item-tile-big ng-repeat="item in collections" ng-class="contentViewMode=='tiles' ? 'tile-container' : 'list-container'">
             </div>

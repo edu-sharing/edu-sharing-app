@@ -15,6 +15,8 @@ angular.module('starter.controllerCollections', [])
     $scope.collections = [];
     $scope.contentReferences = [];
 
+    $scope.collectionDivStyle = {};
+
     $scope.showOrgaTab = false;
 
     $scope.onBack = function() {
@@ -96,6 +98,18 @@ angular.module('starter.controllerCollections', [])
             // reset error
             $scope.error = "";
             $scope.isRoot = (parentId === '-root-');
+
+            if ($scope.isRoot) {
+                $scope.collectionDivStyle = {
+                    'display': "table",
+                    'min-width': "350px"
+                };
+            } else {
+                $scope.collectionDivStyle = {
+                    'display': "table",
+                    'width': "100%"
+                };
+            }
 
             // set collections with internal typeStyle
             $scope.collections = data.collections;
