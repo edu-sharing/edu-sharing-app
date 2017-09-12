@@ -204,9 +204,12 @@ angular.module('starter.controllerCollections', [])
 
         if (($scope.collections.length===0) && ($scope.actualCollection ===  null)) $scope.pressedSelectorMy();
 
+        // when in sub
         if (!$scope.isRoot) $scope.loadCollections($scope.actualCollection.ref.id, "EDU_ALL");
 
+        // when root
         if ($scope.isRoot) {
+
             EduApi.getUsersOrganization(function (organizations) {
                 // WIN          
                 $scope.showOrgaTab = organizations.length>0;
@@ -215,6 +218,11 @@ angular.module('starter.controllerCollections', [])
                 console.log("LOADING ORGAS FAIL");
                 console.dir(e);
             });
+
+            // refresh
+            if ($scope.selectedTab==="my") $scope.loadCollections('-root-','MY');
+            if ($scope.selectedTab==="orga") $scope.loadCollections('-root-','EDU_GROUPS');
+            if ($scope.selectedTab==="all") $scope.loadCollections('-root-',"EDU_ALL");
         }
 
     });
