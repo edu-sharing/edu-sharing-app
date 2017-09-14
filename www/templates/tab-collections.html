@@ -1,5 +1,6 @@
 <ion-view view-title="Workspace" style="background-color: #EEEEEE;">
-    <ion-content overflow-scroll="false" scrollbar-x="false" scrollbar-y="true" style="overflow: hidden;">
+    <ion-content overflow-scroll="false" scrollbar-x="false" scrollbar-y="true" style="
+        overflow: hidden;">
 
         <!-- TABS  -->
         <div ng-show="isRoot" class="tabs-striped tabs-top tabs-background-positive tabs-color-light" style="height:59px;">
@@ -107,8 +108,13 @@
                     </td>
                 </tr>    
             </table>    
-        </div>  
+        </div>
 
+      <div style="
+        max-width: 900px;
+        margin-left: auto;
+        margin-right: auto;
+      ">
         <!-- EMPTY SCREEN ROOT -->
         <div ng-show="empty" style="text-align: center; padding: 14px; font-size: 100%; color: #A8A8A8;">
             <p ng-show="selectedTab=='orga'">Es gibt bisher keine von deinen Organisationen geteilten Sammlungen.</p>
@@ -181,6 +187,8 @@
             </div>    
 
         </div>
+
+      </div>
 
     </ion-content>
     <div ng-show="headerShowEditCollection" on-tap="goSearch()" class="floatingButton" ><img style="

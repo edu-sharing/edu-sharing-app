@@ -4,7 +4,7 @@ angular.module('starter.controllerSearch', [])
 
     $scope.actualSearchWord = "";
 
-    $scope.loadPerBatch = 8;
+    $scope.loadPerBatch = 16;
     $scope.moreResultsAvailable = false;
     $scope.actualSkipCount = 0;
 

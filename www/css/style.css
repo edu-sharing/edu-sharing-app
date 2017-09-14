@@ -725,6 +725,12 @@ body {
     color: grey;
 }
 
+@media only screen and (min-width : 640px) {
+    #searchWordInput {
+        width: 340px !important;
+    }
+}
+
 /*
     SPINNER END
  */
