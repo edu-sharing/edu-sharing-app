@@ -163,33 +163,50 @@ angular.module('starter.services', [])
 
                                     try {
 
-                                        if ((typeof fileUri !== "undefined") && (fileUri !== null) && ((fileUri.indexOf("content://")===0) || (fileUri.indexOf("file://")===0))) {
+                                        if ((typeof fileUri !== "undefined") && (fileUri !== null)) {
 
-                                            //We have a native file path (usually returned when a user gets a file from their Android gallery)
-                                            //Let's convert to a fileUri that we can consume properly
-                                            window.FilePath.resolveNativePath(fileUri, function (localFileUri) {
+                                            if ((fileUri.indexOf("file://")===0) || (fileUri.indexOf("content://0@")===0)) {
 
-                                                //alert(fileUri+" --> "+localFileUri);
+                                                //We have a native file path (usually returned when a user gets a file from their Android gallery)
+                                                //Let's convert to a fileUri that we can consume properly
+                                                window.FilePath.resolveNativePath(fileUri, function (localFileUri) {
 
-                                                webIntent.extra = localFileUri;
+                                                    //alert(fileUri+" --> "+localFileUri);
 
-                                                System.pushWebIntent(webIntent);
+                                                    webIntent.extra = localFileUri;
 
-                                                // route to account
-                                                $timeout(function () {
-                                                    $location.path("/app/login");
-                                                }, 300);
+                                                    System.pushWebIntent(webIntent);
 
-                                            }, function(e){
+                                                    // route to account
+                                                    $timeout(function () {
+                                                        $location.path("/app/login");
+                                                    }, 300);
+
+                                                }, function(e){
+                                                    $ionicPopup.alert({
+                                                        title: 'Hinweis',
+                                                        template: 'Das Teilen dieses Bildes ist nicht möglich.<br><small style="color:#D3D3D3;">'+fileUri+'</small>'
+                                                    }).then(function () {ionic.Platform.exitApp();});
+                                                    console.log("ERROR(1): "+JSON.stringify(e));
+                                                });
+
+
+                                            } else
+
+                                            if (fileUri.indexOf("content://")===0) {
                                                 $ionicPopup.alert({
                                                     title: 'Hinweis',
-                                                    template: 'Das Teilen dieses Bildes ist nicht möglich.<br><small style="color:#D3D3D3;">'+fileUri+'</small>'
+                                                    template: 'Es handelt sich um ein Bild, das nicht auf dem Gerät speichert ist. Es kann daher (noch) nicht mit edu-sharing geteilt werden.'
                                                 }).then(function () {ionic.Platform.exitApp();});
-                                                console.log("ERROR(1): "+JSON.stringify(e));
-                                            });
+                                            }
+
+                                            else {
+                                                alert("ImageShare ERROR: fileUri unkown " + fileUri);
+                                            }
+
 
                                         } else {
-                                            alert("Unkown URI: " + fileUri);
+                                            alert("ImageShare ERROR: fileUri undefined or NULL");
                                         }
 
                                     } catch (e) {
