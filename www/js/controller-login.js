@@ -1,375 +1,64 @@
 angular.module('starter.controllerLogin', [])
-.controller('LoginCtrl', function($scope, $log, $rootScope, $location, Account, $ionicPopup, System, $sce, EduApi, $ionicLoading, $timeout) {
+.controller('LoginCtrl', function($scope, $rootScope, $location, Account, $ionicPopup, System, EduApi, $ionicLoading, $timeout) {
 
-        $scope.showLoginIntro = false;
-        $scope.showLoginStep = 0;
-        $scope.showLoginAnim = false;
+    $scope.loading = false;
+    $scope.showTopSpace = true;
 
-        $scope.loading = true;
-        $scope.isLoggedIn = false;
-        $scope.loginUser = "";
-        $scope.loginPassword = "";
-        $scope.focus = "user";
+    $scope.loginUser = "";
+    $scope.loginPassword = "";
+    $scope.focus = "";
 
-        // register in LOGOUT event from server frame
-        angular.element(window).on('message', function(m) {
-            if (m.data.command) {
-                if (m.data.command==="logout") {
-                    $rootScope.$apply(function() {
-                        Account.loginOut();
-                        $scope.loginPassword = "";
-                        $scope.isLoggedIn = false;
-                    });
-                }
-            }
-        });
+    $scope.loginServer = {};
 
+    $scope.inputFocus = function(gotFocus) {
+        $scope.showTopSpace = !gotFocus;
+    };
 
-        /*** SERVER SELECTION ***/
+    $scope.serverBack = function() {
+        // go back to server select page
+        $location.path("/app/serverselect");
+    };
 
-        $scope.loginServer = {
-            'name' : null,
-            'url'  : null
-        };
+    $scope.$on('$ionicView.enter', function () {
 
+        // load selected server from client settings
+        var clientSettings = Account.getClientSettings();
+        $scope.loginServer = clientSettings.selectedServer;
 
-        $scope.inputFocus = function(gotFocus) {
-            $scope.showTopLogo = !gotFocus;
-        };
+    });
 
-        // if user clicks to select a server
-        $scope.selectServer = function(e) {
+    // allow landscape mode when app leaves login screen
+    $scope.$on('$ionicView.leave', function() {
 
-            e.preventDefault();
-            e.stopPropagation();
+        // unlock screen orientation on leave
+        try {
+            screen.orientation.unlock();
+        } catch (e) {
+            alert("FAIL screen.orientation.unlock()");
+        }
 
-            $ionicLoading.show({
-                template: $rootScope.spinnerSVG
-            });
+    });
 
-            // real request from internet
-            EduApi.loadPublicServerList(function(json){
-                // WIN
-                $scope.serverDirectory = json;
-                $scope.selectSeverDialog();
-            },function(){
-                // FAIL
-                $scope.serverDirectory = [];
-                $scope.selectSeverDialog();
-            });
-
-        };
-
-        $scope.selectSeverDialog = function() {
-
-            $ionicLoading.hide();
-
-            $scope.setServer = function(server) {
-                $scope.loginServer = server;
-                $scope.serverChoosePopup.close();
-            };
-
-            // remove cursor from input fields
-            document.getElementById("login-username").blur();
-            document.getElementById("login-password").blur();
-            document.getElementById("login-server").blur();
-
-            $scope.serverChoosePopup = $ionicPopup.show({
-                templateUrl: './templates/pop-selectserver.html',
-                title: null,
-                subTitle: null,
-                cssClass: 'serverselect',
-                scope: $scope,
-                buttons: []
-            });
-        };
-
-        // only call after ionic is ready
-        $scope.checkIfLoginScreenIsToShow = function() {
-
-            // **** set selected server ****
-
-            var clientSettings = Account.getClientSettings(); 
-            if (typeof clientSettings.selectedServer === "undefined") clientSettings.selectedServer = {name:null,url:null};
-            $scope.loginServer = clientSettings.selectedServer;
-
-            // **** checkIfLoginScreenIsToShow ****
-
-            // determine if login intro should be shown after login
-            var preLoginAccount = Account.getAccount();
-            var loginIntroShouldBeShown =  ((typeof preLoginAccount.lastLogin === "undefined") || (preLoginAccount.lastLogin===0));
-
-            if (loginIntroShouldBeShown) {
-
-                // lock into portrait while intro
-                // after leaving login screen it will unlock
-                if ((typeof window.screen !== "undefined") && (typeof window.screen.lockOrientation !== "undefined"))  window.screen.lockOrientation('portrait');
-                
-                // show intro screen
-                $scope.showLoginIntro = true;
-            }
-
-        };
-
-        if ($rootScope.ionicReady) $scope.checkIfLoginScreenIsToShow();
-
-        $scope.$on('ionic-ready', function() {
-            $scope.checkIfLoginScreenIsToShow();
-        });
-
-        $scope.clickIntroNext = function() {
-            if ($scope.showLoginStep>=4) return;
-            if ($scope.showLoginAnim) return;
-            $scope.showLoginAnim = true;
-            $timeout(function(){
-                $scope.showLoginAnim=false;
-                $scope.showLoginStep++;
-            },800);
-        };
-
-        $scope.clickIntroDone = function() {
-            $scope.showLoginIntro = false;
-        };
-
-        // allow landscape mode when app leaves login screen
-        $scope.$on('$ionicView.leave', function() {
-
-            // unlock screen orientation on leave
-            try {
-                screen.orientation.unlock();
-            } catch (e) {
-                alert("FAIL screen.orientation.unlock()");
-            }
-
-        });
-
-        $scope.onEnter = function() {
-
-            // as long ionic is not ready ... wait
-            if (!$rootScope.ionicReady) {
-                $timeout($scope.onEnter,500);
-                return;
-            }
-
-            // lock screen orientation to potrait on login screen and intro
-            try {
-                screen.orientation.lock('portrait');
-            } catch (e) {
-                console.log("FAIL screen.orientation.lock('portrait')");
-            }
-
-            $scope.showTopLogo = true;
-            System.appWentOverLoginScreen();
-
-            // check if oauth data is available
-            var account = Account.getAccount();
-            var clientSettings = Account.getClientSettings();
-
-            var tryExistingAccessToken = function () {
-
-                if ((typeof account.accessToken !== "undefined")
-                    && (account.accessToken.length > 0)
-                    && (typeof clientSettings.selectedServer !== "undefined")
-                    && (typeof clientSettings.selectedServer.url !== "undefined")
-                    && (clientSettings.selectedServer.url !== null)) {
-
-                    // init API url
-                    EduApi.setBaseUrl(EduApi.serverUrls(clientSettings.selectedServer.url).api);
-
-                    // check if oauth is working
-                    EduApi.setOAuthTokens(
-                        account.accessToken,
-                        account.refreshToken,
-                        account.expiresIn,
-                        account.lastRefresh,
-                        Account.storeOAuthData
-                    );
-                    $ionicLoading.show({
-                        template: $rootScope.spinnerSVG
-                    });
-
-                    try {
-
-                        $scope.loading = true;
-                        $timeout(function () {
-
-                            EduApi.getUserSessionInfo(function (sessionData) {
-
-                                // WIN
-
-                                // is still session valid ...
-                                if ((sessionData !== null) && (typeof sessionData.isValidLogin !== "undefined") && (sessionData.isValidLogin)) {
-
-                                    //alert("VALID");
-
-                                    // OK valid
-                                    $ionicLoading.hide();
-                                    Account.setSessionData(sessionData);
-                                    $scope.finishLogin();
-
-                                } else {
-
-                                    //alert("NOT VALID");
-
-                                    console.log("FAIL oAuth tokens were invalid.");
-                                    $ionicLoading.hide();
-                                    $scope.loading = false;
-
-                                    // if not logged in & has web intent -> show alert, stay on this page
-                                    if (System.hasWebIntent()) {
-                                        var alertPopup = $ionicPopup.alert({
-                                            title: 'Login nötig',
-                                            template: 'Zum Teilen bitte einloggen.'
-                                        });
-                                        alertPopup.then(function () { });
-                                    }
-
-                                }
-
-                            }, function () {
-
-                                // FAIL - server or internet error
-                                $ionicLoading.hide();
-                                $scope.loading = false;
-
-                                var alertPopup = $ionicPopup.alert({
-                                    title: 'Internet',
-                                    template: 'Keine Internetverbindung - bitte prüfen oder später noch einmal probieren.'
-                                });
-                                alertPopup.then(function () {
-                                    /*
-                                    try {
-                                        ionic.Platform.exitApp();
-                                    } catch (e) { alert("Bitte App schließen und neu laden."); }
-                                    */
-                                });
-
-                            });
-
-                        }, 1500);
-
-                    } catch (e) {
-                        console.warn("FAIL: testing oauth");
-                    }
-
+    $scope.finishLogin = function() {
+        $timeout(function(){
+            // after login - check what to do
+            if (System.hasWebIntent()) {
+                // got started by web intent -> show sharing page
+                $location.path("/app/collectionadd");
+            } else {
+                // no webIntent
+                var path = Account.getPathBeforeLogin();
+                if (path.length>0) {
+                    Account.rememberPathBeforeLogin("");
+                    $location.path(path);
                 } else {
-                    $scope.loading = false;
-                    $timeout(function () {
-                        // if not logged in & has web intent -> show alert, stay on this page
-                        if (System.hasWebIntent()) {
-                            var alertPopup = $ionicPopup.alert({
-                                title: 'Login nötig',
-                                template: 'Zum Teilen bitte einloggen.'
-                            });
-                            alertPopup.then(function () { });
-                        }
-                    }, 1100);
+                    $location.path("/app/collections");
                 }
-
-            };
-
-
-            // sync access token with iOS sharing extension
-            try {
-
-                window.AppGroupsUserDefaults.load({
-                    suite: "group.edusharing",
-                    key: "access_token"},
-                        function(acessToken) {
-                            // success
-
-                            // check if a valid acces token
-                            if ((acessToken!==null) && (acessToken!=="")) {
-
-                                //alert("Got 'access_token' from Sharing Extension Group: "+JSON.stringify(result));
-                                if (acessToken!==account.accessToken) {
-
-                                    //alert("AccessToken has changed ... load the rest und store in account");
-                                    
-                                    account.accessToken = acessToken;
-                                    window.AppGroupsUserDefaults.load({
-                                        suite: "group.edusharing",
-                                        key: "refresh_token"},
-                                        function(refreshToken) {
-
-                                            account.refreshToken = refreshToken;
-                                            window.AppGroupsUserDefaults.load({
-                                                suite: "group.edusharing",
-                                                key: "expires_in"},
-                                                function(expiresIn) {
-
-                                                    // convert expire info
-                                                    expiresIn = parseInt(expiresIn) + new Date().getTime();
-
-                                                    // update local account
-                                                    Account.storeOAuthData(account.accessToken, account.refreshToken, expiresIn);
-                                                    account = Account.getAccount();
-                                                    tryExistingAccessToken();
-
-                                                }, function() {
-                                                    console.log("changed access_token on share extension, but falied to load 'expires_in'");
-                                                    tryExistingAccessToken();
-                                                });
-
-                                        }, function() {
-                                            console.log("changed access_token on share extension, but falied to load 'refresh_token'");
-                                            tryExistingAccessToken();
-                                        });
-
-                                } else {
-                                    console.log("AccessToken still the same ... no need to update");
-                                    tryExistingAccessToken();
-                                }
-
-                            } else {
-                                console.log("No 'access_token' in Sharing Extension Group");
-                                tryExistingAccessToken();
-                            }
-
-                        }, function() {
-                            // failed
-                            tryExistingAccessToken();
-                    });
-
-            } catch (e) {
-                //alert("EXCEPTION:"+JSON.stringify(e));
-                tryExistingAccessToken();
             }
+        },10);
+    };
 
-        };
-
-        $scope.$on('$ionicView.enter', function () {
-            $scope.onEnter();
-        });
-
-        $scope.finishLogin = function() {
-            $timeout(function(){
-                $rootScope.isLoggedIn = true;
-                // after login - check what to do
-                if (System.hasWebIntent()) {
-                    // got started by web intent -> show sharing page
-                    //$location.path("/app/share");
-                    $location.path("/app/collectionadd");
-                } else {
-                    // no webIntent
-                    var path = Account.getPathBeforeLogin();
-                    if (path.length>0) {
-                        Account.rememberPathBeforeLogin("");
-                        $location.path(path);
-                    } else {
-                        $location.path("/app/collections");
-                    }
-                }
-            },10);
-        };
-
-        $scope.isUrlUnsave = function(url) {
-            if (typeof url === "undefined") return false;
-            if (url===null) return false;
-            return url.trim().indexOf("http:") === 0;
-        };
-
-        // when user clicks login or triggered when user and password are stored
+    // when user clicks login or triggered when user and password are stored
         $scope.loginClick = function(user, pass, server) {
 
             // check username
@@ -388,15 +77,7 @@ angular.module('starter.controllerLogin', [])
                 return;
             }
 
-            // check that url/server is set
-            if ((typeof server.url === "undefined") || (server.url===null) || (server.url.trim().length===0) || (server.url==='https://')) {
-                $scope.serverAnimationPulsateSimple=true;
-                $scope.focus="server";
-                $timeout(function(){$scope.serverAnimationPulsateSimple=false;},2000);
-                return;
-            }
-
-            var serverUrl = server.url.trim();
+            var serverUrl = $scope.loginServer.url;
             if (serverUrl.length>0) {
 
                     serverUrl = System.buildFullApiUrlFromUserInput(serverUrl);

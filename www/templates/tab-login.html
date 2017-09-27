@@ -1,23 +1,44 @@
 <ion-view>
 
-    <ion-content ng-cloak ng-hide="showLoginIntro" overflow-scroll="true" class="mainColorDarkBackground">
+    <ion-content ng-cloak overflow-scroll="true" class="mainColorDarkBackground">
 
-        <div ng-show="(!loading && ionicReady && showTopLogo)" style="width:100%;text-align:center;padding:10px;padding-top:0px;padding-bottom:0px;">
-            <img src="img/edu-sharing-logo-weiss.svg" style="width: 30%">
+        <div ng-show="showTopSpace" style="margin:16px; margin-top: 4px;">
+            <div style="
+                color: white;
+                font-size: 200%;
+                font-weight: bold;
+                ">
+                Anmelden
+            </div>
+            <div style="
+                color: lightgrey;
+                padding-top: 8px;
+                font-size: 80%;
+            ">
+                Melde dich mit deinen Daten auf dem gewählten Server an.
+            </div>
         </div>
 
-        <table width="100%" ng-show="(!loading && ionicReady)">
+        <table width="100%" ng-show="!loading">
         <tr>
             <td width="*">&nbsp;</td>
             <td width="320">
-                <div id="login-card" class="card" style="max-width: 400px;">
+                <div id="login-card" style="max-width: 400px; background-color: white;">
 
-                    <div class="item item-divider lightBackDarkText" style="
-                    border-bottom-color: white;
-                    text-align: center;
-                    margin-bottom: -10px;
-                    margin-top: 8px;">
-                        Login
+                    <div ng-click="serverBack()" class="item item-icon-left item-icon-right" href="#" style="padding-left: 85px;padding-top: 20px;">
+                        <span class="icon" style="left: 18px;">
+                            <img src="img/server_default.png" style="
+                            border-radius: 4px;
+                            height: 25px;
+                            width: 25px;
+                            box-shadow: 1px 1px 2px #eee;
+                            border-width: 1px;
+                            border-color: #eee;
+                            border-style: solid;
+                        ">
+                        </span>
+                        <div style="font-weight: bold;">{{loginServer.name}}</div>
+                        <i class="icon ion-chevron-right" style="right: 18px; font-size: 105%; color: grey;"></i>
                     </div>
 
                     <div class="list padding">
@@ -34,6 +55,7 @@
                             <input type="password" id="login-password" ng-model="loginPassword" placeholder="Passwort" ng-keydown="passwordOnKey($event, loginUser, loginPassword, loginServer)"
                             ng-focus="inputFocus(true)" focus-me="{{focus=='password'}}">
                         </label>
+                        <!--
                         <label class="item item-input {{serverAnimationPulsateSimple ? 'animationPulsateSimple' : '';}}" style="border-bottom-color:white; padding-top:12px;">
                          
                             <span class="input-label lightBackDarkText" style="width: 35px;font-size: 150%;" on-tap="selectServer($event)">
@@ -61,6 +83,7 @@
                             </span>
                            
                         </label>
+                        -->
                         <button class="button button-block darkBackLightText-Button" ng-click="loginClick(loginUser, loginPassword, loginServer)" style="border-width: 0px;">
                             <span>ANMELDEN</span>
                         </button>
@@ -71,107 +94,10 @@
         </tr>
         </table>
 
-        <p ng-show="(!loading && ionicReady && (appVersion!=='BROWSER'))" style=" font-size: 75%; color: #7ea1bb; padding-left: 17px; padding-top: 0px; text-align:center;">
+        <p ng-show="(!loading && (appVersion!=='BROWSER'))" style=" font-size: 75%; color: #7ea1bb; padding-left: 17px; padding-top: 0px; text-align:center;">
           Version {{appVersion}}
         </p>
 
     </ion-content>
-
-    <ion-content ng-cloak ng-show="showLoginIntro" scroll="false" class="mainColorDarkBackground" on-swipe-left="clickIntroNext()" style="padding-top:0px;margin-top:0px;">
-
-        <div ng-show="showLoginStep==0" class="intro-slide {{((showLoginStep==0)&&(showLoginAnim))?'bounceOutLeft':''}}">
-            <img src="./img/edu-sharing-logo-weiss-klein.svg" style="width:75px;margin-top:-14px;margin-bottom:24px;" />
-            <div style="opacity:0.8;font-weight:500;font-size:200%;margin-bottom: 16px;" >Herzlich Willkommen</div>
-            <div style="margin-bottom: 24px; font-size: 125%;">
-                Speichern sie eigene Fotos und<br>
-                Weblinks in edu-sharing.
-            </div>
-            <div class="intro-image">
-                <img src="./img/welcome.svg" style="width:75%;" />
-            </div>
-        </div>
-
-        <div ng-show="showLoginStep==1" class="intro-slide {{((showLoginStep==1)&&(showLoginAnim))?'bounceOutLeft':''}}">
-            <div class="intro-headline">Ansichten der App<br>umschalten</div>
-            <div class="intro-image">
-                <img ng-src="./img/intro{{showLoginStep}}.gif" style="width:100%;" />
-            </div>
-        </div>
-
-         <div ng-show="showLoginStep==2" class="intro-slide {{((showLoginStep==2)&&(showLoginAnim))?'bounceOutLeft':''}}">
-            <div class="intro-headline">Bilder in edu-sharing<br>speichern</div>
-            <div class="intro-image">
-                <img src="./img/intro{{showLoginStep}}.gif" style="width:100%;" />
-            </div>
-        </div>
-
-         <div ng-show="showLoginStep==3" class="intro-slide {{((showLoginStep==3)&&(showLoginAnim))?'bounceOutLeft':''}}">
-            <div class="intro-headline">Links in edu-sharing<br>speichern</div>
-            <div class="intro-image">
-                <img src="./img/intro{{showLoginStep}}.gif" style="width:100%;" />
-            </div>
-        </div>
-
-         <div ng-show="showLoginStep==4" class="intro-slide">
-            <div class="intro-headline">Objekte zu<br>Sammlungen hinzufügen</div>
-            <div class="intro-image">
-                <img src="./img/intro{{showLoginStep}}.gif" style="width:100%;" />
-            </div>
-        </div>
-
-    </ion-content>    
-
-        <div ng-cloak ng-show="showLoginIntro" style="
-        background-color: #FFF;
-        width: 100%;
-        height: 100px;
-        position: absolute;
-        bottom: 0px;
-        padding-top: 6px;
-        text-align: center;
-        box-shadow: 2px -1px 5px #888888;">
-
-        <div ng-show="(showLoginStep==4)">
-         <button class="button button-block darkBackLightText-Button" ng-click="clickIntroDone()" style="
-            border-width:0px; 
-            width:80%;
-            margin-left:auto;
-            margin-right: auto;">
-            <span>LOS GEHTS</span>
-         </button>
-        </div>
-
-        <div ng-show="(showLoginStep<4)" >
-         <button class="button button-block button-clear" ng-click="clickIntroDone()" style="
-            border-width:0px; 
-            width:43%;
-            margin-left:auto;
-            margin-right: auto;
-            display: inline-block;
-            font-size:95%;
-            color: #315774;">
-            <span ng-hide="(showLoginStep>0)">SOFORT STARTEN</span>
-            <span ng-show="(showLoginStep>0)">ÜBERSPRINGEN</span>
-         </button>
-         <button class="button button-block darkBackLightText-Button" ng-click="clickIntroNext()" style="
-            border-width:0px; 
-            width:43%;
-            margin-left:auto;
-            margin-right: auto;
-            display: inline-block;
-            font-size:95%;">
-            <span ng-hide="(showLoginStep>0)">INTRO ANSEHEN</span>
-            <span ng-show="(showLoginStep>0)">WEITER</span>
-         </button>
-        </div>
-
-        <div>
-            <div class="intro-dot" style="{{(showLoginStep>0) ? 'background-color: #315774;' : ''}}"></div>
-            <div class="intro-dot" style="{{(showLoginStep>1) ? 'background-color: #315774;' : ''}}"></div>
-            <div class="intro-dot" style="{{(showLoginStep>2) ? 'background-color: #315774;' : ''}}"></div>
-            <div class="intro-dot" style="{{(showLoginStep>3) ? 'background-color: #315774;' : ''}}"></div>
-        </div>    
-
-    </div>
 
 </ion-view>

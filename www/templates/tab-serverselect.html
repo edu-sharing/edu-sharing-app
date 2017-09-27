@@ -1,0 +1,68 @@
+<ion-view class="mainColorDarkBackground">
+
+    <ion-content ng-cloak overflow-scroll="true" style="
+        overflow: hidden;
+        padding:0px;
+        max-width: 640px;
+        margin-left: auto;
+        margin-right: auto;
+    ">
+
+        <div style="margin:16px; margin-top: 4px;">
+            <div style="
+                color: white;
+                font-size: 200%;
+                font-weight: bold;
+                ">
+                Wo möchtest Du hin?
+            </div>
+            <div style="
+                color: lightgrey;
+                padding-top: 8px;
+                font-size: 80%;
+            ">
+                Wähle den Server aus, mit dem du dich verbinden möchtest.
+            </div>
+        </div>
+
+        <div class="list">
+
+            <a ng-repeat="server in serverDirectory" ng-click="clickServerDirectory(server)" class="item item-icon-left item-icon-right" href="#" style="padding-left: 85px;padding-top: 20px;">
+                <span class="icon" style="left: 18px;">
+                    <img src="img/server_default.png" style="
+                        border-radius: 8px;
+                        height: 50px;
+                        width: 50px;
+                        box-shadow: 2px 2px 4px #eee;
+                        border-width: 1px;
+                        border-color: #eee;
+                        border-style: solid;
+                    ">
+                </span>
+                <div style="font-weight: bold;">{{server.name}}</div>
+                <div style="font-size: 80%;color:grey;">{{server.url}}</div>
+                <i class="icon ion-chevron-right" style="right: 18px; font-size: 105%; color: grey;"></i>
+            </a>
+
+            <a ng-click="clickServerCustom()" ng-hide="loading" class="item item-icon-left item-icon-right" href="#" style="padding-left: 85px;padding-top: 20px;">
+                <span class="icon" style="left: 18px;">
+                    <img src="img/server_custom.png" style="
+                        border-radius: 8px;
+                        height: 50px;
+                        width: 50px;
+                        box-shadow: 2px 2px 4px #eee;
+                        border-width: 1px;
+                        border-color: #eee;
+                        border-style: solid;
+                    ">
+                </span>
+                <div style="font-weight: bold;">Server selber angeben</div>
+                <div style="font-size: 80%;color:grey;">https://</div>
+                <i class="icon ion-chevron-right" style="right: 18px; font-size: 105%; color: grey;"></i>
+            </a>
+
+        </div>
+
+    </ion-content>
+
+</ion-view>
