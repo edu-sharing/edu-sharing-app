@@ -889,7 +889,7 @@ angular.module('starter.services', [])
                                 });
                                 buttons.push({
                                     action: 'collection-add-last',
-                                    text: "<div class='collection-add-image-wrapper action-text-image'>\n"+
+                                    text: "<div class='collection-add-image-wrapper-equal action-text-image'>\n"+
                                      imageDivContent +
                                     "</div>"+$rootScope.lastActiveCollection.title.substring(0, 30)
                                 });

@@ -707,11 +707,26 @@ body {
     margin-right: 9px;
 }
 
+.collection-add-image-wrapper-equal {
+    border-width: 4px;
+    border-color: grey;
+    border-style: solid;
+    width: 30px;
+    height: 30px;
+    border-radius: 5px;
+    padding: 4px;
+    font-size: 140%;
+    background-color: white;
+    padding-left: 6px;
+    color: #315774;
+    background-size: 30px 30px;
+}
+
 .action-text-image-inner {
     position: absolute;
     width: 28px;
-    height: 27px;
-    top: 14px;
+    height: 28px;
+    top: 11px;
     left: 82px;
     border-radius: 4px;
 }
