@@ -1,5 +1,5 @@
 angular.module('starter.controllerLogin', [])
-.controller('LoginCtrl', function($scope, $rootScope, $location, Account, $ionicPopup, System, EduApi, $ionicLoading, $timeout) {
+.controller('LoginCtrl', function($scope, $rootScope, $location, Account, $ionicPopup, System, EduApi, $ionicLoading, $timeout, $ionicHistory, $state) {
 
     $scope.loading = false;
     $scope.showTopSpace = true;
@@ -8,15 +8,16 @@ angular.module('starter.controllerLogin', [])
     $scope.loginPassword = "";
     $scope.focus = "";
 
-    $scope.loginServer = {};
+    $scope.loginServer = null;
 
     $scope.inputFocus = function(gotFocus) {
-        $scope.showTopSpace = !gotFocus;
+        $scope.showTopSpace = false;
     };
 
     $scope.serverBack = function() {
         // go back to server select page
-        $location.path("/app/serverselect");
+        $state.go('app.serverselect');
+        $ionicHistory.nextViewOptions({ disableBack: true, disableAnimate: false, historyRoot: true });
     };
 
     $scope.$on('$ionicView.enter', function () {
@@ -24,6 +25,18 @@ angular.module('starter.controllerLogin', [])
         // load selected server from client settings
         var clientSettings = Account.getClientSettings();
         $scope.loginServer = clientSettings.selectedServer;
+        $rootScope.serverName = clientSettings.selectedServer.name;
+
+        $timeout(function () {
+            // if not logged in & has web intent -> show alert, stay on this page
+            if (System.hasWebIntent()) {
+                var alertPopup = $ionicPopup.alert({
+                    title: 'Login nötig',
+                    template: 'Zum Teilen bitte einloggen.'
+                });
+                alertPopup.then(function () { });
+            }
+        }, 100);
 
     });
 
@@ -40,11 +53,23 @@ angular.module('starter.controllerLogin', [])
     });
 
     $scope.finishLogin = function() {
+
+        // unlock screen orientation
+        try {
+            screen.orientation.unlock();
+            console.log("Screen should be unlocked now");
+        } catch (e) {
+            alert("FAIL screen.orientation.unlock()");
+        }
+
+        $rootScope.isLoggedIn = true;
+
         $timeout(function(){
             // after login - check what to do
             if (System.hasWebIntent()) {
                 // got started by web intent -> show sharing page
-                $location.path("/app/collectionadd");
+                $state.go('app.collectionadd');
+                $ionicHistory.nextViewOptions({ disableAnimate: true, historyRoot: true });
             } else {
                 // no webIntent
                 var path = Account.getPathBeforeLogin();
@@ -52,14 +77,15 @@ angular.module('starter.controllerLogin', [])
                     Account.rememberPathBeforeLogin("");
                     $location.path(path);
                 } else {
-                    $location.path("/app/collections");
+                    $state.go('app.collections');
+                    $ionicHistory.nextViewOptions({ disableAnimate: true, historyRoot: true });
                 }
             }
         },10);
     };
 
     // when user clicks login or triggered when user and password are stored
-        $scope.loginClick = function(user, pass, server) {
+        $scope.loginClick = function(user, pass) {
 
             // check username
             if ((typeof user === "undefined") || (user.trim().length===0)) {
@@ -118,7 +144,7 @@ angular.module('starter.controllerLogin', [])
                             $scope.loading = false;
                             $ionicPopup.alert({
                                 title: 'Verbindung nicht möglich',
-                                template: '<div style="text-align: center">Bitte Internetverbindung und eingegebene Adresse prüfen.<br><span style="font-size: 65%;">'+server.url+'</span><br></div>'
+                                template: '<div style="text-align: center">Bitte Internetverbindung prüfen.<br></div>'
                             }).then(function() {});
                         }
 

@@ -1,7 +1,6 @@
 <ion-view class="mainColorDarkBackground">
 
-    <ion-content ng-cloak overflow-scroll="true" style="
-        overflow: hidden;
+    <ion-content ng-hide="showEnterCustomServer" ng-cloak overflow-scroll="true" style="
         padding:0px;
         max-width: 640px;
         margin-left: auto;
@@ -25,11 +24,11 @@
             </div>
         </div>
 
-        <div class="list">
+        <div class="list" >
 
             <a ng-repeat="server in serverDirectory" ng-click="clickServerDirectory(server)" class="item item-icon-left item-icon-right" href="#" style="padding-left: 85px;padding-top: 20px;">
                 <span class="icon" style="left: 18px;">
-                    <img src="img/server_default.png" style="
+                    <img src="{{server.image}}" onerror="this.src='img/server_default.png'" style="
                         border-radius: 8px;
                         height: 50px;
                         width: 50px;
@@ -40,7 +39,7 @@
                     ">
                 </span>
                 <div style="font-weight: bold;">{{server.name}}</div>
-                <div style="font-size: 80%;color:grey;">{{server.url}}</div>
+                <div style="font-size: 80%;color:grey;">{{server.urlDisplay}}</div>
                 <i class="icon ion-chevron-right" style="right: 18px; font-size: 105%; color: grey;"></i>
             </a>
 
@@ -57,9 +56,106 @@
                     ">
                 </span>
                 <div style="font-weight: bold;">Server selber angeben</div>
-                <div style="font-size: 80%;color:grey;">https://</div>
+                <div style="font-size: 80%;color:grey;">{{customUrl.length>0 ? customUrl : 'https://'}}</div>
                 <i class="icon ion-chevron-right" style="right: 18px; font-size: 105%; color: grey;"></i>
             </a>
+
+        </div>
+
+    </ion-content>
+
+    <ion-content ng-show="showEnterCustomServer" ng-cloak overflow-scroll="true" style="
+        overflow: hidden;
+        padding:0px;
+        max-width: 640px;
+        margin-left: auto;
+        margin-right: auto;
+    ">
+
+        <div style="margin:16px; margin-top: 4px;">
+            <div style="
+                color: white;
+                font-size: 200%;
+                font-weight: bold;
+                ">
+                Server selber angeben
+            </div>
+            <div style="
+                color: lightgrey;
+                padding-top: 8px;
+                font-size: 80%;
+            ">
+                Gib den Link zum Server an, mit dem du sich verbinden möchtest.
+            </div>
+        </div>
+
+        <div style="background-color: white; padding-bottom:12px; padding-top: 8px;">
+        <table style="width: 90%;">
+            <tr>
+                <td width="20px" ng-click="clickServerCustomCancel()" style="
+                                 vertical-align: bottom;
+                                 padding-left: 20px;
+                                 padding-bottom: 5px;
+                                 padding-right: 9px;">
+                    <i class="icon ion-android-arrow-back textDarkGray"  style="right: 18px; font-size: 150%; color: #315774;"></i>
+                </td>
+                <td width="50px" ng-click="clickServerCustomCancel()" style="
+                                vertical-align: bottom;
+                                padding-left: 7px;
+                                padding-top: 24px;
+                                padding-right: 9px;">
+                    <img src="img/server_custom.png" style="
+                                border-radius: 4px;
+                                height: 25px;
+                                width: 25px;
+                                border-width: 1px;
+                                border-color: #eee;
+                                border-style: solid;
+                                background-color: white;
+                                ">
+                </td>
+                <td class="{{userAnimationPulsateSimple ? 'animationPulsateSimple' : '';}}" style="
+                                border-bottom-width: 1px;
+                                border-bottom-color: lightgrey;
+                                border-bottom-style: solid;
+                                padding-top: 8px;"
+                >
+                    <label class="item item-input item-floating-label" style="border-width: 0px !important; padding-left: 8px;">
+                        <span class="input-label" style="font-size: 75%; color: grey;">Server Adresse</span>
+                        <input id="login-server" ng-model="customUrl" type="text" placeholder="https://" style="height: 17px;"
+                               ng-keydown="changeServerCustom(customUrl)"
+                               class="textDarkGray" focus-me="true" >
+                    </label>
+                </td>
+            </tr>
+            <tr style="padding-top:8px;">
+                <td></td>
+                <td></td>
+                <td style="
+                    padding-top: 4px;
+                    color: red;
+                    font-size: 80%;
+                    padding-left: 7px;
+                    height: 25px;">
+                    {{customServerError}}
+                </td>
+            </tr>
+        </table>
+
+         <div>
+            <button class="button button-block darkBackLightText-Button"
+                    ng-click="clickServerCustomOK(customUrl)"
+                    style="
+                        border-width: 0px;
+                        margin-top: 8px;
+                        width: 80%;
+                        max-width: 300px;
+                        margin-left: auto;
+                        margin-right: auto;
+                    ">
+                <span>VERBINDUNG TESTEN</span>
+            </button>
+         </div>
 
         </div>
 

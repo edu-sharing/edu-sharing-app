@@ -81,7 +81,7 @@ angular.module('starter.services', [])
               window.open(contentUrl, '_blank');
           }
       },
-      // make sure app is always started going over login screen
+      // make sure app is always started going over intro screen
       appWentOverLoginScreen: function() {
           appWentOverLoginScreen = true;
       },

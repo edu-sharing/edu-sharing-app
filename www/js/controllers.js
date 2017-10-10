@@ -12,6 +12,7 @@ angular.module('starter.controllers', [])
         $rootScope.editFolderNotAllowed = false;
 
         $scope.logout = function() {
+
             $ionicLoading.show({
                 template: $rootScope.spinnerSVG
             });
@@ -20,11 +21,12 @@ angular.module('starter.controllers', [])
 
 
             var finishLogout = function(){
-            $timeout(function(){
-                var url = window.location.href;
-                url = url.substring(0,url.indexOf("#"));
-                window.location.href = url;
-            },1500);
+                $rootScope.isLoggedIn = false;
+                $timeout(function(){
+                    var url = window.location.href;
+                    url = url.substring(0,url.indexOf("#"));
+                    window.location.href = url;
+                },1500);
             };
 
             // clear iOS share extension login data
@@ -206,179 +208,6 @@ angular.module('starter.controllers', [])
             Toolbox.uploadImageWorkspace($scope);
        };
 
-       /*
-        $scope.headerButtonUpload = function() {
-
-            var buttons = [];
-            buttons.push({ 
-                action: 'album',
-                text: '<i class="icon ion-images action-sheet-icon"></i> Bild Aus Galerie'
-            });
-            buttons.push({ 
-                action: 'camera',
-                text: '<i class="icon ion-camera action-sheet-icon"></i> Bild Von Kamera'
-            });
-            buttons.push({ 
-                action: 'close',
-                text: '<i class="icon ion-close action-sheet-icon"></i> Abbrechen'
-            });
-
-            // Show the action sheet
-            var hidesheet = $ionicActionSheet.show({
-                buttons: buttons,
-                titleText: 'Hochladen',
-                //cancelText: '<i class="icon ion-close action-sheet-icon"></i> Abbrechen',
-                cancel: function() {
-                    onEndActionSheet();
-                },
-                buttonClicked: function(index) {
-                    onEndActionSheet();
-                    if (buttons[index].action==='album') {
-                        $scope.uploadGallery()
-                    } 
-                    else if (buttons[index].action==='camera') {
-                        $scope.uploadCamera();
-                    } 
-                    else if (buttons[index].action==='close') {
-                    } 
-                    else {
-                        alert("unkown action("+buttons[index].action+")");
-                    }
-                    return true;
-                }
-            });
-
-
-            // temp overide of back button
-            
-            //scope.onBackUnbind();
-            $rootScope.actionSheet = true;
-            var unbindBack = $scope.$on('button:back',function(){
-                hidesheet();
-            });
-
-            //reset back button to old function
-            var onEndActionSheet = function() {
-                $rootScope.actionSheet = false;
-                unbindBack();
-            };
-
-        };
-
-        $scope.uploadGallery = function() {
-
-            var options = {
-                destinationType: 0, //Camera.DestinationType.DATA_URL
-                sourceType: 0, // Camera.PictureSourceType.PHOTOLIBRARY
-                encodingType: 0 //Camera.EncodingType.JPEG
-            };
-
-            var fail = function() {
-                $ionicPopup.alert({
-                    title: 'Problem',
-                    template: 'Konnte nicht auf die Gallerie zugreifen.'
-                }).then(function() {});
-            };
-
-            $rootScope.ignorePause = true; // set flag so that app is not existing when background
-            $cordovaCamera.getPicture(options).then(function(imageData) {
-                $rootScope.ignorePause = false; // reset flag
-
-                $scope.createImageNode(imageData);
-
-            }, function(err) {
-                $rootScope.ignorePause = false; // reset flag
-                fail();
-                console.dir(err);
-            });
-        };
-
-        $scope.uploadCamera = function() {
-
-            var options = {
-                correctOrientation: true,
-                destinationType: 0, //Camera.DestinationType.DATA_URL
-                sourceType: 1, // Camera.PictureSourceType.CAMERA
-                encodingType: 0 //Camera.EncodingType.JPEG
-            };
-
-            var fail = function() {
-                $ionicPopup.alert({
-                    title: 'Problem',
-                    template: 'Konnte nicht auf Kamera zugreifen.'
-                }).then(function() {});
-            };
-
-            $rootScope.ignorePause = true; // set flag so that app is not existing when background
-            $cordovaCamera.getPicture(options).then(function(imageData) {
-
-                $rootScope.ignorePause = false; // reset flag
-                          
-                // TODO: show preview with "data:image/jpeg;base64,"
-                $scope.createImageNode(imageData);
-
-            }, function(err) {
-                $rootScope.ignorePause = false; // reset flag
-                fail();
-                console.dir(err);
-            });
-        };
-
-        $scope.createImageNode = function(imageData) {
-
-            var parentNodeID = Share.pullParentNodeId();
-            if ((typeof parentNodeID === "undefined") || (parentNodeID===null)) {
-                alert("No parent Node ID.");
-                return;
-            }
-
-            var fail = function(){
-
-                // make sure screen time out gets back to normal
-                try {
-                    StayAwake.enableScreenTimeout();
-                } catch (e) {
-                    console("FAIL: StayAwake.enableScreenTimeout - "+e);
-                }
-
-                $ionicLoading.hide();
-                $ionicPopup.alert({
-                    title: 'Problem',
-                    template: 'Fehler beim Speichern.'
-                }).then(function() {});
-            };
-
-            $ionicLoading.show({
-                template: $rootScope.spinnerSVG+'<div class="upload-progress-panel" ng-show="(progress>0) && (progress<100)">{{progress}} %</div>'
-            });
-
-
-            // make sure screen is not turning black during upload
-            try {
-                StayAwake.disableScreenTimeout();
-            } catch (e) {
-                console("FAIL: StayAwake.disableScreenTimeout() - "+e);
-            }
-
-            EduApi.createImageNode(parentNodeID, "Bild "+Date.now(), null, imageData, true, "image/jpeg", function(newNodeId){
-                // WIN
-
-                // make sure screen time out gets back to normal
-                try {
-                    StayAwake.enableScreenTimeout();
-                } catch (e) {
-                    console("FAIL: StayAwake.enableScreenTimeout - "+e);
-                }
-
-                $ionicLoading.hide();
-                $scope.$broadcast('workspace:reload', newNodeId);
-            }, fail, function(progress){
-                $timeout(function(){$rootScope.progress = progress;},10);
-            });
-
-        };
-
-        */
 
         $scope.toggle = function() {
             // dont show while multi select mode
@@ -394,36 +223,6 @@ angular.module('starter.controllers', [])
                         $ionicSideMenuDelegate.toggleLeft();
                     });
                 }
-            }
-        });
-
-    })
-
-/*
- *  AccountCtrl --> contoller for account section
- */
-
-.controller('AccountCtrl', function($scope, $log, $rootScope, $location, Account, $ionicPopup, System, $sce, $timeout, EduApi) {
-
-        $log.debug("AccountCtrl");
-
-        $scope.linkiFrame = $sce.trustAsResourceUrl("wait.html");
-
-        $scope.$on('$ionicView.enter', function() {
-
-            System.checkIfAppNeedFreshStart();
-            $scope.serverBase = Account.getClientSettings().selectedServer.url;
-
-            $log.debug("Enter Login View");
-            $scope.showiFrame = Account.isLoggedIn();
-            if (!$scope.showiFrame) {
-                Account.rememberPathBeforeLogin($location.$$path);
-                $location.path("/app/login");
-            } else {
-                $timeout(function() {
-                    $scope.linkiFrame = $sce.trustAsResourceUrl(EduApi.serverUrls($scope.serverBase).profile);
-                },10);
-
             }
         });
 

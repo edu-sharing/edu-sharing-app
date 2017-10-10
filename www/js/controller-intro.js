@@ -1,45 +1,38 @@
 angular.module('starter.controllerIntro', [])
-.controller('IntroCtrl', function($scope, $rootScope, $location, Account, $ionicPopup, System, EduApi, $ionicLoading, $timeout) {
-
-    $scope.loading = true;
+.controller('IntroCtrl', function($scope, $rootScope, Account, $ionicPopup, System, EduApi, $ionicLoading, $timeout, $state, $ionicHistory) {
 
     /*
      * INIT AND INTRO
      */
 
+
+
     $scope.showLoginIntro = false;
     $scope.showLoginStep = 0;
     $scope.showLoginAnim = false;
 
+    $scope.$on('$ionicView.enter', function() {
+        System.appWentOverLoginScreen();
+    });
+
     // only call after ionic is ready
     $scope.checkIfLoginScreenIsToShow = function() {
-
-        // **** set selected server ****
-
-        var clientSettings = Account.getClientSettings();
-        if (typeof clientSettings.selectedServer === "undefined") clientSettings.selectedServer = {name:null,url:null};
-        $scope.loginServer = clientSettings.selectedServer;
 
         // **** checkIfLoginScreenIsToShow ****
 
         // determine if login intro should be shown after login
         var preLoginAccount = Account.getAccount();
-        var loginIntroShouldBeShown =  ((typeof preLoginAccount.lastLogin === "undefined") || (preLoginAccount.lastLogin===0));
+        $scope.showLoginIntro =  ((typeof preLoginAccount.lastLogin === "undefined") || (preLoginAccount.lastLogin===0));
 
-        if (loginIntroShouldBeShown) {
-
-            // lock into portrait while intro
-            // after leaving login screen it will unlock
-            if ((typeof window.screen !== "undefined") && (typeof window.screen.lockOrientation !== "undefined"))  window.screen.lockOrientation('portrait');
-
-            // show intro screen
-            $scope.showLoginIntro = true;
+        if (!$scope.showLoginIntro) {
+            $scope.continueLogin();
         }
 
     };
 
     // either IONIC still needs some time to get ready .. then wait for event
     $scope.$on('ionic-ready', function() {
+        $rootScope.ionicReady = true;
         $scope.checkIfLoginScreenIsToShow();
     });
 
@@ -48,6 +41,7 @@ angular.module('starter.controllerIntro', [])
 
     // Button Intro Next
     $scope.clickIntroNext = function() {
+
         if ($scope.showLoginStep>=4) return;
         if ($scope.showLoginAnim) return;
         $scope.showLoginAnim = true;
@@ -59,38 +53,44 @@ angular.module('starter.controllerIntro', [])
 
     // Button Intro Skip or Done
     $scope.clickIntroDone = function() {
-        $location.path("/app/serverselect");
+        // go select server
+        $state.go('app.serverselect');
+        $ionicHistory.nextViewOptions({
+            historyRoot: true
+        });
     };
 
-    $scope.onEnter = function() {
+    $scope.continueLogin = function() {
 
         // as long ionic is not ready ... wait
         if (!$rootScope.ionicReady) {
-            $timeout($scope.onEnter,500);
+            $timeout($scope.continueLogin,500);
             return;
         }
 
         // lock screen orientation to potrait on login screen and intro
         try {
             screen.orientation.lock('portrait');
+            console.log("Screen should be locked now in potrait");
         } catch (e) {
             console.log("FAIL screen.orientation.lock('portrait')");
         }
-
-        $scope.showTopLogo = true;
-        System.appWentOverLoginScreen();
 
         // check if oauth data is available
         var account = Account.getAccount();
         var clientSettings = Account.getClientSettings();
 
+
         var tryExistingAccessToken = function () {
+
 
             if ((typeof account.accessToken !== "undefined")
                 && (account.accessToken.length > 0)
                 && (typeof clientSettings.selectedServer !== "undefined")
                 && (typeof clientSettings.selectedServer.url !== "undefined")
                 && (clientSettings.selectedServer.url !== null)) {
+
+                $rootScope.serverName = clientSettings.selectedServer.name;
 
                 // init API url
                 EduApi.setBaseUrl(EduApi.serverUrls(clientSettings.selectedServer.url).api);
@@ -109,7 +109,6 @@ angular.module('starter.controllerIntro', [])
 
                 try {
 
-                    $scope.loading = true;
                     $timeout(function () {
 
                         EduApi.getUserSessionInfo(function (sessionData) {
@@ -119,20 +118,28 @@ angular.module('starter.controllerIntro', [])
                             // is still session valid ...
                             if ((sessionData !== null) && (typeof sessionData.isValidLogin !== "undefined") && (sessionData.isValidLogin)) {
 
-                                //alert("VALID");
-
                                 // OK valid
+                                $rootScope.isLoggedIn = true;
                                 $ionicLoading.hide();
                                 Account.setSessionData(sessionData);
-                                alert("SESSION OK --> TODO: finsihLogin");
+
+                                // unlock screen orientation
+                                try {
+                                    screen.orientation.unlock();
+                                    console.log("Screen should be unlocked now");
+                                } catch (e) {
+                                    alert("FAIL screen.orientation.unlock()");
+                                }
+
+                                $state.go('app.collections');
+                                $ionicHistory.nextViewOptions({
+                                    historyRoot: true
+                                });
 
                             } else {
 
-                                //alert("NOT VALID");
-
                                 console.log("FAIL oAuth tokens were invalid.");
                                 $ionicLoading.hide();
-                                $scope.loading = false;
 
                                 // if not logged in & has web intent -> show alert, stay on this page
                                 if (System.hasWebIntent()) {
@@ -149,7 +156,6 @@ angular.module('starter.controllerIntro', [])
 
                             // FAIL - server or internet error
                             $ionicLoading.hide();
-                            $scope.loading = false;
 
                             var alertPopup = $ionicPopup.alert({
                                 title: 'Internet',
@@ -167,17 +173,29 @@ angular.module('starter.controllerIntro', [])
                 }
 
             } else {
-                $scope.loading = false;
-                $timeout(function () {
-                    // if not logged in & has web intent -> show alert, stay on this page
-                    if (System.hasWebIntent()) {
-                        var alertPopup = $ionicPopup.alert({
-                            title: 'Login nötig',
-                            template: 'Zum Teilen bitte einloggen.'
-                        });
-                        alertPopup.then(function () { });
-                    }
-                }, 1100);
+
+                if ((typeof clientSettings.selectedServer === "undefined") ||
+                    (typeof clientSettings.selectedServer.url === "undefined") ||
+                    (clientSettings.selectedServer.url === null) ||
+                    (clientSettings.selectedServer.url.length === 0)) {
+
+                    console.log("NO SERVER SELECTED");
+                    $state.go('app.serverselect');
+                    $ionicHistory.nextViewOptions({
+                        historyRoot: true
+                    });
+                }
+
+                else {
+
+                    console.log("GOT SERVER ("+clientSettings.selectedServer.url+") - GO LOGIN");
+                    $state.go('app.login');
+                    $ionicHistory.nextViewOptions({
+                        historyRoot: true
+                    });
+
+                }
+
             }
 
         };
@@ -246,25 +264,10 @@ angular.module('starter.controllerIntro', [])
                 });
 
         } catch (e) {
+            // this normally happens on browser and android
             tryExistingAccessToken();
         }
 
     };
-
-    $scope.$on('$ionicView.enter', function () {
-        $scope.onEnter();
-    });
-
-    // TODO manage Landscape fix and release
-    $scope.$on('$ionicView.leave', function() {
-
-        // unlock screen orientation on leave
-        try {
-            screen.orientation.unlock();
-        } catch (e) {
-            alert("FAIL screen.orientation.unlock()");
-        }
-
-    });
 
 });

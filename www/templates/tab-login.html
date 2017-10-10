@@ -2,7 +2,7 @@
 
     <ion-content ng-cloak overflow-scroll="true" class="mainColorDarkBackground">
 
-        <div ng-show="showTopSpace" style="margin:16px; margin-top: 4px;">
+        <div ng-show="showTopSpace" style="margin:16px; margin-top: 4px; max-width: 320px; margin-left: auto; margin-right: auto;">
             <div style="
                 color: white;
                 font-size: 200%;
@@ -23,81 +23,96 @@
         <tr>
             <td width="*">&nbsp;</td>
             <td width="320">
-                <div id="login-card" style="max-width: 400px; background-color: white;">
-
-                    <div ng-click="serverBack()" class="item item-icon-left item-icon-right" href="#" style="padding-left: 85px;padding-top: 20px;">
-                        <span class="icon" style="left: 18px;">
-                            <img src="img/server_default.png" style="
-                            border-radius: 4px;
-                            height: 25px;
-                            width: 25px;
-                            box-shadow: 1px 1px 2px #eee;
-                            border-width: 1px;
-                            border-color: #eee;
-                            border-style: solid;
-                        ">
-                        </span>
-                        <div style="font-weight: bold;">{{loginServer.name}}</div>
-                        <i class="icon ion-chevron-right" style="right: 18px; font-size: 105%; color: grey;"></i>
+                <div id="login-card" style="max-width: 400px; background-color: white; border-radius: 6px;">
+                    <div style="width:100%; height: 45px; padding-top: 10px; padding-bottom: 4px; background-color: lightgrey; border-top-left-radius: 6px; border-top-right-radius: 6px;">
+                    <table ng-hide="loginServer==null" ng-click="serverBack()" style="width: 100%;">
+                        <tr>
+                            <td style="padding-left: 24px; vertical-align: middle; width: 53px;" >
+                                <i class="icon ion-android-arrow-back" style="right: 18px; font-size: 150%; color: #315774;"></i>
+                            </td>
+                            <td style="width: 28px;">
+                                <img src="{{loginServer.image}}" onerror="this.src='img/server_default.png'" style="
+                                border-radius: 4px;
+                                height: 25px;
+                                width: 25px;
+                                border-width: 1px;
+                                border-color: #eee;
+                                border-style: solid;
+                                background-color: white;
+                                ">
+                            </td>
+                            <td style=" vertical-align: middle; padding-left: 4px;">
+                                <div style="font-weight: bold;">{{loginServer.name}}</div>
+                            </td>
+                        </tr>
+                    </table>
                     </div>
 
-                    <div class="list padding">
-                        <label class="item item-input {{userAnimationPulsateSimple ? 'animationPulsateSimple' : '';}}" style="padding-bottom: 8px;padding-top: 8px;">
-                            <span class="input-label lightBackDarkText" style="width: 35px;font-size: 150%;">
-                                <i class="icon ion-android-person textDarkGray"></i>
-                            </span>
-                            <input type="text" id="login-username" ng-model="loginUser" placeholder="Benutzername" ng-keydown="passwordOnKey($event, loginUser, loginPassword, loginServer)" ng-focus="inputFocus(true)" class="textDarkGray" focus-me="{{focus=='user'}}">
-                        </label>
-                        <label class="item item-input {{passAnimationPulsateSimple ? 'animationPulsateSimple' : '';}}" style="padding-bottom: 8px;padding-top: 8px;">
-                            <span class="input-label lightBackDarkText" style="width: 35px;font-size: 150%;">
-                                <i class="icon ion-android-lock textDarkGray"></i>
-                            </span>
-                            <input type="password" id="login-password" ng-model="loginPassword" placeholder="Passwort" ng-keydown="passwordOnKey($event, loginUser, loginPassword, loginServer)"
-                            ng-focus="inputFocus(true)" focus-me="{{focus=='password'}}">
-                        </label>
-                        <!--
-                        <label class="item item-input {{serverAnimationPulsateSimple ? 'animationPulsateSimple' : '';}}" style="border-bottom-color:white; padding-top:12px;">
-                         
-                            <span class="input-label lightBackDarkText" style="width: 35px;font-size: 150%;" on-tap="selectServer($event)">
-                                <i class="icon ion-android-home textDarkGray"></i>
-                            </span>
-                              
-                            <span ng-show="isUrlUnsave(loginServer.url)" style="color:red; position:absolute; top:5px; left:50px; font-size:65%;">
-                                Verbindung ohne HTTPS ist nicht sicher
-                            </span>
-                             
-                            <span ng-show='loginServer.url==null' on-tap="selectServer($event)" style="font-size:85%;color: #315774;">
-                                Organisation / Server wählen
-                            </span> 
-                           
-                            <span ng-show="loginServer.name!=null" on-tap="selectServer($event)" style="font-size:85%;color: #315774;">
-                                {{loginServer.name | limitTo:30 }} 
-                            </span> 
-                             
-                            <input ng-show="((loginServer.name==null) && (loginServer.url!=null))" id="login-server"  type="text" ng-model="loginServer.url" class="textDarkGray" style="font-size: 60%;" focus-me="{{focus=='server'}}"
-                            ng-focus="inputFocus(true)" ng-keydown="passwordOnKey($event, loginUser, loginPassword, loginServer)">
-                            
-                            <span on-tap="selectServer($event)" ng-show='loginServer.url!=null' 
-                            style="width: 35px;color: #315774;position:absolute; right:-12px;">
-                                <i class="icon ion-edit"></i>
-                            </span>
-                           
-                        </label>
-                        -->
-                        <button class="button button-block darkBackLightText-Button" ng-click="loginClick(loginUser, loginPassword, loginServer)" style="border-width: 0px;">
-                            <span>ANMELDEN</span>
-                        </button>
-                    </div>
-                </div>
-            </td>
-            <td width="*">&nbsp;</td>
-        </tr>
-        </table>
+                    <table style="width: 90%;">
+                        <tr>
+                            <td width="50px" style="
+                                vertical-align: bottom;
+                                padding-left: 24px;
+                                padding-bottom: 1px;">
+                                <i class="icon ion-android-person textDarkGray" style="font-size: 160%;"></i>
+                            </td>
+                            <td class="{{userAnimationPulsateSimple ? 'animationPulsateSimple' : '';}}" style="
+                                border-bottom-width: 1px;
+                                border-bottom-color: lightgrey;
+                                border-bottom-style: solid;
+                                padding-top: 8px;"
+                                >
+                                <label class="item item-input item-floating-label" style="border-width: 0px !important; padding-left: 8px;">
+                                    <span class="input-label" style="font-size: 75%; color: grey;">Benutzername</span>
+                                    <input id="login-username" ng-model="loginUser" type="text" placeholder="Benutzername" style="height: 17px;"
+                                           ng-keydown="passwordOnKey($event, loginUser, loginPassword, loginServer)"
+                                           ng-focus="inputFocus(true)" class="textDarkGray" focus-me="{{focus=='user'}}" >
+                                </label>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td width="50px" style="
+                                vertical-align: bottom;
+                                padding-left: 24px;
+                                padding-bottom: 1px;">
+                                <i class="icon ion-android-lock textDarkGray" style="font-size: 160%;"></i>
+                            </td>
+                            <td class="{{passAnimationPulsateSimple ? 'animationPulsateSimple' : '';}}" style="
+                                border-bottom-width: 1px;
+                                border-bottom-color: lightgrey;
+                                border-bottom-style: solid;
+                                padding-top: 8px;"
+                            >
+                                <label class="item item-input item-floating-label" style="border-width: 0px !important; padding-left: 8px;">
+                                    <span class="input-label" style="font-size: 75%; color: grey;">Passwort</span>
+                                    <input id="login-password" ng-model="loginPassword" type="password" placeholder="Passwort" style="height: 17px;"
+                                           ng-keydown="passwordOnKey($event, loginUser, loginPassword, loginServer)"
+                                           ng-focus="inputFocus(true)" focus-me="{{focus=='password'}}" >
+                         </label>
+                     </td>
+                 </tr>
+             </table>
 
-        <p ng-show="(!loading && (appVersion!=='BROWSER'))" style=" font-size: 75%; color: #7ea1bb; padding-left: 17px; padding-top: 0px; text-align:center;">
-          Version {{appVersion}}
-        </p>
+             <div class="list padding">
+                 <button class="button button-block darkBackLightText-Button"
+                         ng-click="loginClick(loginUser, loginPassword, loginServer)"
+                         style="border-width: 0px; margin-top: 8px;">
+                     <span>ANMELDEN</span>
+                 </button>
+             </div>
 
-    </ion-content>
+         </div>
+
+     </td>
+     <td width="*">&nbsp;</td>
+ </tr>
+ </table>
+
+ <p ng-show="(!loading && (appVersion!=='BROWSER'))" style="margin:16px; margin-top: 16px; max-width: 320px;
+                             margin-left: auto; margin-right: auto; text-align:center; color: darkgrey; font-size: 80%;">
+   Version {{appVersion}}
+ </p>
+
+</ion-content>
 
 </ion-view>

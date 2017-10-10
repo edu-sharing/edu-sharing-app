@@ -618,6 +618,15 @@ angular.module('starter.serviceApi', [])
               // SUCCESS
               var successCallback = function(response) {
                   if ((typeof response !== "undefined") && (typeof response.data !== "undefined")) {
+
+                      // edit the urls for better displaying
+                      for (var i=0; i < response.data.length; i++) {
+                          response.data[i].urlDisplay = response.data[i].url;
+                          var pathBeginsIndex = response.data[i].url.indexOf('/',8);
+                          if (pathBeginsIndex > 8) response.data[i].urlDisplay = response.data[i].urlDisplay.substring(0,pathBeginsIndex);
+                          if (typeof response.data[i].image == "undefined") response.data[i].image = "img/server_default.png";
+                      }
+
                       win(response.data);
                   } else {
                       fail(response);

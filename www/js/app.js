@@ -5,7 +5,23 @@
 // the 2nd parameter is an array of 'requires'
 // 'starter.services' is found in services.js
 // 'starter.controllers' is found in controllers.js
-angular.module('starter', ['ionic', 'starter.controllers', 'starter.controllerServerselect', 'starter.controllerIntro', 'starter.controllerWorkspace', 'starter.controllerCollections', 'starter.controllerCollectionEdit', 'starter.controllerCollectionAdd', 'starter.controllerLogin', 'starter.controllerSearch','starter.services', 'starter.serviceApi', 'starter.directives', 'ngCordova', 'ngSanitize'])
+angular.module('starter', [
+    'ionic',
+    'starter.controllers',
+    'starter.controllerServerselect',
+    'starter.controllerIntro',
+    'starter.controllerWorkspace',
+    'starter.controllerCollections',
+    'starter.controllerCollectionEdit',
+    'starter.controllerCollectionAdd',
+    'starter.controllerLogin',
+    'starter.controllerSearch',
+    'starter.services',
+    'starter.serviceApi',
+    'starter.directives',
+    'ngCordova',
+    'ngSanitize'
+    ])
 
 .run(function($ionicPlatform, $timeout, $location, $rootScope, System, Share, EduApi, $cordovaInAppBrowser, Account) {
 
@@ -64,6 +80,9 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.controllerSe
     $rootScope.headerShowNewCollection = false;
     $rootScope.headerClass = "header-dialog";
     $rootScope.lastActiveCollection = null;
+    $rootScope.serverName = "n/a";
+
+    $rootScope.isLoggedIn = false;
 
     // listen if detail view wants to open link in system browser
     window.addEventListener('openInBrowser', function(m) {
@@ -178,13 +197,6 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.controllerSe
               controller: 'AppCtrl'
           })
 
-          // setup an abstract state for the tabs directive
-          .state('tab', {
-              url: "/tab",
-              abstract: true,
-              templateUrl: "templates/tabs.html"
-          })
-
           // Each tab has its own nav history stack:
 
           .state('app.search', {
@@ -220,15 +232,6 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.controllerSe
                   'menuContent' : {
                       templateUrl: 'templates/tab-collection-add.html',
                       controller: 'CollectionAddCtrl'
-                  }
-              }
-          })
-          .state('app.account', {
-              url: '/account',
-              views: {
-                  'menuContent' : {
-                      templateUrl: 'templates/tab-account.html',
-                      controller: 'AccountCtrl'
                   }
               }
           })

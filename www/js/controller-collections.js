@@ -192,6 +192,7 @@ angular.module('starter.controllerCollections', [])
 
         System.checkIfAppNeedFreshStart();
         $scope.cacheTS = new Date().getTime();
+
         $ionicHistory.clearHistory();
         $ionicHistory.clearCache();
 
