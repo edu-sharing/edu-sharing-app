@@ -5,8 +5,6 @@ angular.module('starter.controllerIntro', [])
      * INIT AND INTRO
      */
 
-
-
     $scope.showLoginIntro = false;
     $scope.showLoginStep = 0;
     $scope.showLoginAnim = false;

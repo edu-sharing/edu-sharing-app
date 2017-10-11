@@ -114,8 +114,8 @@ angular.module('starter.serviceApi', [])
           }
 
 
-          var quality = 50;
-          if (width<50) quality = 90; 
+          var quality = 80;
+          if (width<=50) quality = 90;
 
           // ad parameters for picture quality and caching
           node.previewUrl = node.previewUrl + "&width="+width+"&height="+height+"&quality="+quality+"&crop=true&modified="+encodeURI(node.modifiedAt);
