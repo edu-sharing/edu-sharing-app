@@ -141,12 +141,16 @@ angular.module('starter.controllerIntro', [])
 
                                 // if not logged in & has web intent -> show alert, stay on this page
                                 if (System.hasWebIntent()) {
-                                    var alertPopup = $ionicPopup.alert({
-                                        title: 'Login nötig',
-                                        template: 'Zum Teilen bitte einloggen.'
-                                    });
-                                    alertPopup.then(function () { });
+                                    $timer(function(){
+                                        var alertPopup = $ionicPopup.alert({
+                                            title: 'Login nötig',
+                                            template: 'Zum Teilen bitte einloggen.'
+                                        });
+                                        alertPopup.then(function () { });
+                                    },1000);
                                 }
+
+                                $state.go('app.login');
 
                             }
 

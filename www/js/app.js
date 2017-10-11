@@ -137,7 +137,19 @@ angular.module('starter', [
         
         // listen on cordova event when app comes back from background
         document.addEventListener("resume", function() {
-            $rootScope.$broadcast('app:resume');
+
+            // when use is not logged in and app resumes
+            // make a app restart (to trigger sync of tokens etc)
+            if (!$rootScope.isLoggedIn) {
+                $timeout(function(){
+                    var url = window.location.href;
+                    url = url.substring(0,url.indexOf("#"));
+                    window.location.href = url;
+                },1500);
+            } else {
+                $rootScope.$broadcast('app:resume');
+            }
+
         }, false);
 
         // connect EduApi and Context to keep user session data fresh

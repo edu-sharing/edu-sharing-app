@@ -2,10 +2,10 @@
 
     <ion-content ng-cloak overflow-scroll="true" class="mainColorDarkBackground">
 
-        <div ng-show="showTopSpace" style="margin:16px; margin-top: 4px; max-width: 320px; margin-left: auto; margin-right: auto;">
+        <div ng-show="showTopSpace" style="padding:16px; padding-top: 0px; margin-top: 4px; max-width: 350px; margin-left: auto; margin-right: auto;">
             <div style="
                 color: white;
-                font-size: 200%;
+                font-size: 180%;
                 font-weight: bold;
                 ">
                 Anmelden
@@ -14,6 +14,7 @@
                 color: lightgrey;
                 padding-top: 8px;
                 font-size: 80%;
+                line-height:14px
             ">
                 Melde dich mit deinen Daten auf dem gewählten Server an.
             </div>
@@ -64,9 +65,10 @@
                                 >
                                 <label class="item item-input item-floating-label" style="border-width: 0px !important; padding-left: 8px;">
                                     <span class="input-label" style="font-size: 75%; color: grey;">Benutzername</span>
-                                    <input id="login-username" ng-model="loginUser" type="text" placeholder="Benutzername" style="height: 17px;"
+                                    <input id="login-username" ng-model="loginUser" type="text" placeholder="Benutzername" style="height: 20px;"
                                            ng-keydown="passwordOnKey($event, loginUser, loginPassword, loginServer)"
-                                           ng-focus="inputFocus(true)" class="textDarkGray" focus-me="{{focus=='user'}}" >
+                                           ng-focus="inputFocus(true)" class="textDarkGray" focus-me="{{focus=='user'}}"
+                                           autocapitalize="none" >
                                 </label>
                             </td>
                         </tr>
@@ -85,9 +87,10 @@
                             >
                                 <label class="item item-input item-floating-label" style="border-width: 0px !important; padding-left: 8px;">
                                     <span class="input-label" style="font-size: 75%; color: grey;">Passwort</span>
-                                    <input id="login-password" ng-model="loginPassword" type="password" placeholder="Passwort" style="height: 17px;"
+                                    <input id="login-password" ng-model="loginPassword" type="password" placeholder="Passwort" style="height: 20px;"
                                            ng-keydown="passwordOnKey($event, loginUser, loginPassword, loginServer)"
-                                           ng-focus="inputFocus(true)" focus-me="{{focus=='password'}}" >
+                                           ng-focus="inputFocus(true)" focus-me="{{focus=='password'}}"
+                                           autocapitalize="none" >
                          </label>
                      </td>
                  </tr>
