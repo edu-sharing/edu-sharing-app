@@ -40,7 +40,7 @@ angular.module('starter.controllerIntro', [])
     // Button Intro Next
     $scope.clickIntroNext = function() {
 
-        if ($scope.showLoginStep>=4) return;
+        if ($scope.showLoginStep>=3) return;
         if ($scope.showLoginAnim) return;
         $scope.showLoginAnim = true;
         $timeout(function(){

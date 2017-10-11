@@ -15,30 +15,23 @@
         </div>
 
         <div ng-show="showLoginStep==1" class="intro-slide {{((showLoginStep==1)&&(showLoginAnim))?'bounceOutLeft':''}}">
-            <div class="intro-headline">Ansichten der App<br>umschalten</div>
+            <div class="intro-headline">Eigene Fotos nutzen</div>
             <div class="intro-image">
-                <img ng-src="./img/intro{{showLoginStep}}.gif" style="width:100%;" />
+                <img src="./img/intro{{showLoginStep}}.gif" style="width:80%;" />
             </div>
         </div>
 
         <div ng-show="showLoginStep==2" class="intro-slide {{((showLoginStep==2)&&(showLoginAnim))?'bounceOutLeft':''}}">
-            <div class="intro-headline">Bilder in edu-sharing<br>speichern</div>
+            <div class="intro-headline">Weblink speichern</div>
             <div class="intro-image">
-                <img src="./img/intro{{showLoginStep}}.gif" style="width:100%;" />
+                <img src="./img/intro{{showLoginStep}}.gif" style="width:80%;" />
             </div>
         </div>
 
-        <div ng-show="showLoginStep==3" class="intro-slide {{((showLoginStep==3)&&(showLoginAnim))?'bounceOutLeft':''}}">
-            <div class="intro-headline">Links in edu-sharing<br>speichern</div>
+        <div ng-show="showLoginStep==3" class="intro-slide">
+            <div class="intro-headline">Materialien einsammeln</div>
             <div class="intro-image">
-                <img src="./img/intro{{showLoginStep}}.gif" style="width:100%;" />
-            </div>
-        </div>
-
-        <div ng-show="showLoginStep==4" class="intro-slide">
-            <div class="intro-headline">Objekte zu<br>Sammlungen hinzufügen</div>
-            <div class="intro-image">
-                <img src="./img/intro{{showLoginStep}}.gif" style="width:100%;" />
+                <img src="./img/intro{{showLoginStep}}.gif" style="width:80%;" />
             </div>
         </div>
 
@@ -54,7 +47,7 @@
         text-align: center;
         box-shadow: 2px -1px 5px #888888;">
 
-        <div ng-show="(showLoginStep==4)">
+        <div ng-show="(showLoginStep==3)">
          <button class="button button-block darkBackLightText-Button" ng-click="clickIntroDone()" style="
             border-width:0px; 
             width:80%;
@@ -64,7 +57,7 @@
          </button>
         </div>
 
-        <div ng-show="(showLoginStep<4)" >
+        <div ng-show="(showLoginStep<3)" >
          <button class="button button-block button-clear" ng-click="clickIntroDone()" style="
             border-width:0px; 
             width:43%;
@@ -92,7 +85,6 @@
             <div class="intro-dot" style="{{(showLoginStep>0) ? 'background-color: #315774;' : ''}}"></div>
             <div class="intro-dot" style="{{(showLoginStep>1) ? 'background-color: #315774;' : ''}}"></div>
             <div class="intro-dot" style="{{(showLoginStep>2) ? 'background-color: #315774;' : ''}}"></div>
-            <div class="intro-dot" style="{{(showLoginStep>3) ? 'background-color: #315774;' : ''}}"></div>
         </div>    
 
     </div>
