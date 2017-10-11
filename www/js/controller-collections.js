@@ -49,7 +49,8 @@ angular.module('starter.controllerCollections', [])
     };
 
     $scope.pressedSelectorMy = function() {
-        $scope.empty = false;
+        $scope.emptyRoot = false;
+        $scope.emptySub = false;
         $scope.breadCrumbs = [{name:'Meine', nodeId:'-MY'}];
         $scope.collections = [];
         $scope.actualCollection = null;
@@ -58,7 +59,8 @@ angular.module('starter.controllerCollections', [])
     };
 
     $scope.pressedSelectorOrga = function() {
-        $scope.empty = false;
+        $scope.emptyRoot = false;
+        $scope.emptySub = false;
         $scope.breadCrumbs = [{name:'Organisationen', nodeId:'-ORGA'}];
         $scope.collections = [];
         $scope.actualCollection = null;
@@ -67,7 +69,8 @@ angular.module('starter.controllerCollections', [])
     };
 
     $scope.pressedSelectorAll = function() {
-        $scope.empty = false;
+        $scope.emptyRoot = false;
+        $scope.emptySub = false;
         $scope.breadCrumbs = [{name:'Alle', nodeId:'-ALL'}];
         $scope.collections = [];
         $scope.actualCollection = null;
@@ -154,7 +157,8 @@ angular.module('starter.controllerCollections', [])
             }
 
             // check if empty
-            $scope.empty = ((parentId==="-root-") && ($scope.collections.length===0));
+            $scope.emptyRoot = ((parentId==="-root-") && ($scope.collections.length===0));
+            $scope.emptySub = ((parentId!="-root-") && ($scope.collections.length===0) && ($scope.contentReferences.length===0));
 
             if (!$scope.isRoot) {
 
@@ -334,7 +338,8 @@ angular.module('starter.controllerCollections', [])
             Toolbox.setLatestCollection(item);
 
             $scope.actualCollection = item;
-            $scope.empty = false;
+            $scope.emptyRoot = false;
+            $scope.emptySub = false;
             $scope.collections = []; 
             $scope.loadCollections(item.ref.id,'EDU_ALL'); 
 
@@ -393,7 +398,8 @@ angular.module('starter.controllerCollections', [])
                 $scope.breadCrumbs = $scope.breadCrumbs.slice(0,arrayIndex+1);
                 $scope.actualCollection = data;
                 $scope.actualCollection.typeStyle = "collection";
-                $scope.empty = false;
+                $scope.emptyRoot = false;
+                $scope.emptySub = false;
                 $scope.loadCollections(crumb.nodeId,'EDU_ALL');
             }, function(){
                 // FAIL

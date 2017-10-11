@@ -7,7 +7,8 @@ angular.module('starter.controllers', [])
 .controller('AppCtrl', function($log, $rootScope, $scope, $location, $ionicSideMenuDelegate, Account, $timeout, $window, $ionicLoading, $ionicPopup, $cordovaCamera, System, Toolbox, Share, EduApi, $ionicHistory, $ionicActionSheet) {
 
         $scope.activePage = "";
-        $rootScope.searchword = "";
+
+        $scope.activeSearch = false;
 
         $rootScope.editFolderNotAllowed = false;
 
@@ -172,17 +173,43 @@ angular.module('starter.controllers', [])
         };
 
         // called when user hits search button
-        $scope.doSearch = function(str) {
-            if (str.trim().length===0) str="*";
+        $scope.doSearch = function() {
+            var str = $scope.searchInputField.value;
+            if (str.trim().length===0) {
+                str="*";
+            } else {
+                $scope.activeSearch = true;
+            }
             $scope.$broadcast('search:keyword', str.trim());
         };
 
+        $rootScope.$on('search:keyword:set',function(event, args) {
+            $scope.searchInputField.value = args;
+            $timeout(function(){
+                $scope.searchInputField.value = args;
+            },100);
+        });
+
         // called when user types searchword
-        $scope.changedSearch = function(event, str) {
+        $scope.searchInputField = document.getElementById('searchWordInput');
+        $scope.changedSearch = function(event) {
+            $scope.searchInputField = event.target;
+            var str = $scope.searchInputField.value;
             if (event.keyCode===13) {
-                if (str.trim().length===0) return;
-                $scope.$broadcast('search:keyword', str.trim());
+                if (str.trim().length===0) {
+                    $scope.cancelSearch();
+                } else {
+                    $scope.doSearch(str);
+                }
             }
+        };
+
+        $scope.cancelSearch = function() {
+            $timeout(function(){
+                $scope.activeSearch = false;
+                $scope.searchInputField.value = "";
+                $scope.doSearch("");
+            },10);
         };
 
         $scope.headerButtonNewCollection = function() {

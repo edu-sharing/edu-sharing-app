@@ -48,7 +48,7 @@ angular.module('starter.controllerSearch', [])
             //console.log("$scope.breadCrumbs - after",$scope.breadCrumbs);
             $scope.startSearch(previousSearch);
             $timeout(function(){
-                $rootScope.$broadcast('search:kleyword:set', previousSearch);
+                $rootScope.$broadcast('search:keyword:set', previousSearch);
             },100);
         } else {
             $ionicSideMenuDelegate.toggleLeft();

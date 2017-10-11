@@ -161,14 +161,6 @@ angular.module('starter', [
         $rootScope.$broadcast('button:back', e);
     }, 400);
 
-    // WORKAROUND: APP did not updating search text in input field
-    $rootScope.$on('search:kleyword:set',function(event, args) {
-        $rootScope.searchword = args;
-        $timeout(function(){
-            $rootScope.searchword = args;
-        },100);
-    });
-
     // let login view know that ionic is ready to maybe show intro screen
     $rootScope.ionicReady = true;
     $rootScope.$broadcast('ionic-ready', null);

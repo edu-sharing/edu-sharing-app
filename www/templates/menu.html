@@ -115,7 +115,8 @@
                 </div>
 
                 <div ng-show="(headerShowSearch) && (!multiSelectionMode)" class="searchareatop" style="display:none;{{displayDivFlex}};">
-                    <input id="searchWordInput" ng-keyup="changedSearch($event, searchword)" placeholder="Suchbegriff" type="search" style="
+                    <!--<form><input id="searchWordInput" ng-keyup="changedSearch($event)" type="text" /></form>-->
+                    <input id="searchWordInput" ng-keyup="changedSearch($event)" placeholder="Suchbegriff" type="search" style="
               min-width: 130px;
               width: 50%;
               height: 21px;
@@ -125,8 +126,11 @@
               border-radius: 3px;
               -webkit-appearance: none;
               -webkit-border-radius: 3;
-              " ng-model="searchword">
-                    <button id="searchareabutton" on-tap="doSearch(searchword)" class="button button-small" style="
+              ">
+                    <div style="position:relative;left: -28px;top: 5px; width: 0px;">
+                        <i ng-show="activeSearch" ng-click="cancelSearch()" class="icon ion-close-circled" style="font-size: 24px;color: grey;"></i>
+                    </div>
+                    <button id="searchareabutton" on-tap="doSearch()" class="button button-small" style="
                 color: white;
                 border-radius: 0px;
                 height: 30px;
