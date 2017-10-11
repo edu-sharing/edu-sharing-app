@@ -722,6 +722,20 @@ body {
     background-size: 30px 30px;
 }
 
+.collection-add-icon-wrapper {
+    border-width: 0px;
+    width: 30px;
+    height: 30px;
+    border-radius: 5px;
+    padding: 4px;
+    padding-top: 8px;
+    font-size: 140%;
+    background-color: white;
+    padding-left: 6px;
+    color: #315774;
+    background-size: 30px 30px;
+}
+
 .action-text-image-inner {
     position: absolute;
     width: 28px;

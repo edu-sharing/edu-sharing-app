@@ -881,17 +881,15 @@ angular.module('starter.services', [])
                                 });
                             } else {
 
-                                var imageDivContent = "<i class=\"icon ion-arrow-right-a action-text-icon\"></i>\n";
-                                if (!$rootScope.lastActiveCollection.preview.isIcon) imageDivContent = "<img class='action-text-image-inner' src='"+$rootScope.lastActiveCollection.preview.url+"&width=30&height=30'/>";
+                                var imageDivContent = "<div class='collection-add-icon-wrapper action-text-image'><i class=\"icon ion-social-buffer action-text-icon\"></i></div>\n";
+                                if (!$rootScope.lastActiveCollection.preview.isIcon) imageDivContent = "<div class='collection-add-image-wrapper-equal action-text-image'><img class='action-text-image-inner' src='"+$rootScope.lastActiveCollection.preview.url+"&width=30&height=30'/></div>";
                                 buttons.push({
                                     action: 'collection-add',
                                     text: '<i class="icon ion-social-buffer action-sheet-icon"></i> In eine Sammlung hinzufügen'
                                 });
                                 buttons.push({
                                     action: 'collection-add-last',
-                                    text: "<div class='collection-add-image-wrapper-equal action-text-image'>\n"+
-                                     imageDivContent +
-                                    "</div>"+$rootScope.lastActiveCollection.title.substring(0, 30)
+                                    text: imageDivContent+$rootScope.lastActiveCollection.title.substring(0, 30)
                                 });
                             }
 
