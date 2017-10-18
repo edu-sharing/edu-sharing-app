@@ -2,6 +2,10 @@
 
 This project is the base for the mobile app offering edu-sharing features.
 
+Minimum Requirements:
+* iOS >= 8 & iPhone 5S
+* Android >= 4.4
+
 ## Setup
 
 Make sure basic frameworks are installed:

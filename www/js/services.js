@@ -481,7 +481,7 @@ angular.module('starter.services', [])
             EduApi.getRenderSnippetForContent(contentNodeId, function(snippet) {
 
                // WIN
-
+               //$ionicLoading.hide();
                snippet = manipulateSnippet(snippet);
 
                scope.detailLoading = false;

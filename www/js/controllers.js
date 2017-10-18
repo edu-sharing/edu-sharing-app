@@ -20,7 +20,6 @@ angular.module('starter.controllers', [])
             Account.loginOut();
             window.postMessage({command: "logout", message: ""}, "*");
 
-
             var finishLogout = function(){
                 $rootScope.isLoggedIn = false;
                 $timeout(function(){

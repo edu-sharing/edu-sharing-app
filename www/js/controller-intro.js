@@ -16,6 +16,12 @@ angular.module('starter.controllerIntro', [])
     // only call after ionic is ready
     $scope.checkIfLoginScreenIsToShow = function() {
 
+
+        if (!EduApi.gotInternetConnection()) {
+            $scope.noInternetExit();
+            return;
+        }
+
         // **** checkIfLoginScreenIsToShow ****
 
         // determine if login intro should be shown after login
@@ -55,6 +61,34 @@ angular.module('starter.controllerIntro', [])
         $state.go('app.serverselect');
         $ionicHistory.nextViewOptions({
             historyRoot: true
+        });
+    };
+
+    $scope.noInternetExit = function() {
+        var alertPopup = $ionicPopup.alert({
+            title: 'Internet',
+            template: 'Keine Internetverbindung - bitte prüfen oder später noch einmal probieren.'
+        });
+        alertPopup.then(function () {
+
+            // exit app try one
+            try {
+                ionic.Platform.exitApp();
+            } catch (e) {
+                console.log("FAILED ionic.Platform.exitApp");
+            }
+
+            // exit app try two
+            try {
+                navigator.app.exitApp();
+            } catch (e) {
+                console.log("FAILED navigator.app.exitApp");
+            }
+
+            // backup restart
+            var url = window.location.href;
+            url = url.substring(0,url.indexOf("#"));
+            window.location.href = url;
         });
     };
 
@@ -159,12 +193,7 @@ angular.module('starter.controllerIntro', [])
                             // FAIL - server or internet error
                             $ionicLoading.hide();
 
-                            var alertPopup = $ionicPopup.alert({
-                                title: 'Internet',
-                                template: 'Keine Internetverbindung - bitte prüfen oder später noch einmal probieren.'
-                            });
-                            alertPopup.then(function () {
-                            });
+                            $scope.noInternetExit();
 
                         });
 

@@ -64,11 +64,11 @@
 
         <!-- COLLECTION DETAILS --> 
 
-        <div ng-show="((!error) && (!isRoot))" style="background-color: {{actualCollection.color}}; color: white;">
-            <table>
+        <div ng-show="((!error) && (!isRoot))" style="background-color: {{(actualCollection!=null) ? actualCollection.color : 'darkgrey'}}; color: white;">
+            <table style="min-height: 62px;">
                 <tr>
                     <td>
-                       <div style="
+                       <div ng-show="(actualCollection!=null)" style="
                         margin:10px;
                         margin-top: 5px;
                         margin-bottom: 7px;

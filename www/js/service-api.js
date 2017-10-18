@@ -3,7 +3,7 @@ angular.module('starter.serviceApi', [])
 /*
  * Providing access to the edu-sharing API.
  */
-.factory('EduApi', ['Base64', '$http', '$timeout', function(Base64, $http, $timeout) {
+.factory('EduApi', ['Base64', '$http', '$timeout', '$ionicPopup', '$ionicLoading', '$rootScope' ,function(Base64, $http, $timeout, $ionicPopup, $ionicLoading, $rootScope) {
 
   // set minimum version of api
   var minApiVersionMajor = 1;
@@ -78,6 +78,184 @@ angular.module('starter.serviceApi', [])
     return config;
   };
 
+  // a internal utility function to decide how to react on a error on request
+  var checkHttpError = function(error, lable ,errorCallback, repeatSuccessCallback) {
+
+      console.log("##### HTTP ERROR ("+lable+") (internet:"+gotInternetConnection()+") #####", error);
+
+      /*
+       * Possible Szenarios
+       */
+
+      var noInternetSzenario = function() {
+
+          $ionicLoading.hide();
+
+          if (typeof repeatSuccessCallback != "undefined") {
+
+              var confirmPopup = $ionicPopup.confirm({
+                  title: 'Kein Internet',
+                  template: 'Aktuell besteht keine Internetverbindung.',
+                  buttons: [
+                      /*{
+                          text: 'Abbrechen',
+                          type: 'button-positive',
+                          onTap: function (e) {
+                              if ((typeof errorCallback != "undefined") && (errorCallback != null)) errorCallback(error);
+                          }
+
+                      },*/
+                      {
+                          text: '<b>Nochmal probieren</b>',
+                          type: 'button-positive',
+                          onTap: function (e) {
+
+                              /*
+                               * Retry
+                               */
+
+                              $ionicLoading.show({
+                                  template: $rootScope.spinnerSVG
+                              });
+
+                              var onWin = function(winResponse) {
+                                  $ionicLoading.hide();
+                                  repeatSuccessCallback(winResponse);
+                              };
+
+                              var onFail = function (repeatError) {
+                                  checkHttpError(repeatError, lable, errorCallback, onWin);
+                              };
+
+                              if ((lable=="loadPublicServerList") || (lable=="getOAuthTokensByUsernamePassword")) {
+
+                                  // in special cases ignore oauth and repeat resquest directly
+                                  $http(error.config).then(onWin, onFail);
+
+                              } else {
+
+                                  // on all other requests make sure to refresh oauth tokens
+                                  makeSureOAuthTokensAreFresh(onFail, function () {
+                                      $http(error.config).then(onWin, onFail);
+                                  });
+
+                              }
+
+                          }
+                      }
+                  ]
+              });
+
+          } else {
+
+              // no retry possible - just deliver fail to calling function
+              if ((typeof errorCallback != "undefined") && (errorCallback!=null)) errorCallback(error);
+
+          }
+      };
+
+      var serverErrorSzenario = function() {
+          console.log("serverErrorSzenario: "+error.status);
+
+          // Unauthorized
+          if (error.status==401) {
+
+              if ((lable!="makeSureOAuthTokensAreFresh") && (lable!="getOAuthTokensByUsernamePassword")) {
+
+                  // force to refresh oAuth tokens
+                  oAuthExpiresIn = 1;
+                  makeSureOAuthTokensAreFresh(function(fail) {
+
+                      // forced refresh failed
+                      $ionicLoading.hide();
+                      var confirmPopup = $ionicPopup.confirm({
+                          title: 'Session abgelaufen',
+                          template: 'Sie müssen sich neu einloggen.',
+                          buttons: [
+                              {
+                                  text: '<b>OK</b>',
+                                  type: 'button-positive',
+                                  onTap: function (e) {
+
+                                      // remove all server data
+                                      // this is a bit hardcore ... but quick fix for edge case
+                                      localStorage.removeItem("account");
+
+                                      window.postMessage({command: "logout", message: ""}, "*");
+                                      $rootScope.isLoggedIn = false;
+
+                                      // restart app
+                                      $timeout(function(){
+                                        var url = window.location.href;
+                                        url = url.substring(0,url.indexOf("#"));
+                                        window.location.href = url;
+                                      },1500);
+
+                                  }
+                              }
+                          ]
+                      });
+
+                  }, function(win) {
+
+                      // worked - try again
+                      $http(error.config).then(repeatSuccessCallback, onFail);
+
+                  }, "serverErrorSzenario");
+
+
+              } else {
+                  if ((typeof errorCallback != "undefined") && (errorCallback!=null)) errorCallback(error);
+              }
+
+
+          } else {
+
+              if ((typeof errorCallback != "undefined") && (errorCallback!=null)) errorCallback(error);
+
+          }
+
+      };
+
+      var unknownSzenario = function() {
+          console.log("unknownSzenario: ",error);
+          if ((typeof errorCallback != "undefined") && (errorCallback!=null)) errorCallback(error);
+      };
+
+
+      /*
+       * Decide which Szenario
+       */
+
+      if (typeof error != "undefined") {
+
+          if (typeof error.status != "undefined") {
+
+              if ((error.status==null) || (error.status==0)) {
+                  noInternetSzenario();
+              }
+
+              else {
+                  serverErrorSzenario();
+              }
+
+          }
+
+          else if (error==="no-internet") {
+            noInternetSzenario();
+          }
+
+          else {
+            unknownSzenario();
+          }
+
+
+      } else {
+          unknownSzenario();
+      }
+
+  };
+
   // take a node and inject the access token
   var optimzePreviewUrl = function(node, width, height) {
 
@@ -113,9 +291,9 @@ angular.module('starter.serviceApi', [])
             console.warn("added access token to preview URL");
           }
 
-
           var quality = 80;
           if (width<=50) quality = 90;
+          if (gotSlowInternetConnection()) quality = 20;
 
           // ad parameters for picture quality and caching
           node.previewUrl = node.previewUrl + "&width="+width+"&height="+height+"&quality="+quality+"&crop=true&modified="+encodeURI(node.modifiedAt);
@@ -138,9 +316,7 @@ angular.module('starter.serviceApi', [])
               
     // FAIL
     var errorCallback = function(response) {
-        console.log("FAIL:");
-        console.dir(response);
-        fail(response);
+        checkHttpError(response, "getUserSessionInfoIntern", fail, successCallback)
     };
 
     // SUCCESS
@@ -160,12 +336,9 @@ angular.module('starter.serviceApi', [])
   // make sure just running once
   var makeSureOAuthTokensAreFresh = function(onError, whenDone, optionalTag) {
 
-      //console.log("called makeSureOAuthTokensAreFresh ("+optionalTag+")");
-
       // check if oAuth was ever set
       if (oAuthExpiresIn===0) {
-        console.log("makeSureOAuthTokensAreFresh: oAuth tokens not set");
-        onError("oAuth tokens not set");
+        checkHttpError("oAuth tokens not set", "makeSureOAuthTokensAreFresh", onError);
         return;
       }
 
@@ -218,9 +391,8 @@ angular.module('starter.serviceApi', [])
           };
           config.data = "grant_type=refresh_token&client_id=" + oAuthClientId + "&client_secret=" + oAuthClientSecret + "&refresh_token=" + encodeURIComponent(oAuthRefreshToken);
           var errorCallback = function (response) {
-              console.log("makeSureOAuthTokensAreFresh: FAIL refresh token:");
               refreshingTokenIsRunning = 0;
-              onError("fail on refresh token");
+              checkHttpError(response, "makeSureOAuthTokensAreFresh", onError, successCallback);
           };
           var successCallback = function (response) {
               if ((typeof response !== "undefined") && (typeof response.data !== "undefined")) {
@@ -259,7 +431,7 @@ angular.module('starter.serviceApi', [])
 
               } else {
                   refreshingTokenIsRunning = 0;
-                  onError("fail on refresh token return data");
+                  checkHttpError("no-data", "makeSureOAuthTokensAreFresh", onError);
               }
           };
 
@@ -322,7 +494,8 @@ angular.module('starter.serviceApi', [])
 
   };
 
-  var createImageNodeIntern = function(parentNodeId, name, keywordStrArray, imageData, isBase64, mimeType, win, fail, progressCallback) {
+  var createImageNodeIntern =
+      function(parentNodeId, name, keywordStrArray, imageData, isBase64, mimeType, win, fail, progressCallback) {
 
           var tagStrArray = [];
           if (keywordStrArray!==null) tagStrArray = keywordStrArray;
@@ -357,14 +530,11 @@ angular.module('starter.serviceApi', [])
               // FAIL
               var errorCallback = function(response) {
 
-
                   if ((typeof response !== "undefined") && (typeof response.data !== "undefined") && (typeof response.data.error !== "undefined") && (response.data.error === "org.edu_sharing.restservices.DAODuplicateNodeNameException")) {
                       console.log("Name already in use ... try again.");
                       createImageNodeIntern(parentNodeId, "_"+name, keywordStrArray, imageData, isBase64, mimeType, win, fail);
                   } else {
-                      console.log("FAIL:");
-                      console.dir(response);
-                      fail(response);
+                      checkHttpError(response, "createImageNodeIntern", fail, successCallback);
                   }
 
               };
@@ -448,7 +618,7 @@ angular.module('starter.serviceApi', [])
                           // We define what will happen in case of error
                           XHR.addEventListener('error', function() {
                                 if ((typeof progressCallback!=="undefined") && (progressCallback!==null)) progressCallback(-1);
-                                fail();
+                                checkHttpError("xhr-error","createImageNodeIntern", fail);
                           });
 
                           // We setup our request
@@ -485,6 +655,32 @@ angular.module('starter.serviceApi', [])
 
   };
 
+  var gotInternetConnection = function() {
+
+    // if browser does not provide http://wicg.github.io/netinfo/ assume internet works
+    if ((typeof window.navigator == "undefined")) return true;
+    if ((typeof window.navigator.connection == "undefined")) return true;
+
+    // this should work on iOS and Android
+    if (typeof window.navigator.connection.type != "undefined") {
+        return (window.navigator.connection.type != "none");
+    }
+
+    // this should work on Desktop Browser
+    if (typeof window.navigator.connection.effectiveType != "undefined") {
+        return (window.navigator.connection.type != "none");
+    }
+
+    return true;
+  }
+
+  var gotSlowInternetConnection = function() {
+    try {
+        if (window.navigator.connection.type == "2g") return true;
+    } catch (e) {}
+    return false;
+  }
+
   /*
    * PUBLIC SERVICE
    */
@@ -502,6 +698,10 @@ angular.module('starter.serviceApi', [])
                 headers: {
                     'Accept' : 'application/json'
                 }
+            };
+
+            var onFail = function(error) {
+                checkHttpError(error, "testServer", fail);
             };
 
             // DO REQUEST
@@ -524,9 +724,9 @@ angular.module('starter.serviceApi', [])
                       }
                       win();
                   } else {
-                      fail();
+                      onFail(response);
                   }
-            }, fail);
+            }, onFail);
       },
       setBaseUrl: function(baseUrlPara) {
           // last char needs to be /
@@ -552,9 +752,7 @@ angular.module('starter.serviceApi', [])
 
           // FAIL
           var errorCallback = function(response) {
-              console.log("FAIL LOGIN:");
-              console.dir(response);
-              fail(response);
+              checkHttpError(response, "getOAuthTokensByUsernamePassword", fail, successCallback);
           };
 
           // SUCCESS
@@ -604,7 +802,6 @@ angular.module('starter.serviceApi', [])
       loadPublicServerList : function (win, fail) {
 
               // REQUEST CONFIG
-
               var config = {
                 method : 'GET',
                 url : 'http://app-registry.edu-sharing.com/public-server-directory.php',
@@ -613,6 +810,10 @@ angular.module('starter.serviceApi', [])
                 headers: {
                     'Accept' : 'application/json'
                 }
+              };
+
+              var errorCallback = function(error) {
+                checkHttpError(error, "loadPublicServerList", fail, successCallback);
               };
 
               // SUCCESS
@@ -629,12 +830,12 @@ angular.module('starter.serviceApi', [])
 
                       win(response.data);
                   } else {
-                      fail(response);
+                      errorCallback(response);
                   }
               };
 
               // DO REQUEST
-              $http(config).then(successCallback, fail);
+              $http(config).then(successCallback, errorCallback);
 
       },
       getApiInfo : function (win, fail) {
@@ -647,10 +848,8 @@ angular.module('starter.serviceApi', [])
               config.url = baseUrl+'_about';
 
               // FAIL
-              var errorCallback = function(response){
-                  console.log("FAIL:");
-                  console.dir(response);
-                  fail(response);
+              var errorCallback = function(response) {
+                  checkHttpError(response, "getApiInfo", fail, successCallback);
               };
 
               // SUCCESS
@@ -682,9 +881,7 @@ angular.module('starter.serviceApi', [])
 
               // FAIL
               var errorCallback = function(response) {
-                  console.log("FAIL:");
-                  console.dir(response);
-                  fail(response);
+                  checkHttpError(response, "getChildNodes", fail, successCallback);
               };
 
               // SUCCESS
@@ -729,9 +926,7 @@ angular.module('starter.serviceApi', [])
 
               // FAIL
               var errorCallback = function(response) {
-                  console.log("FAIL:");
-                  console.dir(response);
-                  fail(response);
+                  checkHttpError(response, "searchNodes", fail, successCallback);
               };
 
               // SUCCESS
@@ -768,9 +963,7 @@ angular.module('starter.serviceApi', [])
 
               // FAIL
               var errorCallback = function(response) {
-                  console.log("FAIL:");
-                  console.dir(response);
-                  fail(response);
+                  checkHttpError(response, "getCollections", fail, successCallback, successCallback);
               };
 
               // SUCCESS
@@ -826,9 +1019,7 @@ angular.module('starter.serviceApi', [])
 
               // FAIL
               var errorCallback = function(response) {
-                  console.log("FAIL:");
-                  console.dir(response);
-                  fail(response);
+                  checkHttpError(response, "getCollection", fail, successCallback);
               };
 
               // SUCCESS
@@ -859,9 +1050,7 @@ angular.module('starter.serviceApi', [])
             
               // FAIL
               var errorCallback = function(response) {
-                  console.log("FAIL:");
-                  console.dir(response);
-                  fail(response);
+                  checkHttpError(response, "getUsersOrganization", fail, successCallback);
               };
 
               // SUCCESS
@@ -892,9 +1081,7 @@ angular.module('starter.serviceApi', [])
 
               // FAIL
               var errorCallback = function(response) {
-                  console.log("FAIL:");
-                  console.dir(response);
-                  fail(response);
+                  checkHttpError(response, "serachCollections", fail, successCallback);
               };
 
               // SUCCESS
@@ -928,9 +1115,7 @@ angular.module('starter.serviceApi', [])
 
               // FAIL
               var errorCallback = function(response) {
-                  console.log("FAIL:");
-                  console.dir(response);
-                  fail(response);
+                  checkHttpError(response, "createCollection", fail, successCallback);
               };
 
               // SUCCESS
@@ -966,9 +1151,7 @@ angular.module('starter.serviceApi', [])
 
               // FAIL
               var errorCallback = function(response) {
-                  console.log("FAIL:");
-                  console.dir(response);
-                  fail(response);
+                  checkHttpError(response, "updateCollection", fail, successCallback);
               };
 
               // SUCCESS
@@ -999,9 +1182,7 @@ angular.module('starter.serviceApi', [])
 
               // FAIL
               var errorCallback = function(response) {
-                  console.log("FAIL:");
-                  console.dir(response);
-                  fail(response);
+                  checkHttpError(response, "deleteCollection", fail, successCallback);
               };
 
               // SUCCESS
@@ -1042,9 +1223,7 @@ angular.module('starter.serviceApi', [])
                   }
 
                   // normal fail
-                  console.log("FAIL:");
-                  console.dir(response);
-                  fail(response);
+                  checkHttpError(response, "addContentToCollection", fail, successCallback);
               };
 
               // SUCCESS
@@ -1073,9 +1252,7 @@ angular.module('starter.serviceApi', [])
 
               // FAIL
               var errorCallback = function(response) {
-                  console.log("FAIL:");
-                  console.dir(response);
-                  fail(response);
+                  checkHttpError(response, "removeContentFromCollection", fail, successCallback);
               };
 
               // SUCCESS
@@ -1107,13 +1284,16 @@ angular.module('starter.serviceApi', [])
             config.method = 'GET';
             config.url = url;
 
+            var errorCallback = function(response) {
+                checkHttpError(response, "getTitleFromHTMLWebsite", fail, successCallback);
+            };
+
             var successCallback = function(result) {
-                console.log("WIN",result);
                 win("TEST");
             };
 
             // DO REQUEST
-            $http(config).then(successCallback, fail);
+            $http(config).then(successCallback, errorCallback);
 
       },
       getNodePersmission : function(id, win, fail, optionalData) {
@@ -1126,9 +1306,7 @@ angular.module('starter.serviceApi', [])
 
               // FAIL
               var errorCallback = function(response) {
-                  console.log("FAIL:");
-                  console.dir(response);
-                  fail(response);
+                  checkHttpError(response, "getNodePersmission", fail, successCallback);
               };
 
               // SUCCESS
@@ -1162,9 +1340,7 @@ angular.module('starter.serviceApi', [])
 
               // FAIL
               var errorCallback = function(response) {
-                  console.log("FAIL:");
-                  console.dir(response);
-                  fail(response);
+                  checkHttpError(response, "getWebsiteInfo", fail, successCallback);
               };
 
               // SUCCESS
@@ -1200,9 +1376,7 @@ angular.module('starter.serviceApi', [])
 
               // FAIL
               var errorCallback = function(response) {
-                  console.log("FAIL:");
-                  console.dir(response);
-                  fail(response);
+                  checkHttpError(response, "createFolder", fail, successCallback);
               };
 
               // SUCCESS
@@ -1237,8 +1411,6 @@ angular.module('starter.serviceApi', [])
 
               // FAIL
               var errorCallback = function(response) {
-                  console.log("FAIL:");
-                  console.dir(response);
                   if ((response.status===409) && (!nameChanged)) {
                     // retry with changed name
                     name = name + " " + (new Date().getTime());
@@ -1246,7 +1418,7 @@ angular.module('starter.serviceApi', [])
                     createLinkNodeProc();
                     return;
                   }
-                  fail(response);
+                  checkHttpError(response, "createLinkNode", fail, successCallback);
               };
 
               // SUCCESS
@@ -1280,9 +1452,7 @@ angular.module('starter.serviceApi', [])
 
               // FAIL
               var errorCallback = function(response) {
-                  console.log("FAIL:");
-                  console.dir(response);
-                  fail(response);
+                  checkHttpError(response, "createFolderNode", fail, successCallback);
               };
 
               // SUCCESS
@@ -1314,9 +1484,7 @@ angular.module('starter.serviceApi', [])
 
               // FAIL
               var errorCallback = function(response) {
-                  console.log("FAIL:");
-                  console.dir(response);
-                  fail(response);
+                  checkHttpError(response, "getOwnUserProfile", fail, successCallback);
               };
 
               // SUCCESS
@@ -1345,9 +1513,7 @@ angular.module('starter.serviceApi', [])
 
               // FAIL
               var errorCallback = function(response) {
-                  console.log("FAIL:");
-                  console.dir(response);
-                  fail(response);
+                  checkHttpError(response, "getRenderSnippetForContent", fail, successCallback);
               };
 
               // SUCCESS
@@ -1375,9 +1541,7 @@ angular.module('starter.serviceApi', [])
 
               // FAIL
               var errorCallback = function(response) {
-                  console.log("FAIL:");
-                  console.dir(response);
-                  fail(response);
+                  checkHttpError(response, "getRenderSnippetForContent", fail, successCallback);
               };
 
               // SUCCESS
@@ -1420,9 +1584,7 @@ angular.module('starter.serviceApi', [])
 
               // FAIL
               var errorCallback = function(response) {
-                  console.log("FAIL:");
-                  console.dir(response);
-                  fail(response);
+                  checkHttpError(response, "deleteNode", fail), successCallback;
               };
 
               // SUCCESS
@@ -1451,9 +1613,7 @@ angular.module('starter.serviceApi', [])
 
               // FAIL
               var errorCallback = function(response) {
-                  console.log("FAIL:");
-                  console.dir(response);
-                  fail(response);
+                  checkHttpError(response, "updateMetadataNode", fail, successCallback);
               };
 
               // SUCCESS
@@ -1477,13 +1637,20 @@ angular.module('starter.serviceApi', [])
             method: 'GET',
             url: url
         };
-        $http(config).then(function(response){
+
+        var errorCallback = function(response) {
+            checkHttpError(response, "simpleGetHttp", fail, successCallback);
+        };
+
+        var successCallback = function(response) {
             if ((typeof response !== "undefined") && (typeof response.data !== "undefined")) {
                 win(response.data);
             } else {
-                fail(response);
+                errorCallback(response);
             }
-        }, fail);
+        }
+
+        $http(config).then(successCallback, errorCallback);
     },
     serverUrls: function(url) {
 
@@ -1501,6 +1668,9 @@ angular.module('starter.serviceApi', [])
               profile   : url+'angular/index.html#/profile'
           };
 
+      },
+      gotInternetConnection : function() {
+          return gotInternetConnection();
       }
   };
 }]);

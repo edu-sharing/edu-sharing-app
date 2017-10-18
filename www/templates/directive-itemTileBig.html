@@ -2,7 +2,8 @@
 
 <!-- LIST VIEW -->
 
-<div ng-if="((contentViewMode=='list') && (item.typeStyle!='unknown'))" class="list card workspaceItem list-item" style="margin-bottom: -9px; width: 95%; box-shadow: none; height: 50px;">
+<div ng-if="((contentViewMode=='list') && (item.typeStyle!='unknown'))" class="list card workspaceItem list-item"
+     style="margin-bottom: -9px; width: 95%; box-shadow: none; height: 50px;">
 
     <table width="100%" style="height: 54px;">
         <tr>
@@ -12,7 +13,8 @@
                 <i ng-show="(item.typeStyle=='link')" class="icon icon-list ion-earth"></i>
                 <i ng-show="(item.typeStyle=='folder')" class="icon icon-list ion-android-folder"></i>
                 <i ng-show="(item.typeStyle=='collection')" class="icon icon-list ion-ios-browsers"></i>
-                <img ng-show="((item.typeStyle!='folder') && (item.previewUrl!=null))" src="{{item.previewUrl}}" fallback-src="./img/transparent.gif" style="width:65px;height:58px;position:absolute;top:-4px;left:0px;">
+                <img ng-show="((item.typeStyle!='folder') && (item.previewUrl!=null))" src="{{item.previewUrl}}"
+                     fallback-src="./img/transparent.gif" style="width:65px;height:58px;position:absolute;top:-4px;left:0px;">
             </td>
             <!-- Name & Info -->
             <td width="*" style="text-align:left;vertical-align:middle;">
@@ -48,7 +50,9 @@
 
 <!-- TILE VIEW (not folder) -->
 
-<div ng-if="((contentViewMode=='tiles') && (item.typeStyle!='unknown') && (item.typeStyle!='folder'))" class="list card workspaceItem tile-item" style="margin-bottom: 10px;width: {{tileWidthPixel}}px; min-height: 240px; padding:0px; background-color:{{(item.typeStyle=='collection') ? item.color : 'none'}};" ng-class="{'selected-tile-big': item.isSelected, 'unselected-tile-big': !item.isSelected}">
+<div ng-if="((contentViewMode=='tiles') && (item.typeStyle!='unknown') && (item.typeStyle!='folder'))"
+     class="list card workspaceItem tile-item" style="margin-bottom: 10px;width: {{tileWidthPixel}}px; min-height: 240px; padding:0px; background-color:{{(item.typeStyle=='collection') ? item.color : 'none'}};"
+     ng-class="{'selected-tile-big': item.isSelected, 'unselected-tile-big': !item.isSelected}">
 
     <div ng-show="multiSelectionMode" style="position: absolute; top: 12px; right: 10px; font-size: 250%; z-index: 100; background-color: white; height: 26px; margin-top: -3px; color: #315574;">
         <i ng-show="!item.isSelected" class="icon ion-android-checkbox-outline-blank"></i>
@@ -104,7 +108,7 @@
     </div>
     <table width="100%" style="font-size: 95%;">
         <tr>
-            <td width="50%">
+            <td width="{{(tileWidthPixel>142) ? '50%' : '70%'}}">
                 <div on-tap="secondaryItemClick($event, item)" class="workspaceItemInfo mainColorDarkTextColor" style="
                     padding:8px;
                     text-align: left">
@@ -116,7 +120,7 @@
                     </span>
                 </div>
             </td>
-            <td width="50%" style="text-align: center;">
+            <td width="{{(tileWidthPixel>142) ? '50%' : '30%'}}" style="text-align: center;">
                 <div ng-show="(item.typeStyle!='collection')" on-tap="menuItemClick($event, item)" class="workspaceItemInfo mainColorDarkTextColor" style="
                     padding-right:8px;
                     font-weight: bold;
@@ -125,15 +129,15 @@
                     font-size: 25px">
                     <i class="icon icon-big ion-more"></i>
                 </div>
-                <div ng-show="(item.typeStyle=='collection')" class="workspaceItemInfo" style="color: white; text-align: left; opacity: 0.5;">
+                <div ng-show="((item.typeStyle=='collection')  && (tileWidthPixel>142))" class="workspaceItemInfo" style="color: white; text-align: left; opacity: 0.5;">
 
                         <span ng-show="(item.scope=='EDU_ALL')"><i class="icon icon-small ion-ios-world-outline" style="padding-left: 5px;"></i>
                         öffentlich</span>
 
-                       <span ng-show="(item.scope=='EDU_GROUPS')"><i class="icon icon-small ion-android-contacts" style="padding-left: 5px;"></i>
+                        <span ng-show="(item.scope=='EDU_GROUPS')"><i class="icon icon-small ion-android-contacts" style="padding-left: 5px;"></i>
                         Gruppe</span>
 
-                       <span ng-show="(item.scope=='MY')"><i class="icon icon-small ion-locked" style="padding-left: 5px;"></i>
+                        <span ng-show="(item.scope=='MY')"><i class="icon icon-small ion-locked" style="padding-left: 5px;"></i>
                         privat</span>
 
                 </div>
@@ -145,7 +149,8 @@
 
 <!-- TILE VIEW (is folder) -->
 
-<div ng-if="((contentViewMode=='tiles') && (item.typeStyle!='unknown') && (item.typeStyle=='folder'))" class="list card workspaceItem tile-folder" style="margin-bottom: 0px;width: {{tileWidthPixel}}px; min-height: 45px padding:0px; background-color:none; box-shadow: none; border-width: 1px; border-radius: 5px;" ng-class="{'selected-tile-big': item.isSelected, 'unselected-tile-big': !item.isSelected}">
+<div ng-if="((contentViewMode=='tiles') && (item.typeStyle!='unknown') && (item.typeStyle=='folder'))"
+     class="list card workspaceItem tile-folder" style="margin-bottom: 0px;width: {{tileWidthPixel}}px; min-height: 45px padding:0px; background-color:none; box-shadow: none; border-width: 1px; border-radius: 5px;" ng-class="{'selected-tile-big': item.isSelected, 'unselected-tile-big': !item.isSelected}">
     
     <div ng-show="multiSelectionMode" style="position: absolute; top: 12px; right: 10px; font-size: 250%; z-index: 100; background-color: white; height: 26px; margin-top: -3px; color: #315574;">
         <i ng-show="!item.isSelected" class="icon ion-android-checkbox-outline-blank"></i>
