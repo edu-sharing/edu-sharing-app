@@ -131,6 +131,9 @@ angular.module('starter.controllerSearch', [])
 
     });
 
+    $scope.$on('$ionicView.leave', function() {
+    });
+
     // trigger search from outside (normally its from the header bar)
     $scope.$on('search:keyword', function(event, data) {
 

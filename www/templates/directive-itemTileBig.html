@@ -9,11 +9,11 @@
         <tr>
             <!-- Icon Part -->
             <td width="60px" style="text-align:center;vertical-align:middle; color: darkgray; height:50px;">
-                <i ng-show="(item.typeStyle=='file')" class="icon icon-list ion-document"></i>
-                <i ng-show="(item.typeStyle=='link')" class="icon icon-list ion-earth"></i>
-                <i ng-show="(item.typeStyle=='folder')" class="icon icon-list ion-android-folder"></i>
-                <i ng-show="(item.typeStyle=='collection')" class="icon icon-list ion-ios-browsers"></i>
-                <img ng-show="((item.typeStyle!='folder') && (item.previewUrl!=null))" src="{{item.previewUrl}}"
+                <i ng-if="(item.typeStyle=='file')" class="icon icon-list ion-document"></i>
+                <i ng-if="(item.typeStyle=='link')" class="icon icon-list ion-earth"></i>
+                <i ng-if="(item.typeStyle=='folder')" class="icon icon-list ion-android-folder"></i>
+                <i ng-if="(item.typeStyle=='collection')" class="icon icon-list ion-ios-browsers"></i>
+                <img ng-if="((item.typeStyle!='folder') && (item.previewUrl!=null))" src="{{item.previewUrl}}"
                      fallback-src="./img/transparent.gif" style="width:65px;height:58px;position:absolute;top:-4px;left:0px;">
             </td>
             <!-- Name & Info -->
@@ -78,12 +78,15 @@
                         color: {{item.color}};
                         border-color: {{item.color}};
                         ">
-                <i ng-show="(item.typeStyle=='folder')" class="icon ion-android-folder"></i>
-                <i ng-show="(item.typeStyle=='collection')" class="icon ion-social-buffer"></i>
-                <i ng-show="(item.typeStyle=='file')" class="icon ion-document"></i>
-                <i ng-show="(item.typeStyle=='link')" class="icon ion-earth"></i>
+                <i ng-if="(item.typeStyle=='folder')" class="icon ion-android-folder"></i>
+                <i ng-if="(item.typeStyle=='collection')" class="icon ion-social-buffer"></i>
+                <i ng-if="(item.typeStyle=='file')" class="icon ion-document"></i>
+                <i ng-if="(item.typeStyle=='link')" class="icon ion-earth"></i>
             </div>
-            <img ng-show="((item.typeStyle!='folder') && (item.previewUrl!=null))" src="{{item.previewUrl}}" fallback-src="./img/transparent.gif" style="width:{{tileWidthPixel}}px;margin-top:-109px;">
+            <img ng-if="((item.typeStyle!='folder') && (item.previewUrl!=null))" ng-src="{{item.previewUrl}}"
+                 fallback-src="./img/transparent.gif"
+                 style="margin-top:-109px;"
+                 ng-style="{'width': tileWidthPixel + 'px'}">
         </div>
     </div>
     <div style="text-align: center; min-height: 41px;">
@@ -99,10 +102,10 @@
                 overflow: hidden;
                 font-size: 90%;
                 margin-top: 2px;">
-                <span ng-show="(item.typeStyle=='file')">{{item.name}}</span>
-                <span ng-show="(item.typeStyle=='link')">{{item.name}}</span>
-                <span ng-show="(item.typeStyle=='folder')">{{item.name}}</span>
-                <span ng-show="(item.typeStyle=='collection')" style="color: white;">{{item.name}}</span>
+                <span ng-if="(item.typeStyle=='file')">{{item.name}}</span>
+                <span ng-if="(item.typeStyle=='link')">{{item.name}}</span>
+                <span ng-if="(item.typeStyle=='folder')">{{item.name}}</span>
+                <span ng-if="(item.typeStyle=='collection')" style="color: white;">{{item.name}}</span>
             </div><div ng-bind-html="getInfoSubLineList(item)" style="font-size: {{(item.typeStyle=='collection') ? '80%' : '85%'}}; color:{{(item.typeStyle=='collection') ? 'white' : '#999999'}}; opacity: {{(item.typeStyle=='collection') ? '0.5' : '1'}}; height:47px; padding: 16px; padding-top: 8px; text-align: left;"></div>
 
     </div>
@@ -121,7 +124,7 @@
                 </div>
             </td>
             <td width="{{(tileWidthPixel>142) ? '50%' : '30%'}}" style="text-align: center;">
-                <div ng-show="(item.typeStyle!='collection')" on-tap="menuItemClick($event, item)" class="workspaceItemInfo mainColorDarkTextColor" style="
+                <div ng-if="(item.typeStyle!='collection')" on-tap="menuItemClick($event, item)" class="workspaceItemInfo mainColorDarkTextColor" style="
                     padding-right:8px;
                     font-weight: bold;
                     text-align: right;
@@ -131,13 +134,13 @@
                 </div>
                 <div ng-show="((item.typeStyle=='collection')  && (tileWidthPixel>142))" class="workspaceItemInfo" style="color: white; text-align: left; opacity: 0.5;">
 
-                        <span ng-show="(item.scope=='EDU_ALL')"><i class="icon icon-small ion-ios-world-outline" style="padding-left: 5px;"></i>
+                        <span ng-if="(item.scope=='EDU_ALL')"><i class="icon icon-small ion-ios-world-outline" style="padding-left: 5px;"></i>
                         öffentlich</span>
 
-                        <span ng-show="(item.scope=='EDU_GROUPS')"><i class="icon icon-small ion-android-contacts" style="padding-left: 5px;"></i>
+                        <span ng-if="(item.scope=='EDU_GROUPS')"><i class="icon icon-small ion-android-contacts" style="padding-left: 5px;"></i>
                         Gruppe</span>
 
-                        <span ng-show="(item.scope=='MY')"><i class="icon icon-small ion-locked" style="padding-left: 5px;"></i>
+                        <span ng-if="(item.scope=='MY')"><i class="icon icon-small ion-locked" style="padding-left: 5px;"></i>
                         privat</span>
 
                 </div>

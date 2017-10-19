@@ -54,7 +54,8 @@ angular.module('starter.controllerCollections', [])
         $scope.breadCrumbs = [{name:'Meine', nodeId:'-MY'}];
         $scope.collections = [];
         $scope.actualCollection = null;
-        $scope.selectedTab = "my";      
+        $scope.selectedTab = "my";
+        console.log("1A");
         $scope.loadCollections('-root-','MY');
     };
 
@@ -64,7 +65,8 @@ angular.module('starter.controllerCollections', [])
         $scope.breadCrumbs = [{name:'Organisationen', nodeId:'-ORGA'}];
         $scope.collections = [];
         $scope.actualCollection = null;
-        $scope.selectedTab = "orga"; 
+        $scope.selectedTab = "orga";
+        console.log("1B");
         $scope.loadCollections('-root-','EDU_GROUPS');    
     };
 
@@ -74,7 +76,8 @@ angular.module('starter.controllerCollections', [])
         $scope.breadCrumbs = [{name:'Alle', nodeId:'-ALL'}];
         $scope.collections = [];
         $scope.actualCollection = null;
-        $scope.selectedTab = "all";      
+        $scope.selectedTab = "all";
+        console.log("1C");
         $scope.loadCollections('-root-',"EDU_ALL");
     };
 
@@ -207,7 +210,10 @@ angular.module('starter.controllerCollections', [])
             return;
         }
 
-        if (($scope.collections.length===0) && ($scope.actualCollection ===  null)) $scope.pressedSelectorMy();
+        if (($scope.collections.length===0) && ($scope.actualCollection ===  null)) {
+            $scope.pressedSelectorMy();
+            return;
+        }
 
         // when in sub
         if (!$scope.isRoot) $scope.loadCollections($scope.actualCollection.ref.id, "EDU_ALL");

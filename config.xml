@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="org.edusharing.app" version="1.0.16" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+<widget id="org.edusharing.app" version="1.0.17" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
     <name>edu-sharing</name>
     <description>
         edu-sharing app
@@ -55,6 +55,7 @@
         <splash height="960" src="resources/ios/splash/Default@2x~iphone.png" width="640" />
         <splash height="480" src="resources/ios/splash/Default~iphone.png" width="320" />
         <icon height="1024" src="resources/ios/icon/icon-1024.png" width="1024" />
+        <splash height="2732" src="resources/ios/splash/Default@2x~universal~anyany.png" width="2732" />
     </platform>
     <platform name="android">
         <preference name="android-targetSdkVersion" value="22" />
