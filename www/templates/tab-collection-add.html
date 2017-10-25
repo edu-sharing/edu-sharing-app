@@ -37,6 +37,11 @@
                         </div>
                     </td>
                     <td style="padding-left: 8px;vertical-align: middle;">
+                        <div style="font-weight: 500; color: #6f6f6f; font-size: 80%;">
+                            <span ng-if="(shareType=='link')">Link</span>
+                            <span ng-if="(shareType=='image')">Bild</span>
+                            <span ng-if="((shareType!='link') && (shareType!='image'))">Datei</span>
+                        </div>
                         <div ng-show="externalContent" style="font-size: 120%;font-weight: 500;">
                             <div style="font-size: 80%;">{{items[0].name}}</div>
                         </div>
@@ -123,7 +128,8 @@
                         font-size: 175%;
                         color: grey;
                         ">
-                        <i ng-show="collection.scope!='MY'" class="icon ion-ios-people"></i>
+                        <i ng-show="collection.scope=='CUSTOM'" class="icon ion-ios-people"></i>
+                        <i ng-show="collection.scope=='EDU_ALL'" class="icon ion-ios-world-outline"></i>
                     </td>
                 </tr>
 

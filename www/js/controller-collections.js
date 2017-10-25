@@ -55,7 +55,6 @@ angular.module('starter.controllerCollections', [])
         $scope.collections = [];
         $scope.actualCollection = null;
         $scope.selectedTab = "my";
-        console.log("1A");
         $scope.loadCollections('-root-','MY');
     };
 
@@ -66,7 +65,6 @@ angular.module('starter.controllerCollections', [])
         $scope.collections = [];
         $scope.actualCollection = null;
         $scope.selectedTab = "orga";
-        console.log("1B");
         $scope.loadCollections('-root-','EDU_GROUPS');    
     };
 
@@ -77,7 +75,6 @@ angular.module('starter.controllerCollections', [])
         $scope.collections = [];
         $scope.actualCollection = null;
         $scope.selectedTab = "all";
-        console.log("1C");
         $scope.loadCollections('-root-',"EDU_ALL");
     };
 

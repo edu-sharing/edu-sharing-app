@@ -163,7 +163,13 @@ angular.module('starter.controllerIntro', [])
                                     alert("FAIL screen.orientation.unlock()");
                                 }
 
-                                $state.go('app.collections');
+                                if (System.hasWebIntent()) {
+                                    // got Android share intent ... jump to share screen
+                                    $state.go('app.collectionadd');
+                                } else {
+                                    // go do default start screen
+                                    $state.go('app.collections');
+                                }
                                 $ionicHistory.nextViewOptions({
                                     historyRoot: true
                                 });
@@ -177,7 +183,7 @@ angular.module('starter.controllerIntro', [])
                                 if (System.hasWebIntent()) {
                                     $timer(function(){
                                         var alertPopup = $ionicPopup.alert({
-                                            title: 'Login nötig',
+                                            title: 'Login nötig 1',
                                             template: 'Zum Teilen bitte einloggen.'
                                         });
                                         alertPopup.then(function () { });

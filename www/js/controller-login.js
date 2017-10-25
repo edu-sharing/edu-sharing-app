@@ -27,16 +27,18 @@ angular.module('starter.controllerLogin', [])
         $scope.loginServer = clientSettings.selectedServer;
         $rootScope.serverName = clientSettings.selectedServer.name;
 
+        /*
         $timeout(function () {
             // if not logged in & has web intent -> show alert, stay on this page
             if (System.hasWebIntent()) {
                 var alertPopup = $ionicPopup.alert({
-                    title: 'Login nötig',
+                    title: 'Login nötig 2',
                     template: 'Zum Teilen bitte einloggen.'
                 });
                 alertPopup.then(function () { });
             }
         }, 100);
+        */
 
     });
 

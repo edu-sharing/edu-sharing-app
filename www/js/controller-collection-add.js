@@ -34,8 +34,6 @@ angular.module('starter.controllerCollectionAdd', [])
 
         console.log("Enter CollectionAddCtrl");
 
-        System.checkIfAppNeedFreshStart();
-
         // if user is not logged in -> go to login screen
         if (!Account.isLoggedIn()) {
             Account.rememberPathBeforeLogin($location.$$path);
