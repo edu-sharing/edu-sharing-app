@@ -32,8 +32,6 @@ angular.module('starter.controllerCollectionAdd', [])
 
     $scope.$on('$ionicView.enter', function() {
 
-        console.log("Enter CollectionAddCtrl");
-
         // if user is not logged in -> go to login screen
         if (!Account.isLoggedIn()) {
             Account.rememberPathBeforeLogin($location.$$path);
@@ -196,8 +194,6 @@ angular.module('starter.controllerCollectionAdd', [])
 
     $scope.$on('$ionicView.leave', function() {
 
-        console.log("Leave CollectionAddCtrl");
-
         // BACK Button unbind
         $scope.onBackUnbind();
 
@@ -275,7 +271,6 @@ angular.module('starter.controllerCollectionAdd', [])
         if (!collection.preview.isIcon) {
             backurl = 'background-image: url("'+collection.previewUrl+'")';
         }
-        //console.log("Collection --> ",backurl);
         return backurl;
     };
 
@@ -363,8 +358,6 @@ angular.module('starter.controllerCollectionAdd', [])
     // 1. get default folder and create it if needed
     $scope.savePrepare = function() {
 
-        console.log("savePrepare");
-
         $ionicLoading.show({
             template: $rootScope.spinnerSVG+'<br>Upload {{progress}}'
         });
@@ -375,8 +368,6 @@ angular.module('starter.controllerCollectionAdd', [])
 
     // 1. store share to default folder
     $scope.saveShare = function(inNode) {
-
-        console.log("saveShare");
 
         // get array of keywords
         var keyWordArray = [];

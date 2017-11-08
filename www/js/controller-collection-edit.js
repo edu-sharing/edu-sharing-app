@@ -83,7 +83,7 @@ angular.module('starter.controllerCollectionEdit', [])
                     $cordovaToast.show("Sammlung wurde erstellt.", 'long', 'bottom');
                 } catch(e) {} 
                 $timeout(function(){
-                    $rootScope.$broadcast('collections:child', result.collection.ref.id);
+                    $rootScope.$broadcast('collections:child', result.collection);
                 },700);
                 $scope.onBack();
             }, function(){
@@ -91,7 +91,7 @@ angular.module('starter.controllerCollectionEdit', [])
                 $ionicLoading.hide();
                 try {
                     $cordovaToast.show("Sammlung konnte nicht erstellt werden.", 'long', 'bottom')
-                } catch(e) {alert('FAIL');}
+                } catch(e) { console.error(e); }
             });
 
         } else {

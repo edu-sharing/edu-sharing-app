@@ -276,6 +276,8 @@ angular.module('starter.controllerCollections', [])
 
     $scope.$on('collection:delete', function() {
 
+        console.log("Collection delete");
+
         var confirmPopup = $ionicPopup.confirm({
                 title: 'Sammlung wirklich löschen?',
                 template: '',
@@ -289,6 +291,7 @@ angular.module('starter.controllerCollections', [])
                 EduApi.deleteCollection($scope.actualCollection, function() {
                     // WIN
 
+                    $rootScope.lastActiveCollection = null;
                     try {
                         var message = "Sammlung wurde gelöscht.";
                         $cordovaToast.show(message, 'long', 'bottom');
