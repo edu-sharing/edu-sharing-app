@@ -143,8 +143,13 @@
         </div>
 
         <!-- ERROR SCREEN -->
-        <div ng-show="error.length>0" style="text-align: center; color: #A8A8A8; padding: 10px; padding-top: 14px; font-size: 100%;">
-            <p>{{error}}</p>
+        <div ng-show="error.length>0" style="text-align: center; padding: 10px; padding-top: 14px; font-size: 90%;">
+            <p style="margin-bottom:4px;">
+                Ups es ist ein Fehler aufgetreten. Wenn Du uns helfen magst die App zu verbessern, dann mach einen Screenshot von diesem Fehler und sende ihn an:<br>support@edu-sharing.com
+            </p>
+            <p style="color: #A8A8A8;font-size: 80%;">
+                {{error}}
+            </p>
             <button class="button button-light" on-tap="reload()">
                 Erneut Laden
             </button>

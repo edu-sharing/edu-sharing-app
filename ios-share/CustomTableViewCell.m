@@ -1,5 +1,3 @@
-//  CustomTableViewCell.m
-
 #import "CustomTableViewCell.h"
 
 @implementation CustomTableViewCell

@@ -185,7 +185,7 @@ angular.module('starter.controllerCollections', [])
 
         }, function(err){
             // FAIL
-            $scope.error = "Fehler beim Laden der Daten: "+JSON.stringify(err);
+            $scope.error = JSON.stringify(err);
             $ionicLoading.hide();
         },scopeStr);
     };
@@ -320,7 +320,7 @@ angular.module('starter.controllerCollections', [])
             $scope.itemClick({
                 ref : {
                     repo: $scope.actualCollection!==null ? $scope.actualCollection.ref.repo : "repo",
-                    id: data
+                    id: data.ref.id
                 },
                 typeStyle: "collection"
             });
@@ -346,7 +346,7 @@ angular.module('starter.controllerCollections', [])
             $scope.actualCollection = item;
             $scope.emptyRoot = false;
             $scope.emptySub = false;
-            $scope.collections = []; 
+            $scope.collections = [];
             $scope.loadCollections(item.ref.id,'EDU_ALL'); 
 
         } else

@@ -155,10 +155,45 @@ angular.module('starter.serviceApi', [])
       };
 
       var serverErrorSzenario = function() {
+
           console.log("serverErrorSzenario: "+error.status);
 
           // Unauthorized
           if (error.status==401) {
+
+              console.log("Handle 401 Unauthorized ...")
+
+              var failCase = function() {
+                  // forced refresh failed
+                  $ionicLoading.hide();
+                  var confirmPopup = $ionicPopup.confirm({
+                      title: 'Session abgelaufen',
+                      template: 'Sie müssen sich neu einloggen.',
+                      buttons: [
+                          {
+                              text: '<b>OK</b>',
+                              type: 'button-positive',
+                              onTap: function (e) {
+
+                                  // remove all server data
+                                  // this is a bit hardcore ... but quick fix for edge case
+                                  localStorage.removeItem("account");
+
+                                  window.postMessage({command: "logout", message: ""}, "*");
+                                  $rootScope.isLoggedIn = false;
+
+                                  // restart app
+                                  $timeout(function(){
+                                      var url = window.location.href;
+                                      url = url.substring(0,url.indexOf("#"));
+                                      window.location.href = url;
+                                  },1500);
+
+                              }
+                          }
+                      ]
+                  });
+              };
 
               if ((lable!="makeSureOAuthTokensAreFresh") && (lable!="getOAuthTokensByUsernamePassword")) {
 
@@ -166,35 +201,7 @@ angular.module('starter.serviceApi', [])
                   oAuthExpiresIn = 1;
                   makeSureOAuthTokensAreFresh(function(fail) {
 
-                      // forced refresh failed
-                      $ionicLoading.hide();
-                      var confirmPopup = $ionicPopup.confirm({
-                          title: 'Session abgelaufen',
-                          template: 'Sie müssen sich neu einloggen.',
-                          buttons: [
-                              {
-                                  text: '<b>OK</b>',
-                                  type: 'button-positive',
-                                  onTap: function (e) {
-
-                                      // remove all server data
-                                      // this is a bit hardcore ... but quick fix for edge case
-                                      localStorage.removeItem("account");
-
-                                      window.postMessage({command: "logout", message: ""}, "*");
-                                      $rootScope.isLoggedIn = false;
-
-                                      // restart app
-                                      $timeout(function(){
-                                        var url = window.location.href;
-                                        url = url.substring(0,url.indexOf("#"));
-                                        window.location.href = url;
-                                      },1500);
-
-                                  }
-                              }
-                          ]
-                      });
+                      failCase();
 
                   }, function(win) {
 
@@ -205,7 +212,8 @@ angular.module('starter.serviceApi', [])
 
 
               } else {
-                  if ((typeof errorCallback != "undefined") && (errorCallback!=null)) errorCallback(error);
+
+                  failCase();
               }
 
 
@@ -214,6 +222,21 @@ angular.module('starter.serviceApi', [])
               if ((typeof errorCallback != "undefined") && (errorCallback!=null)) errorCallback(error);
 
           }
+
+      };
+
+      var noValidAuthSzenario = function() {
+
+          oAuthExpiresIn = 1;
+          makeSureOAuthTokensAreFresh(function(fail){
+              // FAIL
+              oAuthExpiresIn = 0;
+              alert("TODO: RESET APP LOGIN");
+          }, function(win){
+              // WIN
+              // worked - try again
+              $http(error.config).then(repeatSuccessCallback, onFail);
+          }, "noValidAuthSzenario");
 
       };
 
@@ -804,8 +827,8 @@ angular.module('starter.serviceApi', [])
               // REQUEST CONFIG
               var config = {
                 method : 'GET',
-                url : 'http://app-registry.edu-sharing.com/public-server-directory.php',
-                timeout : 10000,
+                url : 'http://app-registry.edu-sharing.com/servers.php',
+                timeout : 25000,
                 cache: false,
                 headers: {
                     'Accept' : 'application/json'

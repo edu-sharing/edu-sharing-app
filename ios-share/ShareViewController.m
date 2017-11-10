@@ -5,7 +5,7 @@
 
 #define SERVER @"/edu-sharing"
 #define POST_SERVER [NSString stringWithFormat:@"%@%@",SERVER,@"/oauth2/token"]
-#define SAMMLUNG [NSString stringWithFormat:@"%@%@",SERVER,@"/rest/collection/v1/collections/-home-/search?sortProperties=cm%3Amodified&sortAscending=false&query=&maxItems=500&skipCount=0"]
+#define SAMMLUNG [NSString stringWithFormat:@"%@%@",SERVER,@"/rest/collection/v1/collections/-home-/search?query=&maxItems=500&skipCount=0&sortProperties=cm:modified&sortAscending=false"]
 #define PICNODEID [NSString stringWithFormat:@"%@%@",SERVER,@"/rest/node/v1/nodes/-home-/-inbox-/children?renameIfExists=true&versionComment=MAIN_FILE_UPLOAD&type=%7Bhttp%3A%2F%2Fwww.campuscontent.de%2Fmodel%2F1.0%7Dio"]
 
 
@@ -65,8 +65,11 @@
                         if([(NSObject*)item isKindOfClass:[UIImage class]]) {
                             imgData = UIImagePNGRepresentation((UIImage*)item);
                         }
+                        //NSLog(@"contentText %@",self.contentText);
                         self.imageView.image = [UIImage imageWithData:imgData];
+                        self.linkLB.text = @"Bild";
                         self.link = false;
+                        //self.ititleTXT.text = self.contentText;
                         [self loadeduApp];
                     });
                 }
@@ -84,8 +87,19 @@
             [itemProvider loadItemForTypeIdentifier:@"public.url" options:nil completionHandler:^(NSURL *url, NSError *error) {
                 dispatch_async(dispatch_get_main_queue(), ^{
                     self.urlString = url.absoluteString;
-                    self.linkLB.hidden = false;
+                    self.linkLB.text = @"Link";
                     self.link = true;
+
+                    /*
+                    NSString *htmlCode = [NSString stringWithContentsOfURL:url encoding:NSASCIIStringEncoding error:nil];
+                    NSRange titleOpen = [htmlCode rangeOfString:@"<title>"];
+                    NSRange titleClose = [htmlCode rangeOfString:@"</title>"];
+                    NSRange titleRange;
+                    titleRange.location = titleOpen.location + titleOpen.length ;
+                    titleRange.length = titleClose.location - titleRange.location;
+                    NSString *docTitle = [htmlCode substringWithRange:titleRange];
+                    self.testTextView.text = [NSString stringWithFormat:@"%@ - %@",self.urlString, docTitle];
+                    */
 
                     UIWebView *webView = [[UIWebView alloc] initWithFrame:CGRectMake(0,0,0,0)];
                     webView.delegate = self;
@@ -95,6 +109,27 @@
                 });
             }];
         }
+        //@"public.file-url"
+        /*if ([itemProvider hasItemConformingToTypeIdentifier:@"public.url"]) {
+            [itemProvider loadItemForTypeIdentifier:@"public.url" options:nil completionHandler:^(id<NSSecureCoding> item, NSError *error) {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    NSData *imgData;
+                    if([(NSObject*)item isKindOfClass:[NSURL class]]) {
+                        imgData = [NSData dataWithContentsOfURL:(NSURL*)item];
+                        self.imageView.image = [UIImage imageWithData:imgData];
+                    }
+                    self.testTextView.text = imgData.description;
+//                    NSDictionary *jsPreprocessingResults = jsDict[NSExtensionJavaScriptPreprocessingResultsKey];
+//                    NSString *selectedText = jsPreprocessingResults[@"selection"];
+//                    NSString *pageTitle = jsPreprocessingResults[@"title"];
+//                    if ([selectedText length] > 0) {
+//                        self.testTextView.text = selectedText;
+//                    } else if ([pageTitle length] > 0) {
+//                        self.testTextView.text = pageTitle;
+//                    }
+                });
+            }];
+        }*/
     }
 }
 
@@ -166,6 +201,8 @@
                   }else{
                       [self throwError:@"Falsche Logindaten!" :@""];
                   }
+                  //[UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+
               }else{
                   [self throwError:@"Hinweis!" :error.description];
               }
@@ -199,6 +236,7 @@
                   }else{
                       [self alertlogin];
                   }
+                  //[UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
               }else{
                   [self throwError:@"Hinweis!" :error.description];
               }
@@ -227,19 +265,29 @@
                       NSDictionary *sDict = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:nil];
                       NSArray *collArray = [sDict valueForKey:@"collections"];
                       for (NSString *imgData in collArray) {
+                          NSString *tile = @"";
+                          UIImage *image = nil;
+                          NSString *sid = @"";
+                          UIImage *imgGroup = nil;
                           if ([[[imgData valueForKey:@"preview"] valueForKey:@"isIcon"] intValue] == 1) {
-                              NSString *tile = [imgData valueForKey:@"title"];
-                              NSString *sid = [[imgData valueForKey:@"ref"] valueForKey:@"id"];
-                              [self.sammlungDict addObject:[NSArray arrayWithObjects:tile,[UIImage imageNamed:@"ic_layers_48pt"],sid,nil]];
+                              tile = [imgData valueForKey:@"title"];
+                              image = [UIImage imageNamed:@"ic_layers_48pt"];
+                              sid = [[imgData valueForKey:@"ref"] valueForKey:@"id"];
                           }else{
-                              NSString *tile = [imgData valueForKey:@"title"];
+                              tile = [imgData valueForKey:@"title"];
                               NSURL *imageURL = [NSURL URLWithString:[[imgData valueForKey:@"preview"] valueForKey:@"url"]];
                               NSData *imageData = [NSData dataWithContentsOfURL:imageURL];
-                              UIImage *image = [UIImage imageWithData:imageData];
-                              NSString *sid = [[imgData valueForKey:@"ref"] valueForKey:@"id"];
-                              [self.sammlungDict addObject:[NSArray arrayWithObjects:tile,image,sid,nil]];
+                              image = [UIImage imageWithData:imageData];
+                              sid = [[imgData valueForKey:@"ref"] valueForKey:@"id"];
                           }
+                          if ([[imgData valueForKey:@"scope"] isEqualToString:@"CUSTOM"]) {
+                              imgGroup = [UIImage imageNamed:@"shared@2x"];
+                          }else if ([[imgData valueForKey:@"scope"] isEqualToString:@"EDU_ALL"]) {
+                              imgGroup = [UIImage imageNamed:@"public@2x"];
+                          }
+                          [self.sammlungDict addObject:[NSArray arrayWithObjects:tile,image,sid,(imgGroup)?imgGroup:[NSNull null],nil]];
                       }
+                      //self.testTextView.text = self.imgArray.description;
                       [self.tableView reloadData];
                       [self.loadingSpinner stopAnimating];
                   }else{
@@ -448,13 +496,18 @@
 }
 
 - (void)URLSession:(nonnull NSURLSession *)session task:(nonnull NSURLSessionTask *)task didReceiveChallenge:(nonnull NSURLAuthenticationChallenge *)challenge completionHandler:(nonnull void (^)(NSURLSessionAuthChallengeDisposition, NSURLCredential * __nullable))completionHandler {
+    /*    NSURLCredential *cred = [NSURLCredential credentialWithUser:self.list[4] password:self.list[5] persistence:NSURLCredentialPersistenceForSession];
+     completionHandler(NSURLSessionAuthChallengeUseCredential, cred);
+     */    //oder
     NSString *authMethod = challenge.protectionSpace.authenticationMethod;
     if ([authMethod isEqualToString:NSURLAuthenticationMethodServerTrust]) {
+        //NSLog(@"authMethod %@",authMethod);
         NSURLCredential *credential = [NSURLCredential credentialForTrust:challenge.protectionSpace.serverTrust];
         completionHandler(NSURLSessionAuthChallengeUseCredential,credential);
     } else {
         NSURLCredential *cred = [NSURLCredential credentialWithUser:@"admin" password:@"admin" persistence:NSURLCredentialPersistenceForSession];
         completionHandler(NSURLSessionAuthChallengeUseCredential, cred);
+        //NSLog(@"Finished Challenge");
     }
 }
 
@@ -462,6 +515,7 @@
 - (void)URLSession:(NSURLSession *)session task:(NSURLSessionTask *)task didCompleteWithError:(NSError *)error {
     NSLog(@"errors %@",error.debugDescription);
     dispatch_async(dispatch_get_main_queue(), ^{
+        //[UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
     });
 }
 - (void)URLSession:(NSURLSession *)session downloadTask:(NSURLSessionDownloadTask *)downloadTask didResumeAtOffset:(int64_t)fileOffset expectedTotalBytes:(int64_t)expectedTotalBytes {
@@ -480,6 +534,7 @@
 }
 
 -(void)throwError:(NSString *)hinweis :(NSString *)error {
+    //[UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
     [self.loadingSpinner stopAnimating];
     self.controlSpinnerView.hidden = true;
     UIAlertController *alert = [UIAlertController alertControllerWithTitle:hinweis message:error preferredStyle:UIAlertControllerStyleAlert];
@@ -495,13 +550,13 @@
 
 
 - (void)minheightView {
-    if (self.contentTableView.frame.size.height < 298) {
+    if (self.contentTableView.frame.size.height < 288) {
         CGRect frame = self.contentTableView.frame;
-        frame.size.height = 298;
+        frame.size.height = 288;
         self.contentTableView.frame = frame;
     }else{
         CGRect frame = self.contentTableView.frame;
-        frame.size.height = self.view.frame.size.height - self.contentTableView.frame.origin.y;
+        frame.size.height = self.view.bounds.size.height - self.contentTableView.frame.origin.y;
         self.contentTableView.frame = frame;
     }
 }
@@ -528,6 +583,21 @@
     CustomTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"myCell" forIndexPath:indexPath];
     cell.textLabelCustom.text = self.sammlungDict[indexPath.row][0];
     cell.imageViewCustom.image = self.sammlungDict[indexPath.row][1];
+    cell.imageGroup.image = nil;
+    if (![self.sammlungDict[indexPath.row][3] isEqual:[NSNull null]]) cell.imageGroup.image = self.sammlungDict[indexPath.row][3];
+    /*if ([[[self.sammlungDict[indexPath.row] valueForKey:@"preview"] valueForKey:@"isIcon"] intValue] == 1) {
+        cell.imageViewCustom.image = [UIImage imageNamed:@"ic_layers_48pt"];
+    }else{
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            NSURL *imageURL = [NSURL URLWithString:[[self.sammlungDict[indexPath.row] valueForKey:@"preview"] valueForKey:@"url"]];
+            NSData *imageData = [NSData dataWithContentsOfURL:imageURL];
+            UIImage *image = [UIImage imageWithData:imageData];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                cell.imageViewCustom.image = image;
+            });    
+        });
+    }
+    cell.textLabelCustom.text = [self.sammlungDict[indexPath.row] valueForKey:@"title"];*/
     return cell;
 }
 
@@ -535,6 +605,7 @@
     self.sammlungID = self.sammlungDict[indexPath.row][2];
     self.saveBTN.hidden = true;
     [self nodeIDinbox:true];
+    //NSLog(@"didSelectRowAtIndexPath: %d - %d - self.settingsList.name %@",indexPath.section,indexPath.row,self.settingsList.name);
 }
 
 
