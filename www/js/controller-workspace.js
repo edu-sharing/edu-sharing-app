@@ -451,7 +451,7 @@ angular.module('starter.controllerWorkspace', [])
 
                 // unregister Back Button
                 $scope.onBackUnbind();
-                Toolbox.showItemDetailsModal($scope, item.ref.id, function() {
+                Toolbox.showItemDetailsModal($scope, item, function() {
                     // WHEN DONE - reregister Back Button
                     $scope.onBackUnbind = $scope.$on('button:back',$scope.onBack);
                 });

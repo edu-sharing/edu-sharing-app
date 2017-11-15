@@ -34,7 +34,7 @@ angular.module('starter', [
       // the spinner to show on waiting screens
       $rootScope.spinnerSVG ='<svg class="spinner" width="32px" height="32px" viewBox="0 0 66 66" xmlns="http://www.w3.org/2000/svg">\n' +
       '   <circle class="path" fill="none" stroke-width="6" stroke-linecap="round" cx="33" cy="33" r="30"></circle>\n' +
-      '</svg>';
+      '</svg><div ng-show=""></div>';
 
       // dynamic setting of tile width - so that on
       // portrait view always two tiles in a row
@@ -183,7 +183,7 @@ angular.module('starter', [
 
 .config(function($stateProvider, $urlRouterProvider, $logProvider) {
 
-  try {
+    try {
 
       $logProvider.debugEnabled(false);
 

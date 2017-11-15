@@ -241,7 +241,7 @@ angular.module('starter.services', [])
 /*
  * Toolbox
  */
-.factory('Toolbox', function($rootScope, $timeout, EduApi, $ionicLoading, $ionicPopup, Share, System, $ionicActionSheet, $location, $cordovaToast, $sce, $ionicScrollDelegate, $ionicModal, $cordovaCamera) {
+.factory('Toolbox', function($rootScope, $timeout, EduApi, $ionicLoading, $ionicPopup, Share, System, $ionicActionSheet, $location, $cordovaToast, $sce, $ionicScrollDelegate, $ionicModal, $cordovaCamera, $cordovaFileTransfer, $http) {
 
 
     var addItemsToCollectionIntern = function(items, collectionId, callback) {
@@ -449,7 +449,7 @@ angular.module('starter.services', [])
 
       };
 
-        var showDetailsModal = function(scope, contentNodeId, whenDone) {
+        var showDetailsModal = function(scope, contentNode, whenDone) {
 
                scope.detailLoading = true;
                scope.loadingDelay = true;
@@ -461,6 +461,8 @@ angular.module('starter.services', [])
                 }).then(function(modal) {
                     scope.modal = modal;
                     scope.modal.show();
+
+                    // close button
                     scope.close = function() {
 
                         scope.modal.hide();
@@ -480,7 +482,28 @@ angular.module('starter.services', [])
                     // register onBack Button
                     scope.onBackUnbind = scope.$on('button:back',scope.close);
 
-                    loadRenderSnippet(scope, contentNodeId, function(result) {
+                    // download item
+                    scope.download = function() {
+                        downloadContent(contentNode, function(){
+                            // when done
+                            scope.close();
+                        });
+                    }
+
+                    // figure out if user is allowed to add item to collection
+                   scope.showAddCollection = (contentNode.access.indexOf("CCPublish") > -1);
+
+                    // figure out if item can be downloaded
+                   scope.showDownload = !(contentNode.mediatype=="link");
+
+                    // add item to collection
+                    scope.addToCollection = function() {
+                       scope.close();
+                       System.setAddToCollectionItems([contentNode]);
+                       $location.path("/app/collectionadd");
+                    }
+
+                    loadRenderSnippet(scope, contentNode.ref.id, function(result) {
                         if (!result) scope.close();
                     });
                 });
@@ -1192,96 +1215,176 @@ angular.module('starter.services', [])
         };
 
     /*  DEACTIVATED because download is now handled by render service
-needs plugins:
-- https://github.com/apache/cordova-plugin-file-transfer
-- https://github.com/SpiderOak/FileViewerPlugin
-var downloadContent = function(item) {
+        needs plugins:
+        - https://github.com/apache/cordova-plugin-file-transfer
+        - https://github.com/SpiderOak/FileViewerPlugin
+    */
+  var downloadContent = function(item, callback) {
+
+    console.log("downloadContent START");
+
     try {
-        // https://github.com/apache/cordova-plugin-file-transfer
 
-        var downloadUrl = item.downloadUrl + "&accessToken="+EduApi.getOAuthAccessToken();
-
-        // add oAuthToken to URL
-
-        var fileTransfer = null;
-        try {
-            fileTransfer = new FileTransfer();
-        } catch (e) {}
-        if ((typeof fileTransfer === "undefined") || (fileTransfer===null)) {
+        // on browser simply open in browser
+        if ( ( !System.isNativeIOS() ) && ( !System.isNativeAndroid() ) ) {
             console.log("File Transfer is not available on this environment");
             window.open(downloadUrl,'Download');
+            callback();
             return;
         }
-        //console.log("About to start transfer");
-        var targetPath = cordova.file.externalRootDirectory + "Download/";
-        if (System.isNativeIOS()) targetPath = cordova.file.documentsDirectory;
-        //alert("PATH: "+targetPath);
+
+        // show spinner
         $ionicLoading.show({
             template: $rootScope.spinnerSVG
         });
-        var filePath = targetPath + item.name;
-        fileTransfer.download(downloadUrl, filePath,
-            function () {
-                // WIN
-                var openInOtherApp = function() {
-                    try {
-                        // https://github.com/SpiderOak/FileViewerPlugin
-                        window.FileViewerPlugin.view({
-                                action: window.FileViewerPlugin.ACTION_VIEW,
-                                url: filePath
-                            },
-                            function() {},
-                            function(error) {
-                                alert("OPEN FAIL-1:"+JSON.stringify(error));
-                            }
-                        );
-                    } catch (e) {
-                        alert("OPEN FAIL-2:"+JSON.stringify(e));
+
+        // open content viewer
+        var openInOtherApp = function(filePath) {
+            try {
+                console.log("window.FileViewerPlugin",window.FileViewerPlugin);
+                // https://github.com/SpiderOak/FileViewerPlugin
+                window.FileViewerPlugin.view({
+                        action: window.FileViewerPlugin.ACTION_VIEW,
+                        url: filePath
+                    },
+                    function() {},
+                    function(error) {
+                        alert("OPEN FAIL-1:"+JSON.stringify(error));
                     }
-                };
+                );
+            } catch (e) {
+                alert("OPEN FAIL-2:"+JSON.stringify(e));
+            }
+        };
+
+        // when download is ready
+        var winDownload = function(result, item, filePath) {
+
+            if (System.isNativeIOS()) {
+
+                // iOS
+                openInOtherApp(filePath);
+                $ionicLoading.hide();
+                callback();
+
+            } else {
 
                 $ionicLoading.hide();
-                if (System.isNativeIOS()) {
 
-                    // iOS
-                    openInOtherApp();
+                // Android
+                $ionicPopup.show({
+                    template: 'Die Datei "'+item.name+'" wurde erfolgreich in den Ordner "Downloads" heruntergeladen.',
+                    title: 'Objekt heruntergeladen',
+                    buttons: [
+                        {
+                            text: 'Öffnen',
+                            type: 'button-positive',
+                            onTap: function() {
+                                openInOtherApp(filePath);
+                            }
+                        },
+                        { text: 'OK', type: 'button-positive' }
+                    ]
+                });
+                callback();
 
-                } else {
+            }
+        };
 
-                    // Android
-                    $ionicPopup.show({
-                        template: 'Die Datei "'+item.name+'" wurde erfolgreich in den Ordner "Downloads" heruntergeladen.',
-                        title: 'Objekt heruntergeladen',
-                        buttons: [
-                            {
-                                text: 'Öffnen',
-                                type: 'button-positive',
-                                onTap: function() {
-                                    openInOtherApp();
-                                }
-                            },
-                            { text: 'OK', type: 'button-positive' }
-                        ]
+        // when download failed
+        var failDownload = function(err) {
+            $ionicLoading.hide();
+            console.dir(err);
+            var alertPopup = $ionicPopup.alert({
+                title: 'Problem',
+                template: 'Die Datei konnte nicht heruntergeladen werden. '+JSON.stringify(err)
+            });
+            alertPopup.then(function() {});
+            callback();
+        };
+
+        // the actual downloading
+        var contentDownload = function(downloadUrl, item) {
+
+            // set path to store on device
+            var targetPath = cordova.file.externalRootDirectory + "Download/";
+            if (System.isNativeIOS()) targetPath = cordova.file.documentsDirectory;
+            var filePath = encodeURI(targetPath + item.name);
+            // console.log("Path to store content",filePath);
+
+            if (System.isNativeIOS()) {
+
+                // iOS
+                $cordovaFileTransfer.download(downloadUrl, filePath, {}, true)
+                    .then(function(result) {
+
+                        // WIN
+                        winDownload(result, item, filePath);
+
+                    }, function(err) {
+
+                        // FAIL
+                        failDownload(err);
+
+                    }, function (progress) {
+                        $timeout(function () {
+                            var progressPercent = (progress.loaded / progress.total) * 100;
+                            console.log(progressPercent);
+                        });
                     });
 
-                }
-            },
-            function (err) {
-                // FAIL
-                $ionicLoading.hide();
-                console.dir(err);
-                var alertPopup = $ionicPopup.alert({
-                    title: 'Problem',
-                    template: 'Die Datei konnte nicht heruntergeladen werden. '+JSON.stringify(err)
+            } else {
+
+                // Android
+                window.CordovaHttpPlugin.downloadFile(downloadUrl, {}, {}, filePath, function(result) {
+
+                    // WIN
+                    winDownload(result, item, filePath);
+
+                }, function(response) {
+
+                    // FAIL
+                    failDownload(response);
+
                 });
-                alertPopup.then(function() {});
+
+            }
+
+        }
+
+        // download URL (with redirect)
+        var downloadUrl = item.downloadUrl + "&accessToken="+EduApi.getOAuthAccessToken();
+
+        if (System.isNativeIOS()) {
+
+            // in iOS following redirects works automatically - so go direct
+            console.log("downloadContent IOS URL: "+downloadUrl);
+            contentDownload(downloadUrl, item);
+
+        } else {
+
+            // resolve redirect (because plugin download can not follow redirect)
+            console.log("Resolving URL ANDROID: "+downloadUrl);
+            window.CordovaHttpPlugin.get(downloadUrl, {}, {}, function(response) {
+                console.log("200 NOT A REDIRECT URL - use original: "+downloadUrl);
+                contentDownload(downloadUrl, item);
+            }, function(response) {
+                if (response.status==302) {
+                    var redirectUrl = decodeURIComponent(response.headers.Location);
+                    console.log("302 Redirect Resolved to: "+redirectUrl);
+                    contentDownload(redirectUrl, item);
+                } else {
+                    callback();
+                }
             });
+
+        }
+
     } catch (e) {
         // missing: cordova plugin add cordova-plugin-file-transfer
         alert("FAIL DOWNLOAD: "+e);
     }
 };
-        */
 
         return {
             deleteNodeItems: function(itemArray, then) {
@@ -1306,8 +1409,8 @@ var downloadContent = function(item) {
             afterProcessNodeDataFromServer: function(data, numberOfValidNodesCallback) {
                 return prepareData(data, numberOfValidNodesCallback);
             },
-            showItemDetailsModal : function(scope, itemId, whenDone) {
-                return showDetailsModal(scope, itemId, whenDone);
+            showItemDetailsModal : function(scope, item, whenDone) {
+                return showDetailsModal(scope, item, whenDone);
             },
             uploadImageWorkspace : function(scope) {
                 return headerButtonUpload(scope);

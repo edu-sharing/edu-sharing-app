@@ -14,6 +14,24 @@
            <circle class="path" fill="none" stroke-width="6" stroke-linecap="round" cx="33" cy="33" r="30"></circle>
         </svg>
     </div>
+    <div style="height: 66px;">
+     &nbsp;
+    </div>
     </ion-content>
-    <div on-tap="close()" class="floatingButton" ><i class="ion-android-arrow-back" /></div>
+
+
+    <div class="render-footer">
+        <button on-tap="close()" class="button icon ion-android-arrow-back render-footer-button">&nbsp;ZURÜCK</button>
+        <button ng-show="showAddCollection" on-tap="addToCollection()" class="button icon ion-social-buffer render-footer-button" style="
+            position: absolute;
+            width: 40px;
+            right: 72px;
+        "></button>
+        <button ng-disabled="!showDownload" on-tap="download()" class="button icon ion-android-download render-footer-button" style="
+            position: absolute;
+            width: 40px;
+            right: 20px;
+        "></button>
+    </div>
+
 </ion-view>

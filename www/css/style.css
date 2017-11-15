@@ -699,6 +699,28 @@ body {
     position: fixed;
 }
 
+.render-footer {
+    padding: 10px;
+    position: absolute;
+    width: 100%;
+    bottom: -1px;
+    height: 66px;
+    background-color: #4d799a;
+}
+
+.render-footer-button {
+    background-color: #4d799a;
+    border-width: 0px;
+    color: white;
+}
+
+.render-footer-button:hover {
+    background-color: #4d799a;
+    border-width: 0px;
+    color: white;
+}
+
+
 .float-camera-icon:before {
     margin-top: -2px;
 }
