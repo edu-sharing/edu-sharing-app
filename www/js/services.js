@@ -453,6 +453,7 @@ angular.module('starter.services', [])
 
                scope.detailLoading = true;
                scope.loadingDelay = true;
+               scope.dynamicHTML = "";
 
                $ionicModal.fromTemplateUrl('templates/tab-detail.html', {
                     scope: scope,
@@ -465,7 +466,7 @@ angular.module('starter.services', [])
                     // close button
                     scope.close = function() {
 
-                        scope.modal.hide();
+                        scope.modal.remove();
                         scope.onBackUnbind();
 
                         // remove old dynamic libs
@@ -475,6 +476,9 @@ angular.module('starter.services', [])
                                 oldLibs[j].parentNode.removeChild(oldLibs[j]);
                             }
                         }
+
+                        // remove dynamic content
+                        scope.dynamicHTML = null;
 
                         if (whenDone !== "undefined") whenDone();
                     };
@@ -512,10 +516,11 @@ angular.module('starter.services', [])
 
         var loadRenderSnippet = function(scope, contentNodeId, result) {
 
+
             EduApi.getRenderSnippetForContent(contentNodeId, function(snippet) {
 
                // WIN
-               //$ionicLoading.hide();
+               $ionicLoading.hide();
                snippet = manipulateSnippet(snippet);
 
                scope.detailLoading = false;
@@ -523,6 +528,7 @@ angular.module('starter.services', [])
                // set snippet HTML
                scope.dynamicHTML = $sce.trustAsHtml(snippet);
                if(!scope.$$phase) scope.$apply();
+
                $timeout(function(){
                     // filter scripts from snippet and attach at end of document
                     var scriptElementArray = document.getElementById('renderDiv').getElementsByTagName("script");
