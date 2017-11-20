@@ -27,7 +27,7 @@
                                     </td>        
                                     <td style="vertical-align: top;" width="*">
                                         <div class="crumb" style="padding-top: 1px;font-weight: bold;     text-align: center;">
-                                        <span>{{breadCrumbs[breadCrumbs.length-1].name | limitTo:32}}</span>  
+                                        <span>{{breadCrumbs[breadCrumbs.length-1].name | limitTo:32  | wordbreaker : 16}}</span>
                                         </div>
                                     </td>
                                 </tr>

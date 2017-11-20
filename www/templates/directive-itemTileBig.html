@@ -17,15 +17,16 @@
                      fallback-src="./img/transparent.gif" style="width:65px;height:58px;position:absolute;top:-4px;left:0px;">
             </td>
             <!-- Name & Info -->
-            <td width="*" style="text-align:left;vertical-align:middle;">
+            <td style="text-align:left;vertical-align:middle;width: calc(99% - 65px)">
                 <div style="
                 font-weight: bold;
                 padding-left: 14px;
                 padding-right: 5px;
                 width: 99%;
                 overflow: hidden;
-                height: 20px;">
-                {{item.name | limitTo : 30}}
+                height: 20px;
+                hyphens: auto;">
+                {{item.name | limitTo : 100 | wordbreaker : 18}}
                 </div>
                 <div style="
                 color: darkgray;

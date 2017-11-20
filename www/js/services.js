@@ -356,8 +356,12 @@ angular.module('starter.services', [])
 
             }, function(err) {
                 $rootScope.ignorePause = false; // reset flag
-                fail();
-                console.dir(err);
+                if ((typeof err != "undefined") && (err=="Selection cancelled.")) {
+                    console.log("User canceled selection.");
+                } else {
+                    fail();
+                    console.dir(err);
+                }
             });
      };
 
@@ -878,9 +882,11 @@ angular.module('starter.services', [])
                     if ((hasDeleteRight) && (item.typeStyle==='folder')) {
 
                         var folderProtected = false;
-                        if (item.properties['ccm:maptype'][0]==="USERDATAFOLDER") folderProtected = true;
-                        if (item.properties['ccm:maptype'][0]==="IMAGES") folderProtected = true;
-
+                        if (typeof item.properties['ccm:maptype'] != "undefined") {
+                            if (item.properties['ccm:maptype'][0]==="USERDATAFOLDER") folderProtected = true;
+                            if (item.properties['ccm:maptype'][0]==="IMAGES") folderProtected = true;
+                        }
+                        
                         if (folderProtected) {
                             buttons.push({
                                 action: 'rename-folder-notpossible',
@@ -1699,6 +1705,31 @@ angular.module('starter.services', [])
     };
 
 }])
+
+// makes sure that no word is longer then 20 chars
+.filter('wordbreaker', function() {
+    return function(input, maxWordLength) {
+
+            input = input || '';
+            var out = '';
+            var countWithoutSpace = 0;
+
+            for (var i = 0; i < input.length; i++) {
+                out = out + input.charAt(i);
+
+                if (input.charAt(i)==' ') {
+                    countWithoutSpace = 0;
+                } else {
+                    countWithoutSpace = countWithoutSpace + 1;
+                }
+                if (countWithoutSpace>maxWordLength) {
+                  countWithoutSpace = 0;
+                  out = out + ' ';
+                }
+            }
+        return out;
+    };
+})
 
 .factory('Base64', function () {
         /* jshint ignore:start */
