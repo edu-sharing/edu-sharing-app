@@ -195,7 +195,13 @@ angular.module('starter.serviceApi', [])
                   });
               };
 
-              if ((lable!="makeSureOAuthTokensAreFresh") && (lable!="getOAuthTokensByUsernamePassword")) {
+              // Unautherized on login means user/pass are incorrect
+              if (lable=="getOAuthTokensByUsernamePassword") {
+                  errorCallback("user/pass wrong")
+                  return;
+              }
+
+              if (lable!="makeSureOAuthTokensAreFresh") {
 
                   // force to refresh oAuth tokens
                   oAuthExpiresIn = 1;

@@ -1,5 +1,5 @@
 angular.module('starter.controllerLogin', [])
-.controller('LoginCtrl', function($scope, $rootScope, $location, Account, $ionicPopup, System, EduApi, $ionicLoading, $timeout, $ionicHistory, $state) {
+.controller('LoginCtrl', function($scope, $rootScope, $location, Account, $ionicPopup, System, EduApi, $ionicLoading, $timeout, $ionicHistory, $state, $cordovaToast) {
 
     $scope.loading = false;
     $scope.showTopSpace = true;
@@ -221,7 +221,11 @@ angular.module('starter.controllerLogin', [])
                 Account.loginOut();
 
                 // show message to user
-                $ionicPopup.alert({title: 'Login fehlgeschlagen. Nutzername oder Passwort falsch?'});
+                try {
+                    $cordovaToast.show("Nutzerkennung oder Passwort ist falsch. Bitte Angaben prüfen.", 'long', 'bottom');
+                } catch (e) {
+                    $ionicPopup.alert({title: 'Nutzerkennung oder Passwort ist falsch. Bitte Angaben prüfen.'});
+                }
 
             });
 
