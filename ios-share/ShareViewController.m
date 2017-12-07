@@ -263,8 +263,27 @@
                   NSInteger statusCode = ((NSHTTPURLResponse *)response).statusCode;
                   if (statusCode == 200) {
                       NSDictionary *sDict = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:nil];
+                      
+                      // filter only collections user is allowed to publish in
                       NSArray *collArray = [sDict valueForKey:@"collections"];
-                      for (NSString *imgData in collArray) {
+                      NSMutableArray *filteredArray = [NSMutableArray arrayWithCapacity:[collArray count]];
+                      for (NSString *collection in collArray) {
+                          
+                          NSString *title = [collection valueForKey:@"title"];
+                          NSLog(@"Collection %@",title);
+                          
+                          BOOL validCollection = false;
+                          NSArray *accessArray = [collection valueForKey:@"access"];
+                          for (NSString *access in accessArray) {
+                              NSLog(@"ACCESS %@",access);
+                              if ([access isEqualToString:@"Write"]) validCollection = true;
+                              if ([access isEqualToString:@"CCPublish"]) validCollection = true;
+                          }
+                          
+                          if (validCollection) [filteredArray addObject:collection];
+                      }
+
+                      for (NSString *imgData in filteredArray) {
                           NSString *tile = @"";
                           UIImage *image = nil;
                           NSString *sid = @"";
@@ -349,6 +368,7 @@
 
 //SAVE inBox
 - (IBAction)saveBTN:(UIButton *)sender {
+    self.saveBTN.hidden = true;
     if (sender.tag == 0) {
         [self nodeIDinbox:false];
     }else{
@@ -394,6 +414,7 @@
                           if (statusCode == 200) {
                               [self performSelector:@selector(removeProgressView) withObject:nil afterDelay:1.0];
                           }else{
+                              NSLog(@"Status Code %zd",statusCode);
                               [self throwError:@"Hinweis!" :@"Link konnte nicht in den Sammlungen abgelegt werden"];
                           }
                       }else{
@@ -582,7 +603,25 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     CustomTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"myCell" forIndexPath:indexPath];
     cell.textLabelCustom.text = self.sammlungDict[indexPath.row][0];
-    cell.imageViewCustom.image = self.sammlungDict[indexPath.row][1];
+    
+    // Begin a new image that will be the new image with the rounded corners
+    // (here with the size of an UIImageView)
+    UIGraphicsBeginImageContextWithOptions(cell.imageViewCustom.bounds.size, NO, [UIScreen mainScreen].scale);
+    
+    // Add a clip before drawing anything, in the shape of an rounded rect
+    [[UIBezierPath bezierPathWithRoundedRect:cell.imageViewCustom.bounds
+                                cornerRadius:10.0] addClip];
+    // Draw your image
+    [self.sammlungDict[indexPath.row][1] drawInRect:cell.imageViewCustom.bounds];
+    
+    // Get the image, here setting the UIImageView image
+    cell.imageViewCustom.image = UIGraphicsGetImageFromCurrentImageContext();
+    
+    // Lets forget about that we were drawing
+    UIGraphicsEndImageContext();
+    
+    
+    //cell.imageViewCustom.image = ;
     cell.imageGroup.image = nil;
     if (![self.sammlungDict[indexPath.row][3] isEqual:[NSNull null]]) cell.imageGroup.image = self.sammlungDict[indexPath.row][3];
     /*if ([[[self.sammlungDict[indexPath.row] valueForKey:@"preview"] valueForKey:@"isIcon"] intValue] == 1) {

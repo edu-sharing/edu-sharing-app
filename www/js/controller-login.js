@@ -114,7 +114,7 @@ angular.module('starter.controllerLogin', [])
                     //    template: $rootScope.spinnerSVG
                     //});
                     $scope.loading = true;
-                    EduApi.testServer(serverUrl, function(){
+                    EduApi.testServer(serverUrl, function(majorVersion, minerVersion){
 
                         // WIN - URL OK
                         //$ionicLoading.hide();
@@ -122,12 +122,14 @@ angular.module('starter.controllerLogin', [])
 
                         // persist seleted server
                         $scope.loginServer.url = serverUrl;
-                        var clientSettings = Account.getClientSettings(); 
+                        $scope.loginServer.apiVersionMajor = majorVersion;
+                        $scope.loginServer.apiVersionMinor = minerVersion;
+                        var clientSettings = Account.getClientSettings();
                         clientSettings.selectedServer = $scope.loginServer;
                         Account.storeClientSettings(clientSettings);
 
                         // set server and login
-                        EduApi.setBaseUrl(EduApi.serverUrls(serverUrl).api);
+                        EduApi.setBaseUrl(EduApi.serverUrls(serverUrl).api, majorVersion, minerVersion);
                         $scope.loginWithNameAndPassword(user, pass);
 
                     }, function(e) {

@@ -112,9 +112,7 @@ angular.module('starter.controllerIntro', [])
         var account = Account.getAccount();
         var clientSettings = Account.getClientSettings();
 
-
         var tryExistingAccessToken = function () {
-
 
             if ((typeof account.accessToken !== "undefined")
                 && (account.accessToken.length > 0)
@@ -124,8 +122,26 @@ angular.module('starter.controllerIntro', [])
 
                 $rootScope.serverName = clientSettings.selectedServer.name;
 
+                // if stored API version is too old for client (e.g. after upadte)
+                // log user out and restart - so app checks again with fresh login
+                // if server upadated too
+                if ((typeof clientSettings.selectedServer != "undefined") &&
+                    (typeof clientSettings.selectedServer.apiVersionMajor != "undefined") &&
+                    (typeof clientSettings.selectedServer.apiVersionMinor != "undefined") &&
+                    (!EduApi.checkVersionApi( clientSettings.selectedServer.apiVersionMajor, clientSettings.selectedServer.apiVersionMinor ))) {
+                    Account.loginOut();
+                    var url = window.location.href;
+                    url = url.substring(0,url.indexOf("#"));
+                    window.location.href = url;
+                    return;
+                }
+
                 // init API url
-                EduApi.setBaseUrl(EduApi.serverUrls(clientSettings.selectedServer.url).api);
+                EduApi.setBaseUrl(
+                    EduApi.serverUrls(clientSettings.selectedServer.url).api,
+                    clientSettings.selectedServer.apiVersionMajor,
+                    clientSettings.selectedServer.apiVersionMinor
+                );
 
                 // check if oauth is working
                 EduApi.setOAuthTokens(
@@ -236,7 +252,6 @@ angular.module('starter.controllerIntro', [])
             }
 
         };
-
 
         // sync access token with iOS sharing extension
         try {

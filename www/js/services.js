@@ -511,17 +511,23 @@ angular.module('starter.services', [])
                        $location.path("/app/collectionadd");
                     }
 
-                    loadRenderSnippet(scope, contentNode.ref.id, function(result) {
+                    // for PDF prevent rendering by forcing Preview
+                    // because mobile chrome has problems with PDF displaying in our setup
+                    // also on iOS it renders in iFrame but is nit usable
+                    var forcePreview = false;
+                    if (contentNode.mediatype == "file-pdf") forcePreview = true;
+
+                    loadRenderSnippet(scope, contentNode.ref.id, forcePreview ,function(result) {
                         if (!result) scope.close();
                     });
                 });
         };
 
 
-        var loadRenderSnippet = function(scope, contentNodeId, result) {
+        var loadRenderSnippet = function(scope, contentNodeId, forcePreview, result) {
 
 
-            EduApi.getRenderSnippetForContent(contentNodeId, function(snippet) {
+            EduApi.getRenderSnippetForContent(contentNodeId, forcePreview, function(snippet) {
 
                // WIN
                $ionicLoading.hide();
@@ -1457,7 +1463,7 @@ angular.module('starter.services', [])
         lastLogin: 0,
         clientSettings : {
             workspaceViewMode : 'list',
-            selectedServer: {name:null, url: null},
+            selectedServer: {name:null, url: null, apiVersionMajor: 1, apiVersionMinor: 0},
             introShownWorkspace : false,
             introShownSearch : false
         }

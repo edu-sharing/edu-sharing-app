@@ -9,6 +9,10 @@ angular.module('starter.serviceApi', [])
   var minApiVersionMajor = 1;
   var minApiVersionMinor = 0;
 
+  // actual api version
+  var actualApiVersionMajor = 0;
+  var actualApiVersionMinor = 0;
+
   /*
    * PRIVATE VARS
    */
@@ -710,6 +714,30 @@ angular.module('starter.serviceApi', [])
     return false;
   }
 
+  var checksMinimalVersionAPI = function( majorVersion, minerVersion) {
+    if (majorVersion === minApiVersionMajor) {
+        if (minerVersion < minApiVersionMinor) {
+            return false;
+        }
+    }
+    if (majorVersion < minApiVersionMajor) {
+        return false;
+    }
+    return true;
+  }
+
+    var checksActualVersionAPI = function( majorVersion, minerVersion) {
+        if (majorVersion === actualApiVersionMajor) {
+            if (minerVersion < actualApiVersionMinor) {
+                return false;
+            }
+        }
+        if (majorVersion < actualApiVersionMajor) {
+            return false;
+        }
+        return true;
+    }
+
   /*
    * PUBLIC SERVICE
    */
@@ -717,6 +745,9 @@ angular.module('starter.serviceApi', [])
   return {
       isReady : function() {
           return checkIfReady();
+      },
+      checkVersionApi( majorVersion, minerVersion ) {
+          return checksMinimalVersionAPI(majorVersion, minerVersion);
       },
       testServer : function (serverBaseUrl, win, fail) {
 
@@ -736,31 +767,29 @@ angular.module('starter.serviceApi', [])
             // DO REQUEST
             $http(config).then(function(response){
                 if ((typeof response !== "undefined") && (typeof response.data !== "undefined")) {
-
-                      var apiTooOldMessage = "Die API des Servers ist zu alt für die App. Server hat "+response.data.version.major+"."+response.data.version.minor+" und App braucht mindestens "+minApiVersionMajor+"."+minApiVersionMinor;
-
-                      if ((typeof response.data.version !== "undefined")) {
-                          if (response.data.version.major === minApiVersionMajor) {
-                              if (response.data.version.minor < minApiVersionMinor) {
-                                fail(apiTooOldMessage);
-                                return;   
-                              }
-                          }
-                          if (response.data.version.major < minApiVersionMajor) {
-                              fail(apiTooOldMessage);
-                              return;
-                          }
-                      }
-                      win();
-                  } else {
-                      onFail(response);
-                  }
+                    if ((typeof response.data.version !== "undefined")) {
+                        if (!checksMinimalVersionAPI(response.data.version.major, response.data.version.minor)) {
+                            var apiTooOldMessage = "Die API des Servers ist zu alt für die App. Server hat " + response.data.version.major + "." + response.data.version.minor + " und App braucht mindestens " + minApiVersionMajor + "." + minApiVersionMinor;
+                            fail(apiTooOldMessage);
+                            return;
+                        }
+                        win(response.data.version.major, response.data.version.minor);
+                    } else {
+                        onFail(response);
+                    }
+                } else {
+                    onFail();
+                }
             }, onFail);
       },
-      setBaseUrl: function(baseUrlPara) {
+      setBaseUrl: function(baseUrlPara, apiVersionMajor, apiVersionMinor) {
           // last char needs to be /
           if (baseUrlPara.indexOf("/", baseUrlPara.length - 1) === -1) baseUrlPara = baseUrlPara + "/";
           baseUrl = baseUrlPara;
+          if ((typeof apiVersionMajor != "undefined") && (typeof apiVersionMinor != "undefined")) {
+              actualApiVersionMajor = apiVersionMajor;
+              actualApiVersionMinor = apiVersionMinor;
+          }
       },
       getBaseUrl: function() {
           return baseUrl.substring(0, baseUrl.length - 1);
@@ -950,7 +979,13 @@ angular.module('starter.serviceApi', [])
               // REQUEST CONFIG
               var config = getBasicConfig();
               config.method = 'POST';
-              config.url = baseUrl+'search/v1/queries/-home-/-default-/ngsearch?maxItems='+maxItems+'&skipCount='+skipCount;
+              if (checksActualVersionAPI(1,1)) {
+                  // API 1.1 and up
+                  config.url = baseUrl+'search/v1/queriesV2/-home-/-default-/ngsearch?maxItems='+maxItems+'&skipCount='+skipCount;
+              } else {
+                  // API 1.0
+                  config.url = baseUrl+'search/v1/queries/-home-/-default-/ngsearch?maxItems='+maxItems+'&skipCount='+skipCount;
+              }
               config.data = '{"criterias":[{"property":"ngsearchword","values":["'+keyword+'"]}],"facettes":["cm:creator"]}';
 
               // FAIL
@@ -1530,15 +1565,22 @@ angular.module('starter.serviceApi', [])
           },"getOwnUserProfile");
 
       },
-      getRenderSnippetForContent : function(contentId, win, fail) {
+      getRenderSnippetForContent : function(contentId, forcePreview, win, fail) {
 
           //var url = this.apiBaseUrl+;
           makeSureOAuthTokensAreFresh(fail, function(){
 
               // REQUEST CONFIG
               var config = getBasicConfig();
-              config.method = 'GET';
+              config.method = 'POST';
               config.url = baseUrl+'rendering/v1/details/-home-/'+contentId;
+
+              // add forcePreview parameter (if true tells renderer not to render content - just to show preview)
+              var parameters = {
+                  forcePreview:false
+              };
+              if (typeof forcePreview != "undefined") parameters.forcePreview = forcePreview;
+              config.data = JSON.stringify(parameters);
 
               // FAIL
               var errorCallback = function(response) {
