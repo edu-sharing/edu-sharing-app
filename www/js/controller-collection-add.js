@@ -239,8 +239,6 @@ angular.module('starter.controllerCollectionAdd', [])
                 if (isAllowedToPublishIn) collections.push( collection );
             }
 
-            alert(collections.length + " " + data.collections.length);
-
             if ($scope.actualSkipCount===0) {
                 // set data fresh
                 $scope.collections = collections;
