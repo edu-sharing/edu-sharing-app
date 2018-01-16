@@ -222,7 +222,7 @@ angular.module('starter.controllerSearch', [])
             }
 
             if ($rootScope.multiSelection.length===0) {
-                $rootScope.multiSelectionText = "ALLE AUSWÄHLEN";
+                $rootScope.multiSelectionText = "ALLE";
             } else {
                 $rootScope.multiSelectionText = $rootScope.multiSelection.length+" BEARBEITEN";
             }

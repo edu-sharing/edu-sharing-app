@@ -24,6 +24,15 @@ angular.module('starter.controllerIntro', [])
 
         // **** checkIfLoginScreenIsToShow ****
 
+        // lock screen orientation to potrait on login screen and intro
+        alert("LOCK");
+        try {
+            screen.orientation.lock('portrait');
+            console.log("Screen should be locked now in potrait");
+        } catch (e) {
+            console.log("FAIL screen.orientation.lock('portrait')");
+        }
+
         // determine if login intro should be shown after login
         var preLoginAccount = Account.getAccount();
         $scope.showLoginIntro =  ((typeof preLoginAccount.lastLogin === "undefined") || (preLoginAccount.lastLogin===0));
@@ -100,14 +109,6 @@ angular.module('starter.controllerIntro', [])
             return;
         }
 
-        // lock screen orientation to potrait on login screen and intro
-        try {
-            screen.orientation.lock('portrait');
-            console.log("Screen should be locked now in potrait");
-        } catch (e) {
-            console.log("FAIL screen.orientation.lock('portrait')");
-        }
-
         // check if oauth data is available
         var account = Account.getAccount();
         var clientSettings = Account.getClientSettings();
@@ -176,7 +177,7 @@ angular.module('starter.controllerIntro', [])
                                     screen.orientation.unlock();
                                     console.log("Screen should be unlocked now");
                                 } catch (e) {
-                                    alert("FAIL screen.orientation.unlock()");
+                                    console.log("FAIL screen.orientation.unlock()");
                                 }
 
                                 if (System.hasWebIntent()) {

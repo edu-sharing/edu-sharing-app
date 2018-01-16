@@ -145,7 +145,7 @@ angular.module('starter.controllers', [])
                     $rootScope.multiSelectionText = "";
                     $rootScope.multiSelection = [];
                     $timeout(function(){
-                        if ($rootScope.multiSelection.length===0) $rootScope.multiSelectionText = "ALLE AUSWÄHLEN";
+                        if ($rootScope.multiSelection.length===0) $rootScope.multiSelectionText = "ALLE";
                     },1800);
                 } else {
                     // MULTI SELECT OFF

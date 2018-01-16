@@ -1577,9 +1577,13 @@ angular.module('starter.serviceApi', [])
 
               // add forcePreview parameter (if true tells renderer not to render content - just to show preview)
               var parameters = {
-                  forcePreview:false
+                  forcePreview:false,
+                  showDownloadAdvice: true
               };
-              if (typeof forcePreview != "undefined") parameters.forcePreview = forcePreview;
+              if (typeof forcePreview != "undefined") {
+                  parameters.forcePreview = forcePreview;
+                  parameters.showDownloadAdvice = !forcePreview;
+              }
               config.data = JSON.stringify(parameters);
 
               // FAIL

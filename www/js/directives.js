@@ -108,9 +108,9 @@ angular.module('starter.directives', [])
                     try {
 
                         var d = new Date(Date.parse(result));
-                        var min = d.getMinutes();
-                        if (min<10) min = "0"+min;
-                        return d.getDate()+"."+d.getMonth()+"."+d.getFullYear()+" "+d.getHours()+":"+min;
+                        //var min = d.getMinutes();
+                        //if (min<10) min = "0"+min;
+                        return "<i class='icon ion-clock'></i> "+d.getDate()+"."+d.getMonth()+"."+d.getFullYear();
 
                     } catch (e) {
                         if (result !== null) return "<i class='icon ion-clock'></i> " + result;

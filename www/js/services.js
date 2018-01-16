@@ -389,6 +389,7 @@ angular.module('starter.services', [])
                 createImageNode(imageData, scope);
 
             }, function(err) {
+
                 $rootScope.ignorePause = false; // reset flag
                 if ((typeof err != "undefined") && (err=="Camera cancelled.")) {
                     console.log("User canceled camera operation - ignore.");
