@@ -25,7 +25,6 @@ angular.module('starter.controllerIntro', [])
         // **** checkIfLoginScreenIsToShow ****
 
         // lock screen orientation to potrait on login screen and intro
-        alert("LOCK");
         try {
             screen.orientation.lock('portrait');
             console.log("Screen should be locked now in potrait");
