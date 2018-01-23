@@ -7,6 +7,7 @@ angular.module('starter.controllerLogin', [])
     $scope.loginUser = "";
     $scope.loginPassword = "";
     $scope.focus = "";
+    $scope.hideAll = true;
 
     $scope.loginServer = null;
 
@@ -26,20 +27,7 @@ angular.module('starter.controllerLogin', [])
         var clientSettings = Account.getClientSettings();
         $scope.loginServer = clientSettings.selectedServer;
         $rootScope.serverName = clientSettings.selectedServer.name;
-
-        /*
-        $timeout(function () {
-            // if not logged in & has web intent -> show alert, stay on this page
-            if (System.hasWebIntent()) {
-                var alertPopup = $ionicPopup.alert({
-                    title: 'Login nötig 2',
-                    template: 'Zum Teilen bitte einloggen.'
-                });
-                alertPopup.then(function () { });
-            }
-        }, 100);
-        */
-
+        
     });
 
     // allow landscape mode when app leaves login screen
@@ -49,11 +37,11 @@ angular.module('starter.controllerLogin', [])
         try {
             screen.orientation.unlock();
         } catch (e) {
-            alert("FAIL screen.orientation.unlock()");
         }
 
     });
 
+    // get called if login was success
     $scope.finishLogin = function() {
 
         // unlock screen orientation
@@ -61,7 +49,6 @@ angular.module('starter.controllerLogin', [])
             screen.orientation.unlock();
             console.log("Screen should be unlocked now");
         } catch (e) {
-            alert("FAIL screen.orientation.unlock()");
         }
 
         $rootScope.isLoggedIn = true;
@@ -86,8 +73,8 @@ angular.module('starter.controllerLogin', [])
         },10);
     };
 
-    // when user clicks login or triggered when user and password are stored
-        $scope.loginClick = function(user, pass) {
+    // when user clicks login
+    $scope.loginClick = function(user, pass) {
 
             // check username
             if ((typeof user === "undefined") || (user.trim().length===0)) {
@@ -110,9 +97,6 @@ angular.module('starter.controllerLogin', [])
 
                     serverUrl = System.buildFullApiUrlFromUserInput(serverUrl);
 
-                    // $ionicLoading.show({
-                    //    template: $rootScope.spinnerSVG
-                    //});
                     $scope.loading = true;
                     EduApi.testServer(serverUrl, function(majorVersion, minerVersion){
 

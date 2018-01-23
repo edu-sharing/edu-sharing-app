@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="org.edusharing.app" version="1.0.27" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+<widget id="org.edusharing.app" version="1.0.29" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
     <name>edu-sharing</name>
     <description>
         edu-sharing app
@@ -82,8 +82,6 @@
     <icon src="resources/android/icon/drawable-xhdpi-icon.png" />
     <preference name="SplashShowOnlyFirstTime" value="false" />
     <allow-navigation href="http://192.168.178.25:8101" />
-    <engine name="android" spec="^6.3.0" />
-    <engine name="ios" spec="^4.4.0" />
     <plugin name="com.borismus.webintent" spec="git+https://github.com/rootzoll/cordova-webintent.git" />
     <plugin name="com.spideroak.fileviewerplugin" spec="https://github.com/SpiderOak/FileViewerPlugin.git" />
     <plugin name="cordova-android-stayawake" spec="git+https://github.com/rootzoll/cordova-android-stayawake.git" />
@@ -105,4 +103,6 @@
     <plugin name="cordova-plugin-x-toast" spec="^2.6.0" />
     <plugin name="info.protonet.appgroupsuserdefaults" spec="https://github.com/rootzoll/cordova-plugin-nsuserdefaults-for-app-groups.git" />
     <plugin name="ionic-plugin-keyboard" spec="git+https://github.com/rootzoll/ionic-plugin-keyboard.git" />
+    <engine name="android" spec="^6.3.0" />
+    <engine name="ios" spec="^4.4.0" />
 </widget>

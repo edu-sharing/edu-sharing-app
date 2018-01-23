@@ -10,7 +10,19 @@ angular.module('starter.controllerIntro', [])
     $scope.showLoginAnim = false;
 
     $scope.$on('$ionicView.enter', function() {
+
+        // just sets a flag
         System.appWentOverLoginScreen();
+
+        // check if IONIC is ready then already start ...
+        if ($rootScope.ionicReady) $scope.checkIfLoginScreenIsToShow();
+
+    });
+
+    // ... or IONIC still needs some time to get ready .. then wait for event
+    $scope.$on('ionic-ready', function() {
+        $rootScope.ionicReady = true;
+        $scope.checkIfLoginScreenIsToShow();
     });
 
     // only call after ionic is ready
@@ -41,15 +53,6 @@ angular.module('starter.controllerIntro', [])
         }
 
     };
-
-    // either IONIC still needs some time to get ready .. then wait for event
-    $scope.$on('ionic-ready', function() {
-        $rootScope.ionicReady = true;
-        $scope.checkIfLoginScreenIsToShow();
-    });
-
-    // or IONIC is ready then ... then already start
-    if ($rootScope.ionicReady) $scope.checkIfLoginScreenIsToShow();
 
     // Button Intro Next
     $scope.clickIntroNext = function() {
@@ -199,7 +202,7 @@ angular.module('starter.controllerIntro', [])
                                 if (System.hasWebIntent()) {
                                     $timer(function(){
                                         var alertPopup = $ionicPopup.alert({
-                                            title: 'Login nötig 1',
+                                            title: 'Login nötig',
                                             template: 'Zum Teilen bitte einloggen.'
                                         });
                                         alertPopup.then(function () { });

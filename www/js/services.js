@@ -119,7 +119,7 @@ angular.module('starter.services', [])
 /*
  * Manage the Share-WebIntents of Android
  */
-.factory('Share', ['$log', '$timeout', '$location', 'System', '$rootScope', '$ionicPopup', function($log, $timeout, $location, System, $rootScope, $ionicPopup) {
+.factory('Share', ['$log', '$timeout', '$location', 'System', '$rootScope', '$ionicPopup', '$state', function($log, $timeout, $location, System, $rootScope, $ionicPopup, $state) {
         var tempParentNodeId = null;
             return {
                 pushParentNodeId: function(nodeID) {
@@ -152,7 +152,8 @@ angular.module('starter.services', [])
 
                                     // route to account
                                     $timeout(function () {
-                                        $location.path("/app/login");
+                                        $state.go('app.intro');
+                                        //$location.path("/app/intro");
                                     }, 300);
 
                                 },
@@ -175,7 +176,8 @@ angular.module('starter.services', [])
 
                                                 // route to account
                                                 $timeout(function () {
-                                                    $location.path("/app/login");
+                                                    $state.go('app.intro');
+                                                    //$location.path("/app/intro");
                                                 }, 300);
 
                                             }, function(e){
