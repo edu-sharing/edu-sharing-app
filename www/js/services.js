@@ -358,7 +358,7 @@ angular.module('starter.services', [])
 
             }, function(err) {
                 $rootScope.ignorePause = false; // reset flag
-                if ((typeof err != "undefined") && (err=="Selection cancelled.")) {
+                if ((typeof err != "undefined") && ((err=="Selection cancelled.") || (err=="has no access to addets"))) {
                     console.log("User canceled selection.");
                 } else {
                     fail();
@@ -393,7 +393,7 @@ angular.module('starter.services', [])
             }, function(err) {
 
                 $rootScope.ignorePause = false; // reset flag
-                if ((typeof err != "undefined") && (err=="Camera cancelled.")) {
+                if ((typeof err != "undefined") && ((err=="Camera cancelled.") || err=="no image selected")) {
                     console.log("User canceled camera operation - ignore.");
                 } else {
                     fail();
