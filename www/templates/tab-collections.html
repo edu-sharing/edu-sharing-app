@@ -205,7 +205,7 @@
     </div>
 
     <!-- FAB BUTTON -->
-    <div ng-show="headerShowNewCollection" on-tap="goSearch()" class="floatingButton" ><img style="
+    <div ng-show="(headerShowNewCollection && (!isRoot))" on-tap="goSearch()" class="floatingButton" ><img style="
         width: 21px;
         margin-top: -4px;
         margin-left: 0px;"
