@@ -7,7 +7,6 @@ angular.module('starter.controllerLogin', [])
     $scope.loginUser = "";
     $scope.loginPassword = "";
     $scope.focus = "";
-    $scope.hideAll = true;
 
     $scope.loginServer = null;
 
@@ -22,6 +21,8 @@ angular.module('starter.controllerLogin', [])
     };
 
     $scope.$on('$ionicView.enter', function () {
+
+        $scope.loading = false;
 
         // load selected server from client settings
         var clientSettings = Account.getClientSettings();
@@ -118,18 +119,17 @@ angular.module('starter.controllerLogin', [])
 
                     }, function(e) {
 
+                        $scope.loading = false;
+                        $ionicLoading.hide();
+
                         if ((typeof e !== "undefined") && (e.length>0)) {
                             // FAIL - with message
-                            //$ionicLoading.hide();
-                            $scope.loading = false;
                             $ionicPopup.alert({
                                 title: 'Verbindung nicht möglich',
                                 template: '<div style="text-align: center">'+e+'<br></div>'
                             }).then(function() {});
                         } else {
                             // FAIL - URL NOT WORKING
-                            //$ionicLoading.hide();
-                            $scope.loading = false;
                             $ionicPopup.alert({
                                 title: 'Verbindung nicht möglich',
                                 template: '<div style="text-align: center">Bitte Internetverbindung prüfen.<br></div>'
@@ -176,7 +176,7 @@ angular.module('starter.controllerLogin', [])
                     Account.storeProfile(profile);
                     $timeout(function(){$rootScope.profileName = profile.profile.firstName + " " +profile.profile.lastName;},100);
                     $ionicLoading.hide();
-
+                    //$scope.loading = false;
                     $scope.finishLogin();
 
                 }, function(){

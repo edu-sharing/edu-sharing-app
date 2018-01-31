@@ -358,7 +358,7 @@ angular.module('starter.services', [])
 
             }, function(err) {
                 $rootScope.ignorePause = false; // reset flag
-                if ((typeof err != "undefined") && ((err=="Selection cancelled.") || (err=="has no access to addets"))) {
+                if ((typeof err != "undefined") && ((err=="Selection cancelled.") || (err.toLowerCase()=="has no access to addets"))) {
                     console.log("User canceled selection.");
                 } else {
                     fail();
@@ -393,7 +393,7 @@ angular.module('starter.services', [])
             }, function(err) {
 
                 $rootScope.ignorePause = false; // reset flag
-                if ((typeof err != "undefined") && ((err=="Camera cancelled.") || err=="no image selected")) {
+                if ((typeof err != "undefined") && ((err=="Camera cancelled.") || err.toLowerCase()=="no image selected")) {
                     console.log("User canceled camera operation - ignore.");
                 } else {
                     fail();
@@ -1331,7 +1331,7 @@ angular.module('starter.services', [])
             var targetPath = cordova.file.externalRootDirectory + "Download/";
             if (System.isNativeIOS()) targetPath = cordova.file.documentsDirectory;
             var filePath = encodeURI(targetPath + item.name);
-            // console.log("Path to store content",filePath);
+            console.log("Path to store content",targetPath);
 
             if (System.isNativeIOS()) {
 
@@ -1350,7 +1350,6 @@ angular.module('starter.services', [])
                     }, function (progress) {
                         $timeout(function () {
                             var progressPercent = (progress.loaded / progress.total) * 100;
-                            console.log(progressPercent);
                         });
                     });
 

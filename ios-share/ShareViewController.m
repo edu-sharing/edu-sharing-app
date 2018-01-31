@@ -45,7 +45,7 @@
             [self alertlogin];
         }
     }else{
-        [self throwError:@"Bitte zuerst anmelden" :@"Um das Objekt in edu-sharing speichern zu können, müssen Sie sich in der App anmelden."];
+        [self throwError:@"Bitte zuerst anmelden" :@"Um das Objekt in edu-sharing speichern zu können, müssen Sie einen Server auswählen und sich in der App anmelden."];
     }
 }
 - (void)beginRequestWithExtensionContext:(NSExtensionContext *)context {
