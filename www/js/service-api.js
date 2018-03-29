@@ -7,7 +7,7 @@ angular.module('starter.serviceApi', [])
 
   // set minimum version of api
   var minApiVersionMajor = 1;
-  var minApiVersionMinor = 0;
+  var minApiVersionMinor = 1;
 
   // actual api version
   var actualApiVersionMajor = 0;
@@ -714,13 +714,13 @@ angular.module('starter.serviceApi', [])
     return false;
   }
 
-  var checksMinimalVersionAPI = function( majorVersion, minerVersion) {
+  var checksVersionAPI = function( majorVersion, minerVersion) {
     if (majorVersion === minApiVersionMajor) {
-        if (minerVersion < minApiVersionMinor) {
+        if (minerVersion != minApiVersionMinor) {
             return false;
         }
     }
-    if (majorVersion < minApiVersionMajor) {
+    if (majorVersion != minApiVersionMajor) {
         return false;
     }
     return true;
@@ -747,7 +747,7 @@ angular.module('starter.serviceApi', [])
           return checkIfReady();
       },
       checkVersionApi( majorVersion, minerVersion ) {
-          return checksMinimalVersionAPI(majorVersion, minerVersion);
+          return checksVersionAPI(majorVersion, minerVersion);
       },
       testServer : function (serverBaseUrl, win, fail) {
 
@@ -765,14 +765,20 @@ angular.module('starter.serviceApi', [])
             };
 
             // DO REQUEST
+            console.log("Making Request: "+config.url);
             $http(config).then(function(response){
+                console.log("Response: ",response);
                 if ((typeof response !== "undefined") && (typeof response.data !== "undefined")) {
+                    console.log("Got Data");
                     if ((typeof response.data.version !== "undefined")) {
-                        if (!checksMinimalVersionAPI(response.data.version.major, response.data.version.minor)) {
-                            var apiTooOldMessage = "Die API des Servers ist zu alt für die App. Server hat " + response.data.version.major + "." + response.data.version.minor + " und App braucht mindestens " + minApiVersionMajor + "." + minApiVersionMinor;
+                        console.log("Got Version");
+                        if (!checksVersionAPI(response.data.version.major, response.data.version.minor)) {
+                            console.log("API Version does not match.");
+                            var apiTooOldMessage = "Die API Version des Servers passt nicht. Server hat " + response.data.version.major + "." + response.data.version.minor + " und App braucht " + minApiVersionMajor + "." + minApiVersionMinor;
                             fail(apiTooOldMessage);
                             return;
                         }
+                        console.log("API Version is OK.");
                         win(response.data.version.major, response.data.version.minor);
                     } else {
                         onFail(response);
@@ -1145,7 +1151,7 @@ angular.module('starter.serviceApi', [])
 
               // FAIL
               var errorCallback = function(response) {
-                  checkHttpError(response, "serachCollections", fail, successCallback);
+                  checkHttpError(response, "searchCollections", fail, successCallback);
               };
 
               // SUCCESS

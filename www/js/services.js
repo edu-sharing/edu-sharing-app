@@ -358,7 +358,7 @@ angular.module('starter.services', [])
 
             }, function(err) {
                 $rootScope.ignorePause = false; // reset flag
-                if ((typeof err != "undefined") && ((err=="Selection cancelled.") || (err.toLowerCase()=="has no access to addets"))) {
+                if ((typeof err != "undefined") && ((err=="Selection cancelled.") || (err.toLowerCase()=="has no access to assets"))) {
                     console.log("User canceled selection.");
                 } else {
                     fail();
